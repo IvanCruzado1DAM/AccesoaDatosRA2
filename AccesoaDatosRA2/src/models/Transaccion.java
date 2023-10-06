@@ -3,19 +3,17 @@ package models;
 import java.sql.Date;
 
 public class Transaccion {
-	private int idinventario, idproducto, idproveedor;
+	private int idinventario, idproducto, idproveedor, cantidad, idempleado;
 	private Date fecha;
-
-	public Transaccion(int idinventario, int idproducto, int idproveedor, Date fecha) {
+	
+	public Transaccion(int idinventario, Date fecha, int idproducto, int idproveedor, int cantidad, int idempleado) {
 		super();
 		this.idinventario = idinventario;
+		this.fecha = fecha;
 		this.idproducto = idproducto;
 		this.idproveedor = idproveedor;
-		this.fecha = fecha;
-	}
-
-	public Transaccion() {
-		super();
+		this.cantidad = cantidad;
+		this.idempleado = idempleado;
 	}
 
 	public int getIdinventario() {
@@ -42,6 +40,22 @@ public class Transaccion {
 		this.idproveedor = idproveedor;
 	}
 
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public int getIdempleado() {
+		return idempleado;
+	}
+
+	public void setIdempleado(int idempleado) {
+		this.idempleado = idempleado;
+	}
+
 	public Date getFecha() {
 		return fecha;
 	}
@@ -53,6 +67,7 @@ public class Transaccion {
 	@Override
 	public String toString() {
 		return "Transaccion [idinventario=" + idinventario + ", idproducto=" + idproducto + ", idproveedor="
-				+ idproveedor + ", fecha=" + fecha + "]";
+				+ idproveedor + ", cantidad=" + cantidad + ", idempleado=" + idempleado + ", fecha=" + fecha + "]";
 	}
+
 }

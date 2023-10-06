@@ -14,48 +14,52 @@ import models.Proveedor;
 import models.Transaccion;
 
 public class ObjectService {
-	private final String tablaProducto = "Producto";
-	private final String tablaProveedor = "Proveedor";
-	private final String tablaEmpleado = "Empleado";
-	private final String tablatransacion = "Transacion";
+	private final String tablaProducto = "producto";
+	private final String tablaProveedor = "proveedor";
+	private final String tablaEmpleado = "empleado";
+	private final String tablaTransacion = "transaccion";
 
-	public void saveProducto(Connection conexion, Producto product, Empleado emple) throws SQLException {
+	public void saveProducto(Connection conexion, Producto product, int cual) throws SQLException {
 		try {
 			PreparedStatement consulta;
-			consulta = conexion.prepareStatement(
-					"INSERT INTO Producto (idproducto ,nombre , precio, img, proveedorid, stock, categoria) VALUES(?, ?, ?, ?, ?, ?, ?)");
-			consulta.setInt(1, product.getIdproducto());
-			consulta.setString(2, product.getNombre());
-			consulta.setFloat(3, product.getPrecio());
-			consulta.setString(4, product.getImg());
-			consulta.setInt(5, product.getProveedorid());
-			consulta.setFloat(6, product.getStock());
-
-			consulta = conexion.prepareStatement("UPDATE " + this.tablaProducto
-					+ " SET idproducto = idproducto, nombre = ?, precio = ?, img = ?, proveedorid = ? ,stock =?, categoria = ? WHERE id_producto = "
-					+ product.getIdproducto());
-			consulta.setString(1, product.getNombre());
-			consulta.setFloat(2, product.getPrecio());
-			consulta.setString(3, product.getImg());
-			consulta.setInt(4, product.getProveedorid());
-			consulta.setFloat(5, product.getStock());
-
+			if (cual == 1) {
+				consulta = conexion.prepareStatement(
+						"INSERT INTO producto (idproducto ,nombre , precio, img, proveedorid, stock, categoria) VALUES(?, ?, ?, ?, ?, ?, ?)");
+				consulta.setInt(1, product.getIdproducto());
+				consulta.setString(2, product.getNombre());
+				consulta.setFloat(3, product.getPrecio());
+				consulta.setString(4, product.getImg());
+				consulta.setInt(5, product.getProveedorid());
+				consulta.setFloat(6, product.getStock());
+				consulta.setString(7, product.getCategoria());
+				consulta.execute();
+			} else {
+				consulta = conexion.prepareStatement("UPDATE " + this.tablaProducto
+						+ " SET idproducto = idproducto, nombre = ?, precio = ?, img = ?, proveedorid = ? ,stock =?, categoria = ? WHERE id_producto = "
+						+ product.getIdproducto());
+				consulta.setString(1, product.getNombre());
+				consulta.setFloat(2, product.getPrecio());
+				consulta.setString(3, product.getImg());
+				consulta.setInt(4, product.getProveedorid());
+				consulta.setFloat(5, product.getStock());
+				consulta.setString(6, product.getCategoria());
+			}
 			consulta.executeUpdate();
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
 	}
 
-	public Producto getProduct(Connection conexion, int id_Producto) throws SQLException {
+	public Producto getProduct(Connection conexion, int idproducto) throws SQLException {
 		Producto product = null;
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT ,nombre , precio, img, proveedorid, stock, categoria" + " FROM "
-							+ this.tablaProducto + " WHERE id_Producto = ?");
-			consulta.setInt(1, id_Producto);
+					.prepareStatement("SELECT nombre , precio, img, proveedorid, stock, categoria" + " FROM "
+							+ this.tablaProducto + " WHERE idproducto = ?");
+			consulta.setInt(1, idproducto);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				product = new Producto(id_Producto, resultado.getString("nombre"), resultado.getFloat("precio"),
+				product = new Producto(idproducto, resultado.getString("nombre"), resultado.getFloat("precio"),
 						resultado.getString("img"), resultado.getInt("proveedorid"), resultado.getInt("stock"),
 						resultado.getString("categoria"));
 			}
@@ -68,7 +72,7 @@ public class ObjectService {
 	public void removeProducto(Connection conexion, Producto product) throws SQLException {
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("DELETE FROM " + this.tablaProducto + " WHERE id_Producto = ?");
+					.prepareStatement("DELETE FROM " + this.tablaProducto + " WHERE idproducto = ?");
 			consulta.setInt(1, product.getIdproducto());
 			consulta.executeUpdate();
 		} catch (SQLException ex) {
@@ -79,12 +83,12 @@ public class ObjectService {
 	public List<Producto> getAllProducts(Connection conexion) throws SQLException {
 		List<Producto> ListaProductos = new ArrayList<>();
 		try {
-			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT Id_Producto,Nombre,Imagen,Descripcion,Categoria,Precio,Cant_Stock, Id_Proveedor " + " FROM "
-							+ this.tablaProducto);
+			PreparedStatement consulta = conexion
+					.prepareStatement("SELECT idproducto,nombre , precio, img, proveedorid, stock, categoria "
+							+ " FROM " + this.tablaProducto);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				ListaProductos.add(new Producto(resultado.getInt("id_producto"), resultado.getString("nombre"),
+				ListaProductos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"),
 						resultado.getFloat("precio"), resultado.getString("img"), resultado.getInt("proveedorid"),
 						resultado.getInt("stock"), resultado.getString("categoria")));
 			}
@@ -95,25 +99,28 @@ public class ObjectService {
 	}
 
 	// Proveedor
-	public void saveProveedor(Connection conexion, Proveedor proveedor) throws SQLException {
+	public void saveProveedor(Connection conexion, Proveedor proveedor, int cual) throws SQLException {
 		try {
 			PreparedStatement consulta = null;
-			consulta = conexion.prepareStatement(
-					"INSERT INTO Proveedor (idproveedor, nombre, direccion, numero) VALUES (?, ?, ?, ?)");
-			consulta.setInt(1, proveedor.getIdproveedor());
-			consulta.setString(2, proveedor.getNombre());
-			consulta.setString(3, proveedor.getDireccion());
-			consulta.setInt(4, proveedor.getNumero());
-			JOptionPane.showMessageDialog(null, "Proveedor Guardado");
-
-			consulta = conexion.prepareStatement(
-					"UPDATE Proveedor SET idproveedor= idproveedor, nombre = ?, direccion = ?, numero = ? WHERE id_proveedor = "
-							+ proveedor.getIdproveedor());
-			consulta.setString(1, proveedor.getNombre());
-			consulta.setString(2, proveedor.getDireccion());
-			consulta.setInt(3, proveedor.getNumero());
-			JOptionPane.showMessageDialog(null, "Proveedor Actualizado");
-			consulta.executeUpdate();
+			if (cual == 1) {
+				consulta = conexion.prepareStatement(
+						"INSERT INTO proveedor (idproveedor, nombre, direccion, numero) VALUES (?, ?, ?, ?)");
+				consulta.setInt(1, proveedor.getIdproveedor());
+				consulta.setString(2, proveedor.getNombre());
+				consulta.setString(3, proveedor.getDireccion());
+				consulta.setInt(4, proveedor.getNumero());
+				consulta.execute();
+				JOptionPane.showMessageDialog(null, "Proveedor Guardado");
+			} else {
+				consulta = conexion.prepareStatement(
+						"UPDATE proveedor SET idproveedor= idproveedor, nombre = ?, direccion = ?, numero = ? WHERE id_proveedor = "
+								+ proveedor.getIdproveedor());
+				consulta.setString(1, proveedor.getNombre());
+				consulta.setString(2, proveedor.getDireccion());
+				consulta.setInt(3, proveedor.getNumero());
+				consulta.executeUpdate();
+				JOptionPane.showMessageDialog(null, "Proveedor Actualizado");
+			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
@@ -138,7 +145,7 @@ public class ObjectService {
 
 	public void removeProveedor(Connection conexion, Proveedor proveedor) throws SQLException {
 		try {
-			PreparedStatement consulta = conexion.prepareStatement("DELETE FROM Proveedor WHERE idproveedor = ?");
+			PreparedStatement consulta = conexion.prepareStatement("DELETE FROM proveedor WHERE idproveedor = ?");
 			consulta.setInt(1, proveedor.getIdproveedor());
 			consulta.executeUpdate();
 		} catch (SQLException ex) {
@@ -149,8 +156,8 @@ public class ObjectService {
 	public List<Proveedor> getAllProveedor(Connection conexion) throws SQLException {
 		List<Proveedor> ListaProveedor = new ArrayList<>();
 		try {
-			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT Id_Proveedor,Nombre,Direccion,Contrasena " + " FROM " + this.tablaProveedor);
+			PreparedStatement consulta = conexion
+					.prepareStatement("SELECT idproveedor,nombre,direccion,numero " + " FROM " + this.tablaProveedor);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
 				ListaProveedor.add(new Proveedor(resultado.getInt("idproveedor"), resultado.getString("nombre"),
@@ -163,34 +170,38 @@ public class ObjectService {
 	}
 
 	// Usuario
-	public void saveEmpleado(Connection conexion, Empleado emple) throws SQLException {
+	public void saveEmpleado(Connection conexion, Empleado emple, int cual) throws SQLException {
 		try {
 			PreparedStatement consulta;
-			consulta = conexion.prepareStatement("INSERT INTO Usuario (iduser, username, password) VALUES(?,?,?)");
-			consulta.setInt(1, emple.getIduser());
-			consulta.setString(2, emple.getUsername());
-			consulta.setString(3, emple.getPassword());
-
-			consulta = conexion.prepareStatement(
-					"UPDATE Usuario SET iduser = iduser, username = ?, password = ? WHERE Id_Usuario = "
-							+ emple.getIduser());
-			consulta.setString(1, emple.getUsername());
-			consulta.setString(2, emple.getPassword());
-			consulta.executeUpdate();
+			if (cual == 1) {
+				consulta = conexion
+						.prepareStatement("INSERT INTO empleado (idempleado, username, password) VALUES(?,?,?)");
+				consulta.setInt(1, emple.getIduser());
+				consulta.setString(2, emple.getUsername());
+				consulta.setString(3, emple.getPassword());
+				consulta.execute();
+			} else {
+				consulta = conexion.prepareStatement(
+						"UPDATE empleado SET idempleado = idempleado, username = ?, password = ? WHERE idempleado = "
+								+ emple.getIduser());
+				consulta.setString(1, emple.getUsername());
+				consulta.setString(2, emple.getPassword());
+				consulta.executeUpdate();
+			}
 		} catch (SQLException ex) {
 			System.out.println(ex);
 		}
 	}
 
-	public Empleado getEmpleado(Connection conexion, int iduser) throws SQLException {
+	public Empleado getEmpleado(Connection conexion, int idempleado) throws SQLException {
 		Empleado empleado = null;
 		try {
-			PreparedStatement consulta = conexion.prepareStatement("SELECT nombre,direccion,es_admin, activo,contrasena"
-					+ " FROM " + this.tablaEmpleado + " WHERE Id_Usuario = ?");
-			consulta.setInt(1, iduser);
+			PreparedStatement consulta = conexion.prepareStatement(
+					"SELECT idempleado, username,password" + " FROM " + this.tablaEmpleado + " WHERE idempleado = ?");
+			consulta.setInt(1, idempleado);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				empleado = new Empleado(iduser, resultado.getString("username"), resultado.getString("password"));
+				empleado = new Empleado(idempleado, resultado.getString("username"), resultado.getString("password"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
@@ -201,7 +212,7 @@ public class ObjectService {
 	public void removeEmpleado(Connection conexion, Empleado empleado) throws SQLException {
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("DELETE FROM " + this.tablaEmpleado + " WHERE iduser = ?");
+					.prepareStatement("DELETE FROM " + this.tablaEmpleado + " WHERE idempleado = ?");
 			consulta.setInt(1, empleado.getIduser());
 			consulta.executeUpdate();
 		} catch (SQLException ex) {
@@ -213,10 +224,10 @@ public class ObjectService {
 		List<Empleado> ListaEmpleados = new ArrayList<>();
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT iduser,username,password" + " FROM " + this.tablaEmpleado);
+					.prepareStatement("SELECT idempleado,username,password" + " FROM " + this.tablaEmpleado);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				ListaEmpleados.add(new Empleado(resultado.getInt("iduser"), resultado.getString("username"),
+				ListaEmpleados.add(new Empleado(resultado.getInt("idempleado"), resultado.getString("username"),
 						resultado.getString("password")));
 			}
 
@@ -227,23 +238,30 @@ public class ObjectService {
 	}
 
 	// Transaccion
-	public void saveTransaccion(Connection conexion, Transaccion transaccion) throws SQLException {
+	public void saveTransaccion(Connection conexion, Transaccion transaccion, int cual) throws SQLException {
 		try {
 			PreparedStatement consulta;
-				consulta = conexion.prepareStatement("INSERT INTO " + this.tablatransacion
-						+ "(idinventario,idproducto,idproveedor,fecha) VALUES(?,?,?,?)");
+			if (cual == 1) {
+				consulta = conexion.prepareStatement("INSERT INTO " + this.tablaTransacion
+						+ "(idinventario,fecha, idproducto, idproveedor,cantidad,idempleado) VALUES(?,?,?,?,?,?)");
 				consulta.setInt(1, transaccion.getIdinventario());
+				consulta.setDate(2, (Date) transaccion.getFecha());
+				consulta.setInt(3, transaccion.getIdproducto());
+				consulta.setInt(4, transaccion.getIdproveedor());
+				consulta.setInt(5, transaccion.getCantidad());
+				consulta.setInt(6, transaccion.getIdempleado());
+				consulta.execute();
+			} else {
+				consulta = conexion.prepareStatement("UPDATE " + this.tablaTransacion
+						+ " SET fecha = ?, idproducto = ?, id proveedor = ?, cantidad = ?, idempleado = ? WHERE idinventario = "
+						+ transaccion.getIdinventario());
+				consulta.setDate(1, (Date) transaccion.getFecha());
 				consulta.setInt(2, transaccion.getIdproducto());
 				consulta.setInt(3, transaccion.getIdproveedor());
-				consulta.setDate(4, (Date) transaccion.getFecha());
-				
-				consulta = conexion.prepareStatement("UPDATE " + this.tablatransacion
-						+ " SET idproducto = ?, idproveedor = ?, fecha = ? WHERE idinventario = "
-						+ transaccion.getIdinventario());
-				consulta.setInt(1, transaccion.getIdproducto());
-				consulta.setInt(2, transaccion.getIdproveedor());
-				consulta.setDate(3, (Date) transaccion.getFecha());
-			consulta.executeUpdate();
+				consulta.setInt(4, transaccion.getCantidad());
+				consulta.setInt(5, transaccion.getIdempleado());
+				consulta.executeUpdate();
+			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
@@ -253,13 +271,13 @@ public class ObjectService {
 		Transaccion transaccion = null;
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idinventario,idproducto,idproveedor,fecha"
-							+ " FROM " + this.tablatransacion + " WHERE idinventario = ?");
+					.prepareStatement("SELECT idinventario,fecha, idproducto, idproveedor,cantidad,idempleado"
+							+ " FROM " + this.tablaTransacion + " WHERE idinventario = ?");
 			consulta.setInt(1, idinventario);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				transaccion = new Transaccion(idinventario, resultado.getInt("idproducto"),
-						resultado.getInt("idproveedor"),resultado.getDate("fecha"));
+				transaccion = new Transaccion(idinventario, resultado.getDate("fecha"), resultado.getInt("idproducto"),
+						resultado.getInt("idproveedor"), resultado.getInt("cantidad"), resultado.getInt("idempleado"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
@@ -270,7 +288,7 @@ public class ObjectService {
 	public void removeTransaccion(Connection conexion, Transaccion transaccion) throws SQLException {
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("DELETE FROM " + this.tablatransacion + " WHERE idinventario = ?");
+					.prepareStatement("DELETE FROM " + this.tablaTransacion + " WHERE idinventario = ?");
 			consulta.setInt(1, transaccion.getIdinventario());
 			consulta.executeUpdate();
 		} catch (SQLException ex) {
@@ -282,12 +300,13 @@ public class ObjectService {
 		List<Transaccion> ListaTransacciones = new ArrayList<>();
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idinventario, idproducto, idproveedor, fecha"
-							+ " FROM " + this.tablatransacion);
+					.prepareStatement("SELECT idinventario,fecha, idproducto, idproveedor,cantidad,idempleado "
+							+ " FROM " + this.tablaTransacion);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				ListaTransacciones.add( new Transaccion(resultado.getInt("idinventario"), resultado.getInt("idproducto"),
-						resultado.getInt("idproveedor"),resultado.getDate("fecha")));
+				ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
+						resultado.getInt("idproducto"), resultado.getInt("idproveedor"), resultado.getInt("cantidad"),
+						resultado.getInt("idempleado")));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
