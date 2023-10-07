@@ -68,7 +68,10 @@ public class JFrameRegister extends JFrame {
 							Test.os.saveEmpleado(ConexionBDSql.obtener(), e1, 1);
 							JOptionPane.showMessageDialog(JFrameRegister.this, "Usuario Registrado", "Informacion",
 									JOptionPane.INFORMATION_MESSAGE);
-						};
+						}else {
+							JOptionPane.showMessageDialog(JFrameRegister.this, "Usuario Ya existe", "Informacion",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block

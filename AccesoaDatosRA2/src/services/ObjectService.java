@@ -200,7 +200,9 @@ public class ObjectService {
 					"SELECT idempleado, username,password" + " FROM " + this.tablaEmpleado + " WHERE username = ?");
 			consulta.setString(1, username);
 			ResultSet resultado = consulta.executeQuery();
-
+			while (resultado.next()) {
+				e = new Empleado(resultado.getInt("idempleado"), resultado.getString("username"), resultado.getString("password"));
+			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}

@@ -46,7 +46,7 @@ public class JFrameLogin extends JFrame {
 		Clavetext.setBounds(216, 154, 300, 30);
 
 		Enter = new JButton("Enter");
-		Enter.setBounds(415, 267, 120, 60);
+		Enter.setBounds(249, 267, 120, 60);
 		Enter.setFont(new Font("Arial", Font.PLAIN, 16));
 		Enter.addActionListener(new ActionListener() {
 			@Override
@@ -86,7 +86,7 @@ public class JFrameLogin extends JFrame {
 		
 		Register = new JButton ("Register");
 		Register.setFont(new Font("Arial", Font.PLAIN, 16));
-		Register.setBounds(247, 267, 120, 60);
+		Register.setBounds(422, 267, 120, 60);
 		Register.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
