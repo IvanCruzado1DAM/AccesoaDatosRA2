@@ -24,25 +24,27 @@ public class ObjectService {
 			PreparedStatement consulta;
 			if (cual == 1) {
 				consulta = conexion.prepareStatement(
-						"INSERT INTO producto (idproducto ,nombre , precio, img, proveedorid, stock, categoria) VALUES(?, ?, ?, ?, ?, ?, ?)");
+						"INSERT INTO producto (idproducto ,nombre , marca, precio, img, proveedorid, stock, categoria) VALUES(?, ?,?, ?, ?, ?, ?, ?)");
 				consulta.setInt(1, product.getIdproducto());
 				consulta.setString(2, product.getNombre());
+				consulta.setString(3, product.getMarca());
+				consulta.setFloat(4, product.getPrecio());
+				consulta.setString(5, product.getImg());
+				consulta.setInt(6, product.getProveedorid());
+				consulta.setFloat(7, product.getStock());
+				consulta.setString(8, product.getCategoria());
+				consulta.execute();
+			} else {
+				consulta = conexion.prepareStatement("UPDATE " + this.tablaProducto
+						+ " SET idproducto = idproducto, nombre = ?, marca = ?, precio = ?, img = ?, proveedorid = ? ,stock =?, categoria = ? WHERE id_producto = "
+						+ product.getIdproducto());
+				consulta.setString(1, product.getNombre());
+				consulta.setString(2, product.getMarca());
 				consulta.setFloat(3, product.getPrecio());
 				consulta.setString(4, product.getImg());
 				consulta.setInt(5, product.getProveedorid());
 				consulta.setFloat(6, product.getStock());
 				consulta.setString(7, product.getCategoria());
-				consulta.execute();
-			} else {
-				consulta = conexion.prepareStatement("UPDATE " + this.tablaProducto
-						+ " SET idproducto = idproducto, nombre = ?, precio = ?, img = ?, proveedorid = ? ,stock =?, categoria = ? WHERE id_producto = "
-						+ product.getIdproducto());
-				consulta.setString(1, product.getNombre());
-				consulta.setFloat(2, product.getPrecio());
-				consulta.setString(3, product.getImg());
-				consulta.setInt(4, product.getProveedorid());
-				consulta.setFloat(5, product.getStock());
-				consulta.setString(6, product.getCategoria());
 			}
 			consulta.executeUpdate();
 		} catch (SQLException ex) {
@@ -54,12 +56,12 @@ public class ObjectService {
 		Producto product = null;
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT nombre , precio, img, proveedorid, stock, categoria" + " FROM "
+					.prepareStatement("SELECT nombre , marca, precio, img, proveedorid, stock, categoria" + " FROM "
 							+ this.tablaProducto + " WHERE idproducto = ?");
 			consulta.setInt(1, idproducto);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				product = new Producto(idproducto, resultado.getString("nombre"), resultado.getFloat("precio"),
+				product = new Producto(idproducto, resultado.getString("nombre"),resultado.getString("marca"),resultado.getFloat("precio"),
 						resultado.getString("img"), resultado.getInt("proveedorid"), resultado.getInt("stock"),
 						resultado.getString("categoria"));
 			}
@@ -84,11 +86,11 @@ public class ObjectService {
 		List<Producto> ListaProductos = new ArrayList<>();
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idproducto,nombre , precio, img, proveedorid, stock, categoria "
+					.prepareStatement("SELECT idproducto,nombre ,marca, precio, img, proveedorid, stock, categoria "
 							+ " FROM " + this.tablaProducto);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				ListaProductos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"),
+				ListaProductos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"), resultado.getString("marca"),
 						resultado.getFloat("precio"), resultado.getString("img"), resultado.getInt("proveedorid"),
 						resultado.getInt("stock"), resultado.getString("categoria")));
 			}
