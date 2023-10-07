@@ -11,6 +11,12 @@ public class Proveedor {
 		this.direccion = direccion;
 		this.numero = numero;
 	}
+	public Proveedor(String nombre, String direccion, int numero) {
+		super();
+		this.nombre = nombre;
+		this.direccion = direccion;
+		this.numero = numero;
+	}
 	public Proveedor() {
 		super();
 	}
