@@ -193,6 +193,20 @@ public class ObjectService {
 		}
 	}
 
+	public Empleado getExisteEmpleado(Connection conexion, String username) throws SQLException {
+		Empleado e = null;
+		try {
+			PreparedStatement consulta = conexion.prepareStatement(
+					"SELECT idempleado, username,password" + " FROM " + this.tablaEmpleado + " WHERE username = ?");
+			consulta.setString(1, username);
+			ResultSet resultado = consulta.executeQuery();
+
+		} catch (SQLException ex) {
+			throw new SQLException(ex);
+		}
+		return e;
+	}
+
 	public Empleado getEmpleado(Connection conexion, int idempleado) throws SQLException {
 		Empleado empleado = null;
 		try {

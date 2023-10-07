@@ -4,19 +4,21 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
 import models.Empleado;
 import services.ConexionBDSql;
 import services.Test;
 
 public class JFrameLogin extends JFrame {
 
-	private JButton Entrar, Salir;
+	private JButton Enter, Close, Register;
 	private JLabel Usuario, Clave;
 	private JTextField Usuariotext;
 	private JPasswordField Clavetext;
@@ -30,12 +32,12 @@ public class JFrameLogin extends JFrame {
 		setLocationRelativeTo(null);
 
 		Usuario = new JLabel("Usuario: ");
-		Usuario.setFont(new Font("Arial", Font.PLAIN, 16));
 		Usuario.setBounds(85, 69, 79, 44);
+		Usuario.setFont(new Font("Arial", Font.PLAIN, 16));
 
 		Clave = new JLabel("Clave: ");
-		Clave.setFont(new Font("Arial", Font.PLAIN, 16));
 		Clave.setBounds(85, 147, 54, 37);
+		Clave.setFont(new Font("Arial", Font.PLAIN, 16));
 
 		Usuariotext = new JTextField(20);
 		Usuariotext.setBounds(216, 78, 300, 30);
@@ -43,10 +45,10 @@ public class JFrameLogin extends JFrame {
 		Clavetext = new JPasswordField(20);
 		Clavetext.setBounds(216, 154, 300, 30);
 
-		Entrar = new JButton("Entrar");
-		Entrar.setFont(new Font("Arial", Font.PLAIN, 16));
-		Entrar.setBounds(81, 267, 120, 60);
-		Entrar.addActionListener(new ActionListener() {
+		Enter = new JButton("Enter");
+		Enter.setBounds(415, 267, 120, 60);
+		Enter.setFont(new Font("Arial", Font.PLAIN, 16));
+		Enter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -58,7 +60,10 @@ public class JFrameLogin extends JFrame {
 						JOptionPane.showMessageDialog(JFrameLogin.this, "*Campo Usuario debe tener solo letras\n"
 								+ "*Debe tener primer caracter en Mayuscula", "Aviso",
 								JOptionPane.ERROR_MESSAGE);
-					
+				}else if(!(Clavetext.getPassword().length>4)) {
+					JOptionPane.showMessageDialog(JFrameLogin.this, "*Campo Clave debe tener longitud mayor a 4\n"
+							, "Aviso",
+							JOptionPane.ERROR_MESSAGE);
 				}else if(!Usuariotext.getText().isEmpty() && !(Clavetext.getPassword().length==0)) {
 						for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
 							if (em.getUsername().equals(Usuariotext.getText())
@@ -78,11 +83,24 @@ public class JFrameLogin extends JFrame {
 			}
 
 		});
+		
+		Register = new JButton ("Register");
+		Register.setFont(new Font("Arial", Font.PLAIN, 16));
+		Register.setBounds(247, 267, 120, 60);
+		Register.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				dispose();
+				JFrameRegister jf = new JFrameRegister ();
+				jf.setVisible(true);
+			}
+		});
 
-		Salir = new JButton("Salir");
-		Salir.setFont(new Font("Arial", Font.PLAIN, 16));
-		Salir.setBounds(377, 267, 120, 60);
-		Salir.addActionListener(new ActionListener() {
+		Close = new JButton("Close");
+		Close.setBounds(70, 267, 120, 60);
+		Close.setFont(new Font("Arial", Font.PLAIN, 16));
+		Close.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -97,7 +115,8 @@ public class JFrameLogin extends JFrame {
 		getContentPane().add(Clave);
 		getContentPane().add(Usuariotext);
 		getContentPane().add(Clavetext);
-		getContentPane().add(Entrar);
-		getContentPane().add(Salir);
+		getContentPane().add(Enter);
+		getContentPane().add(Close);
+		getContentPane().add(Register);
 	}
 }
