@@ -4,14 +4,12 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import models.Empleado;
 import services.ConexionBDSql;
 import services.Test;
@@ -22,7 +20,8 @@ public class JFrameLogin extends JFrame {
 	private JLabel Usuario, Clave;
 	private JTextField Usuariotext;
 	private JPasswordField Clavetext;
-	protected Empleado EmActivo; //Almacenamos aqui el Empleado que ha entrado para poder acceder a el en todas las vistas
+	protected static Empleado EmActivo; //Almacenamos aqui el Empleado que ha entrado para 
+	//poder acceder a el en todas las vistas
 
 	public JFrameLogin() {
 		super("Inicio Sesion");
@@ -65,12 +64,22 @@ public class JFrameLogin extends JFrame {
 							, "Aviso",
 							JOptionPane.ERROR_MESSAGE);
 				}else if(!Usuariotext.getText().isEmpty() && !(Clavetext.getPassword().length==0)) {
+					boolean encontrado = false;
 						for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
 							if (em.getUsername().equals(Usuariotext.getText())
 									&& em.getPassword().equals(String.valueOf(Clavetext.getPassword()))) {
-								JOptionPane.showMessageDialog(JFrameLogin.this, "Bienvenido " + Usuario.getText());
-							    EmActivo = em;
+								JOptionPane.showMessageDialog(JFrameLogin.this, "Bienvenido " + Usuariotext.getText());
+							    encontrado = true;
+								EmActivo = em;
+							    dispose();
+							    JFrameAdmin jf = new JFrameAdmin ();
+							    jf.setVisible(true);
 							}
+						}
+						if(encontrado==false) {
+							JOptionPane.showMessageDialog(JFrameLogin.this, "El Empleado no existe ");
+						    Usuariotext.setText("");
+						    Clavetext.setText("");
 						}
 					}
 				} catch (ClassNotFoundException e1) {
@@ -81,7 +90,6 @@ public class JFrameLogin extends JFrame {
 					e1.printStackTrace();
 				}
 			}
-
 		});
 		
 		Register = new JButton ("Register");
@@ -94,6 +102,8 @@ public class JFrameLogin extends JFrame {
 				dispose();
 				JFrameRegister jf = new JFrameRegister ();
 				jf.setVisible(true);
+				Usuariotext.setText("");
+				Clavetext.setText("");
 			}
 		});
 
@@ -110,7 +120,6 @@ public class JFrameLogin extends JFrame {
 			}
 		});
 		getContentPane().setLayout(null);
-
 		getContentPane().add(Usuario);
 		getContentPane().add(Clave);
 		getContentPane().add(Usuariotext);

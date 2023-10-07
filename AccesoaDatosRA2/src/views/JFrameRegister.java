@@ -3,14 +3,12 @@ package views;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import models.Empleado;
 import services.ConexionBDSql;
 import services.Test;
@@ -66,10 +64,10 @@ public class JFrameRegister extends JFrame {
 							Empleado e1 = new Empleado(Usernametext.getText(),
 									String.valueOf(Passwordtext.getPassword()));
 							Test.os.saveEmpleado(ConexionBDSql.obtener(), e1, 1);
-							JOptionPane.showMessageDialog(JFrameRegister.this, "Usuario Registrado", "Informacion",
+							JOptionPane.showMessageDialog(JFrameRegister.this, "Empleando Registrado", "Informacion",
 									JOptionPane.INFORMATION_MESSAGE);
 						}else {
-							JOptionPane.showMessageDialog(JFrameRegister.this, "Usuario Ya existe", "Informacion",
+							JOptionPane.showMessageDialog(JFrameRegister.this, "Empleando Ya existe", "Informacion",
 									JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
