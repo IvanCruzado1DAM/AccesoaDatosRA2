@@ -170,7 +170,15 @@ public class AddModifyProduct extends JFrame {
 	            productId = 0;
 	        } else if (obj == btnBack) {
 	            productId = 0;
-	            new CrudProducto();
+	            try {
+					new CrudProducto();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	            ProductWindowAM.setVisible(false);
 
 	        }

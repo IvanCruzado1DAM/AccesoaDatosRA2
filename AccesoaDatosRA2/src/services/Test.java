@@ -1,11 +1,5 @@
 package services;
 
-import java.sql.Date;
-import java.sql.SQLException;
-import models.Empleado;
-import models.Producto;
-import models.Proveedor;
-import models.Transaccion;
 import views.JFrameLogin;
 
 public class Test {
