@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -17,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import models.Producto;
+import models.Proveedor;
 import services.ConexionBDSql;
 import services.ObjectService;
 
@@ -64,9 +66,9 @@ public class CrudProducto extends JFrame {
 		ProductPanel.setLayout(null);
 		ProductPanel.setBounds(200, 0, 433, 463);
 		// Crear el JTable
-		// int id, String nombre, Float precio, String img, int proveedorid, int stock,
-		// String categoria
-		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Id Proveedor", "Categoria" };
+		// int id, String nombre, Float precio, String img, int stock,
+		// String categoria,String marca,int proveedorid,nombre proveedor para localizarlo mejor
+		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria","Marca","Id Proveedor","Nombre proovedor" };
 		ProductCombo = new DefaultTableModel(columnas, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -86,25 +88,25 @@ public class CrudProducto extends JFrame {
 		sorter.sort();
 		// rellenar Productos
 		List<Producto> listP;
-		try {
+		List<Proveedor> listPro;
+		String nomPro =null;		try {
 			listP = OS.getAllProducts(ConexionBDSql.obtener());
-
+			listPro=OS.getAllProveedor(ConexionBDSql.obtener());
 			for (Producto p : listP) {
-				Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
-						p.getProveedorid(), p.getCategoria() };
+				for(Proveedor pro:listPro) {
+				if(p.getProveedorid()==pro.getIdproveedor()) {
+					nomPro=pro.getNombre();
+				}
+				Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(), p.getCategoria(),p.getMarca(),
+						p.getProveedorid(),nomPro };
+				
 				ProductCombo.addRow(data);
+				
+			}
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//				for (Profesor pro : allProfesor) {
-//					Object[] data = { pro.getId(), pro.getImagen(), pro.getNombre(), pro.getDireccion(), pro.getAsignatura(),
-//							pro.getNumeroclases() };
-//					ComboProfesores.addRow(data);
-//
-//				}
-
 		ProductScroll = new JScrollPane(getTablaProducto());
 		ProductScroll.setBounds(10, 45, 500, 430);
 		ProductWindow.add(ProductScroll);
@@ -120,16 +122,17 @@ public class CrudProducto extends JFrame {
 		// modificar
 		ModifyProduct = new JButton("MODIFY");
 		ModifyProduct.setBounds(525, 340, 100, 34);
-		ModifyProduct.addActionListener(null);
+		ModifyProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(ModifyProduct);
 		// eliminar
 		DeleteProduct = new JButton("DELETE");
 		DeleteProduct.setBounds(525, 380, 100, 34);
-		DeleteProduct.addActionListener(null);
+		DeleteProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(DeleteProduct);
 		// volver
 		Exit = new JButton("EXIT");
 		Exit.setBounds(540, 438, 77, 34);
+		Exit.addActionListener(mane);
 		ProductWindow.getContentPane().add(Exit);
 
 	}
@@ -143,17 +146,35 @@ public class CrudProducto extends JFrame {
 				try {
 					new AddModifyProduct();
 				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				ProductWindow.setVisible(false);
 			} else if (obj == DeleteProduct) {
 
 			} else if (obj == ModifyProduct) {
+//				AddModifyProduct.productId=
+				// modificar profesor
+				int selectedRow = getTablaProducto().getSelectedRow();
+				if (selectedRow != -1) {
+					int id = (int) ProductCombo.getValueAt(selectedRow, 0);
+					AddModifyProduct.productId= id;
 
+					ProductWindow.setVisible(false);
+					try {
+						new AddModifyProduct();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(CrudProducto.this, "ERROR CLASS NOT FOUND ","Error", JOptionPane.ERROR_MESSAGE);
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(CrudProducto.this, "SQL ERROR ","Error", JOptionPane.ERROR_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para modificar.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			} else if (obj == Exit) {
 				// volver al menu principal
-				// Principal();
+				JFrameAdmin jf = new JFrameAdmin ();
+				jf.setVisible(true);
 				// Cerrar ventana crud producto
 				ProductWindow.dispose();
 			}
