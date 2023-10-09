@@ -386,8 +386,7 @@ public class JFrameTransactions extends JFrame {
 		List<Transaccion> ListaTransacciones = new ArrayList<>();
 		try {
 			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado"
-							+ " FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + nombre);
+					.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
 				ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
