@@ -28,11 +28,11 @@ public class JFrameRegister extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 
-		Username = new JLabel("Username: ");
+		Username = new JLabel("Nombre Usuario: ");
 		Username.setFont(new Font("Arial", Font.PLAIN, 16));
 		Username.setBounds(106, 92, 86, 45);
 
-		Password = new JLabel("Password: ");
+		Password = new JLabel("Contraseña: ");
 		Password.setFont(new Font("Arial", Font.PLAIN, 16));
 		Password.setBounds(106, 159, 78, 45);
 
@@ -42,7 +42,7 @@ public class JFrameRegister extends JFrame {
 		Passwordtext = new JPasswordField(20);
 		Passwordtext.setBounds(247, 168, 300, 30);
 
-		Register = new JButton("Register");
+		Register = new JButton("Registrar");
 		Register.setBounds(247, 278, 120, 60);
 		Register.addActionListener(new ActionListener() {
 			@Override
@@ -93,7 +93,7 @@ public class JFrameRegister extends JFrame {
 			}
 		});
 
-		Close = new JButton("Close");
+		Close = new JButton("Cerrar");
 		Close.setBounds(64, 278, 120, 60);
 		Close.addActionListener(new ActionListener() {
 			@Override

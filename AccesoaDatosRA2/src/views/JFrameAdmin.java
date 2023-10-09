@@ -19,7 +19,7 @@ public class JFrameAdmin extends JFrame {
 	    setResizable(false);
 	    setLocationRelativeTo(null);
 	    
-	    Products = new JButton ("Products");
+	    Products = new JButton ("Productos");
 	    Products.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Products.setBounds(76, 52, 160, 100);
 	    Products.addActionListener(new ActionListener() {
@@ -39,7 +39,7 @@ public class JFrameAdmin extends JFrame {
 			}
 	    });
 	    
-	    Employee = new JButton ("Employee");
+	    Employee = new JButton ("Empleados");
 	    Employee.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Employee.setBounds(347, 52, 160, 100);
 	    Employee.addActionListener(new ActionListener() {
@@ -50,7 +50,7 @@ public class JFrameAdmin extends JFrame {
 			}
 	    });
 	    
-	    Supplier = new JButton ("Supplier");
+	    Supplier = new JButton ("Proveedores");
 	    Supplier.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Supplier.setBounds(76, 169, 160, 100);
 	    Supplier.addActionListener(new ActionListener() {
@@ -61,7 +61,7 @@ public class JFrameAdmin extends JFrame {
 			}
 	    });
 	    
-	    Transaction = new JButton ("Transaction");
+	    Transaction = new JButton ("Transacción");
 	    Transaction.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Transaction.setBounds(347, 169, 160, 100);
 	    Transaction.addActionListener(new ActionListener() {
@@ -74,7 +74,7 @@ public class JFrameAdmin extends JFrame {
 			}
 	    });
 	    
-	    SignOff = new JButton ("SignOff");
+	    SignOff = new JButton ("Cerrar Sesión");
 	    SignOff.setFont(new Font("Arial", Font.PLAIN, 16));
 	    SignOff.setBounds(118, 288, 341, 77);
 	    SignOff.addActionListener(new ActionListener() {

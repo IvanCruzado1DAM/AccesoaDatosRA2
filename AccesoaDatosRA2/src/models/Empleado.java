@@ -11,7 +11,7 @@ public class Empleado {
 		this.password = password;
 	}
 	
-	public Empleado( String username, String password) {
+	public Empleado(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
