@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,15 +26,17 @@ import services.ConexionBDSql;
 import services.ObjectService;
 
 public class CrudProducto extends JFrame {
-
+	private static final long serialVersionUID = 1L;
 	private JFrame ProductWindow;
-	private JLabel ProductLabel;
+	private JLabel ProductLabel,ProductImg;
+
 	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit;
 
 	private static JTable ProductTable;
 	private DefaultTableModel ProductCombo;
 	private JScrollPane ProductScroll;
 	private JPanel ProductPanel;
+//	ManejadorImagen mi = new ManejadorImagen();
 
 	ObjectService OS = new ObjectService();
 
@@ -54,6 +59,10 @@ public class CrudProducto extends JFrame {
 		ProductLabel.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		ProductLabel.setBounds(145, -10, 223, 66);
 		ProductWindow.add(ProductLabel);
+		//Imagen
+		ProductImg = new JLabel("");
+		ProductImg.setBounds(464, 70, 180, 180);
+		ProductWindow.getContentPane().add(ProductImg);
 		// Botones
 		createButtons();
 		// tabla
@@ -61,14 +70,17 @@ public class CrudProducto extends JFrame {
 		ProductWindow.setVisible(true);
 	}
 
+	@SuppressWarnings("serial")
 	private void createTable() throws SQLException {
 		ProductPanel = new JPanel();
 		ProductPanel.setLayout(null);
 		ProductPanel.setBounds(200, 0, 433, 463);
 		// Crear el JTable
 		// int id, String nombre, Float precio, String img, int stock,
-		// String categoria,String marca,int proveedorid,nombre proveedor para localizarlo mejor
-		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria","Marca","Id Proveedor","Nombre proovedor" };
+		// String categoria,String marca,int proveedorid,nombre proveedor para
+		// localizarlo mejor
+		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria",
+				"Id Proveedor", "Nombre proovedor" };
 		ProductCombo = new DefaultTableModel(columnas, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -89,21 +101,21 @@ public class CrudProducto extends JFrame {
 		// rellenar Productos
 		List<Producto> listP;
 		List<Proveedor> listPro;
-		String nomPro =null;		try {
+		String nomPro = null;
+		try {
 			listP = OS.getAllProducts(ConexionBDSql.obtener());
-			listPro=OS.getAllProveedor(ConexionBDSql.obtener());
+			listPro = OS.getAllProveedor(ConexionBDSql.obtener());
 			for (Producto p : listP) {
-				for(Proveedor pro:listPro) {
-				if(p.getProveedorid()==pro.getIdproveedor()) {
-					nomPro=pro.getNombre();
+				for (Proveedor pro : listPro) {
+					if (p.getProveedorid() == pro.getIdproveedor()) {
+						nomPro = pro.getNombre();
+					}}
+					Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
+							p.getCategoria(), p.getProveedorid(), nomPro };
+
+					ProductCombo.addRow(data);
 				}
-				Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(), p.getCategoria(),p.getMarca(),
-						p.getProveedorid(),nomPro };
-				
-				ProductCombo.addRow(data);
-				
-			}
-			}
+			
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
@@ -142,6 +154,7 @@ public class CrudProducto extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
+			int selectedRow = getTablaProducto().getSelectedRow();
 			if (obj == AddProduct) {
 				try {
 					new AddModifyProduct();
@@ -150,18 +163,50 @@ public class CrudProducto extends JFrame {
 				}
 				ProductWindow.setVisible(false);
 			} else if (obj == DeleteProduct) {
-
+				// eliminar producto
+				if (selectedRow != -1) {
+					String id = ProductCombo.getValueAt(selectedRow, 0).toString();
+					String ruta = ProductCombo.getValueAt(selectedRow, 4).toString();
+					String nombre = ProductCombo.getValueAt(selectedRow, 1).toString();
+					int confirmResult = JOptionPane.showConfirmDialog(null,
+							"¿Estás seguro de que quieres eliminar este registro?\nID: " + id + "\nNombre: " + nombre,
+							"Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+					if (confirmResult == JOptionPane.YES_OPTION) {
+						try {
+							try {
+								//remover con id4
+								OS.removeProducto(ConexionBDSql.obtener(), new Producto());
+							} catch (ClassNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							File imagenes = new File(ruta);
+							Files.deleteIfExists(imagenes.toPath());
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						
+						JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
+								"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+						ProductWindow.setVisible(false);
+						//RELOAD
+						ProductWindow.setVisible(true);
+				}}else{
+					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para eliminar.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
 			} else if (obj == ModifyProduct) {
 //				AddModifyProduct.productId=
 				// modificar profesor
-				int selectedRow = getTablaProducto().getSelectedRow();
 				if (selectedRow != -1) {
 					int id = (int) ProductCombo.getValueAt(selectedRow, 0);
-					AddModifyProduct.productId= id;
-
-					ProductWindow.setVisible(false);
 					try {
+						AddModifyProduct.productId= id;
 						new AddModifyProduct();
+						ProductWindow.setVisible(false);
 					} catch (ClassNotFoundException e1) {
 						JOptionPane.showMessageDialog(CrudProducto.this, "ERROR CLASS NOT FOUND ","Error", JOptionPane.ERROR_MESSAGE);
 					} catch (SQLException e1) {
@@ -189,4 +234,5 @@ public class CrudProducto extends JFrame {
 	public void setTablaProducto(JTable ProductTable) {
 		CrudProducto.ProductTable = ProductTable;
 	}
+
 }
