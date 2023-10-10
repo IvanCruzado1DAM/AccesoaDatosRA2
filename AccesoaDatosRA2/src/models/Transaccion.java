@@ -25,6 +25,10 @@ public class Transaccion {
 		this.idempleado = idempleado;
 	}
 
+	public Transaccion() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getIdinventario() {
 		return idinventario;
 	}

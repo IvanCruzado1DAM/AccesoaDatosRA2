@@ -2,30 +2,27 @@ package views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import models.Producto;
 import models.Transaccion;
 import services.ConexionBDSql;
 import services.Test;
 
-public class JFrameCreateTransaction extends JFrame{
+public class JFrameUpdateTransaction extends JFrame {
 	
 	private JLabel  Idtransaction, empleado, proveedor, marca, producto, cantidad, fecha;
 	private JTextField Idtransactiontext, empleadotext, proveedortext, marcatext, productotext, cantidadtext, fechatext;
     private JButton Register, Return;
     private Date d = new Date (124);
 	
-	public JFrameCreateTransaction() {
+	public JFrameUpdateTransaction () {
 		super("Crear Transacciones");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(626,470);
@@ -50,19 +47,56 @@ public class JFrameCreateTransaction extends JFrame{
 		
 		Idtransactiontext = new JTextField(10);
 		Idtransactiontext.setBounds(175, 50, 300, 30);
+		Idtransactiontext.setText(String.valueOf(JFrameTransactions.t.getIdinventario()));
 		Idtransactiontext.setEditable(false);
 		empleadotext = new JTextField(10);
 		empleadotext.setBounds(266, 489, 86, 33);
-		empleadotext.setText(JFrameLogin.EmActivo.getUsername());
+		try {
+			empleadotext.setText(String.valueOf(Test.os.getEmpleado(ConexionBDSql.obtener(), JFrameTransactions.t.getIdempleado())));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		empleadotext.setEditable(false);
 		proveedortext = new JTextField(10);
 		proveedortext.setBounds(175, 95, 300, 30);
+		try {
+			proveedortext.setText(String.valueOf(Test.os.getProveedor(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproveedor())));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		marcatext = new JTextField(10);
 		marcatext.setBounds(175, 141, 300, 30);
+		try {
+			marcatext.setText(Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getMarca());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		productotext = new JTextField(10);
 		productotext.setBounds(175, 196, 300, 30);
+		try {
+			productotext.setText(Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getNombre());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		cantidadtext = new JTextField(10);
 		cantidadtext.setBounds(175, 245, 300, 29);
+		cantidadtext.setText(String.valueOf(JFrameTransactions.t.getCantidad()));
 		fechatext = new JTextField(10);
 		fechatext.setBounds(175, 293, 300, 30);
 		fechatext.setText(String.valueOf(d));
@@ -77,11 +111,8 @@ public class JFrameCreateTransaction extends JFrame{
 				Transaccion t = new Transaccion ( d, Integer.valueOf(productotext.getText()), Integer.valueOf(proveedortext.getText()), Integer.valueOf(cantidadtext.getText()), JFrameLogin.EmActivo.getIduser());
 			    try {
 					Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 1);
-					JOptionPane.showMessageDialog(JFrameCreateTransaction.this, "Transaccion Creada correctamente", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-				    Producto pbase = getProductoId(ConexionBDSql.obtener(), productotext.getText());
-				    pbase.setNombre(getName());
-					Test.os.saveProducto(ConexionBDSql.obtener(), pbase, 2);
-			    } catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(JFrameUpdateTransaction.this, "Transaccion Creada correctamente", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (SQLException e1) {
@@ -118,23 +149,5 @@ public class JFrameCreateTransaction extends JFrame{
 		getContentPane().add(fechatext);
 		getContentPane().add(Register);
 		getContentPane().add(Return);
-	}
-	
-	public Producto getProductoId(Connection conexion, String nombre) throws SQLException {
-		Producto product = null;
-		try {
-			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idproducto, nombre , marca, precio, img, proveedorid, stock, categoria FROM producto WHERE nombre = ?");
-			consulta.setString(1, nombre);
-			ResultSet resultado = consulta.executeQuery();
-			while (resultado.next()) {
-				product = new Producto(resultado.getInt("idproducto"), nombre,resultado.getString("marca"),resultado.getFloat("precio"),
-						resultado.getString("img"), resultado.getInt("proveedorid"), resultado.getInt("stock"),
-						resultado.getString("categoria"));
-			}
-		} catch (SQLException ex) {
-			throw new SQLException(ex);
-		}
-		return product;
 	}
 }
