@@ -334,6 +334,9 @@ public class JFrameTransactions extends JFrame {
 		getContentPane().add(cantidadtext);
 		getContentPane().add(fechatext);
 		getContentPane().add(Return);
+		getContentPane().add(Delete);
+		getContentPane().add(Register);
+		getContentPane().add(Return);
 		getContentPane().add(Foto);
 
 	}
@@ -360,33 +363,11 @@ public class JFrameTransactions extends JFrame {
 		}
 	}
 
-	public static void EscribirTablaFiltro() {
-		try {
-			for (Transaccion t : Test.os.getAllTransacciones(ConexionBDSql.obtener())) {
-				Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
-				Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
-				Empleado em = Test.os.getEmpleado(ConexionBDSql.obtener(), t.getIdempleado());
-				Object[] Fila = new Object[model.getColumnCount()];
-				Fila[0] = t.getIdinventario();
-				Fila[1] = em.getUsername();
-				Fila[2] = pro.getNombre();
-				Fila[3] = p.getMarca();
-				Fila[4] = p.getNombre();
-				Fila[5] = t.getCantidad();
-				Fila[6] = t.getFecha();
-				model.addRow(Fila);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void TransaccionesConFiltros (Connection conexion, String nombre) throws SQLException {
 		List<Transaccion> ListaTransacciones = new ArrayList<>();
 		try {
-			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + nombre);
+			PreparedStatement consulta = conexion.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)");
+			consulta.setString(1, nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
 				ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
@@ -395,11 +376,6 @@ public class JFrameTransactions extends JFrame {
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
-		}
-		
-		for (int x = 0; x < (table.getRowCount() * ListaTransacciones.size()); x++) {
-			if (table.getRowCount() > 0)
-				model.removeRow(0);
 		}
 		
 		try {
@@ -420,6 +396,11 @@ public class JFrameTransactions extends JFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		for (int x = 0; x < (table.getRowCount() * ListaTransacciones.size()); x++) {
+			if (table.getRowCount() > 0)
+				model.removeRow(0);
 		}
 	}
 }
