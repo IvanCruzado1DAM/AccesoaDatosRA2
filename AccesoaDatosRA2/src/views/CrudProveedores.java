@@ -49,7 +49,7 @@ public class CrudProveedores extends JFrame {
 		ProductWindow.setLocationRelativeTo(null);
 		ProductWindow.getContentPane().setLayout(null);
 		// Texto menu admin
-		ProductLabel = new JLabel("Menu proveedores");
+		ProductLabel = new JLabel("Menú proveedores");
 		ProductLabel.setToolTipText("texto eleccion");
 		ProductLabel.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		ProductLabel.setBounds(145, -10, 223, 66);
@@ -68,7 +68,7 @@ public class CrudProveedores extends JFrame {
 		// Crear el JTable
 		// int id, String nombre, Float precio, String img, int stock,
 		// String categoria,String marca,int proveedorid,nombre proveedor para localizarlo mejor
-		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria","Marca","Id Proveedor","Nombre proovedor" };
+		String[] columnas = new String[] { "ID", "Nombre", "Dirección", "Número"};
 		ProductCombo = new DefaultTableModel(columnas, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -89,20 +89,13 @@ public class CrudProveedores extends JFrame {
 		// rellenar Productos
 		List<Producto> listP;
 		List<Proveedor> listPro;
-		String nomPro =null;		try {
-			listP = OS.getAllProducts(ConexionBDSql.obtener());
+		String nomPro =null;
+		try {
 			listPro=OS.getAllProveedor(ConexionBDSql.obtener());
-			for (Producto p : listP) {
-				for(Proveedor pro:listPro) {
-				if(p.getProveedorid()==pro.getIdproveedor()) {
-					nomPro=pro.getNombre();
-				}
-				Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(), p.getCategoria(),p.getMarca(),
-						p.getProveedorid(),nomPro };
-				
+			for (Proveedor p : listPro) {
+				Object[] data = { p.getIdproveedor(), p.getNombre(), p.getDireccion(), p.getNumero()};
 				ProductCombo.addRow(data);
 				
-			}
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -115,22 +108,22 @@ public class CrudProveedores extends JFrame {
 
 	private void createButtons() {
 		// añadir
-		AddProduct = new JButton("ADD");
+		AddProduct = new JButton("Añadir");
 		AddProduct.setBounds(525, 300, 100, 34);
 		AddProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(AddProduct);
 		// modificar
-		ModifyProduct = new JButton("MODIFY");
+		ModifyProduct = new JButton("Modificar");
 		ModifyProduct.setBounds(525, 340, 100, 34);
 		ModifyProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(ModifyProduct);
 		// eliminar
-		DeleteProduct = new JButton("DELETE");
+		DeleteProduct = new JButton("Borrar");
 		DeleteProduct.setBounds(525, 380, 100, 34);
 		DeleteProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(DeleteProduct);
 		// volver
-		Exit = new JButton("EXIT");
+		Exit = new JButton("Salir");
 		Exit.setBounds(540, 438, 77, 34);
 		Exit.addActionListener(mane);
 		ProductWindow.getContentPane().add(Exit);
@@ -144,7 +137,7 @@ public class CrudProveedores extends JFrame {
 			Object obj = e.getSource();
 			if (obj == AddProduct) {
 				try {
-					new AddModifyProduct();
+					new AddModifyProveedor();
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
