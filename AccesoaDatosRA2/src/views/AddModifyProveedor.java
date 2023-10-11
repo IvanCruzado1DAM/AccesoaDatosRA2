@@ -16,6 +16,7 @@ import models.Producto;
 import models.Proveedor;
 import services.ConexionBDSql;
 import services.ObjectService;
+import javax.swing.SwingConstants;
 
 public class AddModifyProveedor extends JFrame {
 
@@ -38,7 +39,7 @@ public class AddModifyProveedor extends JFrame {
 	private void createWindow() throws ClassNotFoundException, SQLException {
 	    ProductWindowAM = new JFrame("Menú");
 	    ProductWindowAM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    ProductWindowAM.setBounds(100, 100, 420, 580);
+	    ProductWindowAM.setBounds(100, 100, 420, 419);
 	    ProductWindowAM.setLocationRelativeTo(null);
 	    ProductWindowAM.getContentPane().setLayout(null);
 
@@ -79,13 +80,19 @@ public class AddModifyProveedor extends JFrame {
 	    ProductWindowAM.getContentPane().add(comboBox);
 
 	    btnInsert = new JButton("Insert");
-	    btnInsert.setBounds(64, 436, 85, 21);
+	    btnInsert.setBounds(67, 314, 85, 21);
 	    ProductWindowAM.getContentPane().add(btnInsert);
 
 	    btnBack = new JButton("Back");
-	    btnBack.setBounds(222, 436, 85, 21);
+	    btnBack.setBounds(216, 314, 85, 21);
 	    btnBack.addActionListener(mane);
 	    ProductWindowAM.getContentPane().add(btnBack);
+	    
+	    JLabel lblNewLabel = new JLabel("Editar Proveedor");
+	    lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	    lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 27));
+	    lblNewLabel.setBounds(51, 21, 300, 52);
+	    ProductWindowAM.getContentPane().add(lblNewLabel);
 
 	    if (productId == 0) {
 
