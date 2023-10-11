@@ -41,6 +41,10 @@ public class JFrameTransactions extends JFrame {
 	private List<String> Nombre = new ArrayList<>();
 	private JButton Register, Delete, Update, Return;
 	protected static Transaccion t;
+	private static String fEmpleado = "";
+    private static String fProveedor = "";
+    private static String fMarca = "";
+    private static String fProducto = "";
 
 	public JFrameTransactions() {
 		super("Transactions");
@@ -92,10 +96,16 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					t = Test.os.getTransaccion(ConexionBDSql.obtener(), Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
-					Producto p = Test.os.getProduct(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(),
-							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())).getIdproducto());
-					p.setStock(p.getStock()-t.getCantidad());
+					t = Test.os.getTransaccion(ConexionBDSql.obtener(),
+							Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
+					Producto p = Test.os
+							.getProduct(
+									ConexionBDSql.obtener(), Test.os
+											.getTransaccion(ConexionBDSql.obtener(),
+													Integer.valueOf(
+															model.getValueAt(table.getSelectedRow(), 0).toString()))
+											.getIdproducto());
+					p.setStock(p.getStock() - t.getCantidad());
 					Test.os.removeTransaccion(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())));
 					JOptionPane.showMessageDialog(JFrameTransactions.this, "Transaccion Eliminada Correctamente",
@@ -108,8 +118,9 @@ public class JFrameTransactions extends JFrame {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} catch (ArrayIndexOutOfBoundsException ex ) {
-					JOptionPane.showMessageDialog(JFrameTransactions.this, "Selecciona una Transaccion para eliminar", "Aviso", JOptionPane.WARNING_MESSAGE);
+				} catch (ArrayIndexOutOfBoundsException ex) {
+					JOptionPane.showMessageDialog(JFrameTransactions.this, "Selecciona una Transaccion para eliminar",
+							"Aviso", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
@@ -180,6 +191,23 @@ public class JFrameTransactions extends JFrame {
 			e.printStackTrace();
 		}
 
+		Filtro_Empleado.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					fEmpleado =(String) Filtro_Empleado.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor,
+							fEmpleado, fMarca,
+							fProducto);
+				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		Filtro_Proveedor = new JComboBox<String>();
 		Filtro_Proveedor.setFont(
 				new Font("Arial", Filtro_Proveedor.getFont().getStyle(), Filtro_Proveedor.getFont().getSize()));
@@ -207,7 +235,10 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					TransaccionesConFiltros(ConexionBDSql.obtener(), (String) Filtro_Proveedor.getSelectedItem());
+					fProveedor = (String) Filtro_Proveedor.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor,
+							fEmpleado, fMarca,
+							fProducto);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -237,6 +268,22 @@ public class JFrameTransactions extends JFrame {
 			e1.printStackTrace();
 		}
 
+		Filtro_Empleado.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					fEmpleado =(String) Filtro_Empleado.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor,
+							fEmpleado, fMarca,
+							fProducto);
+				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		Filtro_Marca = new JComboBox<String>();
 		Filtro_Marca.setFont(new Font("Arial", Filtro_Marca.getFont().getStyle(), Filtro_Marca.getFont().getSize()));
 		Filtro_Marca.setBounds(491, 19, 180, 50);
@@ -257,24 +304,42 @@ public class JFrameTransactions extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
+		Filtro_Marca.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					fMarca =(String) Filtro_Marca.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor,
+							fEmpleado, fMarca,
+							fProducto);
+				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		table.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try
-				{
-					ImageIcon i = new ImageIcon(Test.os.getProduct(ConexionBDSql.obtener(),
-							Test.os.getTransaccion(ConexionBDSql.obtener(), Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString())).getIdproducto()).getImg());
-					ImageIcon icon = new ImageIcon(i.getImage().getScaledInstance(Foto.getWidth(), Foto.getHeight(), Image.SCALE_DEFAULT));
+				try {
+					ImageIcon i = new ImageIcon(
+							Test.os.getProduct(
+									ConexionBDSql.obtener(), Test.os
+											.getTransaccion(ConexionBDSql.obtener(),
+													Integer.valueOf(
+															table.getValueAt(table.getSelectedRow(), 0).toString()))
+											.getIdproducto())
+									.getImg());
+					ImageIcon icon = new ImageIcon(
+							i.getImage().getScaledInstance(Foto.getWidth(), Foto.getHeight(), Image.SCALE_DEFAULT));
 					Foto.setIcon(icon);
-				}catch(
-				ClassNotFoundException e1)
-				{
+				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}catch(
-				SQLException e1)
-				{
+				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -283,27 +348,27 @@ public class JFrameTransactions extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			});
+		});
 
 		getContentPane().setLayout(null);
 
@@ -324,12 +389,9 @@ public class JFrameTransactions extends JFrame {
 
 	}
 
-
-
 	public static void EscribirTabla() {
 		try {
-			for (int x = 0; x < (table.getRowCount()
-					* 6); x++) {
+			for (int x = 0; x < (table.getRowCount() * 6); x++) {
 				if (table.getRowCount() > 0)
 					model.removeRow(0);
 			}
@@ -353,24 +415,20 @@ public class JFrameTransactions extends JFrame {
 		}
 	}
 
-	public void TransaccionesConFiltros(Connection conexion, String nombre) throws SQLException {
+	public void TransaccionesConFiltros(Connection conexion, String proveedornombre, String empleadonombre,
+			String marca, String productonombre) throws SQLException {
 		List<Transaccion> ListaTransacciones = new ArrayList<>();
-		if (!nombre.equals("Ninguno")) {
+		if (!proveedornombre.equals("Ninguno") && empleadonombre.equals("Ninguno")) {
 			try {
 				PreparedStatement consulta = conexion.prepareStatement(
 						"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)");
-				consulta.setString(1, nombre);
+				consulta.setString(1, proveedornombre);
 				ResultSet resultado = consulta.executeQuery();
 				while (resultado.next()) {
 					ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
 							resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
 							resultado.getInt("cantidad"), resultado.getInt("idempleado")));
 				}
-			} catch (SQLException ex) {
-				throw new SQLException(ex);
-			}
-
-			try {
 				for (int x = 0; x < (table.getRowCount() * 6); x++) {
 					if (table.getRowCount() > 0)
 						model.removeRow(0);
@@ -393,7 +451,45 @@ public class JFrameTransactions extends JFrame {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else {
+		} else if (!proveedornombre.equals("Ninguno") && !empleadonombre.equals("Ninguno") ) {
+			try {
+				PreparedStatement consulta = conexion.prepareStatement(
+						"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)"
+						+ "AND (SELECT idempleado FROM empleado WHERE username = ? )");
+				consulta.setString(1, proveedornombre);
+				consulta.setString(2, empleadonombre);
+				ResultSet resultado = consulta.executeQuery();
+				while (resultado.next()) {
+					ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
+							resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
+							resultado.getInt("cantidad"), resultado.getInt("idempleado")));
+				}
+
+				for (int x = 0; x < (table.getRowCount() * 6); x++) {
+					if (table.getRowCount() > 0)
+						model.removeRow(0);
+				}
+				for (Transaccion t : ListaTransacciones) {
+					Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
+					Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
+					Empleado em = Test.os.getEmpleado(ConexionBDSql.obtener(), t.getIdempleado());
+					Object[] Fila = new Object[model.getColumnCount()];
+					Fila[0] = t.getIdinventario();
+					Fila[1] = em.getUsername();
+					Fila[2] = pro.getNombre();
+					Fila[3] = p.getMarca();
+					Fila[4] = p.getNombre();
+					Fila[5] = t.getCantidad();
+					Fila[6] = t.getFecha();
+					model.addRow(Fila);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else
+
+		{
 			EscribirTabla();
 		}
 	}
