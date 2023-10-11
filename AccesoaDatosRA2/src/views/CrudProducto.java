@@ -165,7 +165,7 @@ public class CrudProducto extends JFrame {
 			} else if (obj == DeleteProduct) {
 				// eliminar producto
 				if (selectedRow != -1) {
-					String id = ProductCombo.getValueAt(selectedRow, 0).toString();
+					int id = (int) ProductCombo.getValueAt(selectedRow, 0);
 					String ruta = ProductCombo.getValueAt(selectedRow, 4).toString();
 					String nombre = ProductCombo.getValueAt(selectedRow, 1).toString();
 					int confirmResult = JOptionPane.showConfirmDialog(null,
@@ -173,21 +173,29 @@ public class CrudProducto extends JFrame {
 							"Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
 					if (confirmResult == JOptionPane.YES_OPTION) {
 						try {
-							try {
-								//remover con id4
-								OS.removeProducto(ConexionBDSql.obtener(), new Producto());
-							} catch (ClassNotFoundException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							File imagenes = new File(ruta);
-							Files.deleteIfExists(imagenes.toPath());
-						} catch (IOException e1) {
+							OS.removeProductoID(ConexionBDSql.obtener(), id);
+						} catch (ClassNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
+//						try {
+//							try {
+//								//remover con id4
+//							} catch (ClassNotFoundException e1) {
+//								// TODO Auto-generated catch block
+//								e1.printStackTrace();
+//							} catch (SQLException e1) {
+//								// TODO Auto-generated catch block
+//								e1.printStackTrace();
+//							}
+//							File imagenes = new File(ruta);
+//							Files.deleteIfExists(imagenes.toPath());
+//						} catch (IOException e1) {
+//							e1.printStackTrace();
+//						}
 						
 						JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
 								"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);

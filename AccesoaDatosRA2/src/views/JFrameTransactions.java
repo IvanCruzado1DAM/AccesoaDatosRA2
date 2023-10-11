@@ -11,13 +11,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+
 import models.Empleado;
 import models.Producto;
 import models.Proveedor;
@@ -27,8 +30,7 @@ import services.Test;
 
 public class JFrameTransactions extends JFrame {
 
-	private JLabel NombreTabla, Foto, Idtransaction, empleado, proveedor, marca, producto, cantidad, fecha;
-	private JTextField Idtransactiontext, empleadotext, proveedortext, marcatext, productotext, cantidadtext, fechatext;
+	private JLabel NombreTabla, Foto;
 	private static JTableBloqueoCeldas model;
 	private static JTable table;
 	private static JComboBox<String> Filtro_Empleado, Filtro_Proveedor, Filtro_Marca, Filtro_Producto;
@@ -37,6 +39,7 @@ public class JFrameTransactions extends JFrame {
 	private List<String> Marca = new ArrayList<>();
 	private List<String> Nombre = new ArrayList<>();
 	private JButton Register, Delete, Update, Return;
+	protected static Transaccion t ;
 
 	public JFrameTransactions() {
 		super("Transactions");
@@ -48,7 +51,7 @@ public class JFrameTransactions extends JFrame {
 		NombreTabla = new JLabel("Transactions");
 		NombreTabla.setBounds(26, 19, 122, 50);
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(36, 79, 806, 366);
+		scrollPane.setBounds(36, 79, 806, 439);
 
 		table = new JTable();
 		model = new JTableBloqueoCeldas();
@@ -68,7 +71,7 @@ public class JFrameTransactions extends JFrame {
 		EscribirTabla();
  
 		Register = new JButton("Resgistrar");
-		Register.setBounds(851, 475, 120, 60);
+		Register.setBounds(853, 568, 120, 60);
 		Register.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -80,46 +83,25 @@ public class JFrameTransactions extends JFrame {
 		});
 
 		Foto = new JLabel("Foto");
-		Foto.setBounds(891, 79, 203, 299);
-		Idtransaction = new JLabel("Idtransaction");
-		Idtransaction.setBounds(46, 456, 70, 29);
-		empleado = new JLabel("Empleado");
-		empleado.setBounds(277, 449, 58, 37);
-		proveedor = new JLabel("Proveedor");
-		proveedor.setBounds(159, 452, 58, 30);
-		marca = new JLabel("Marca");
-		marca.setBounds(391, 452, 42, 37);
-		producto = new JLabel("Nombre");
-		producto.setBounds(506, 455, 42, 31);
-		cantidad = new JLabel("Cantidad");
-		cantidad.setBounds(634, 452, 58, 37);
-		fecha = new JLabel("Fecha");
-		fecha.setBounds(738, 456, 42, 31);
-
-		Idtransactiontext = new JTextField(10);
-		Idtransactiontext.setBounds(36, 491, 86, 29);
-		Idtransactiontext.setEditable(false);
-		empleadotext = new JTextField(10);
-		empleadotext.setBounds(266, 489, 86, 33);
-		empleadotext.setEditable(false);
-		proveedortext = new JTextField(10);
-		proveedortext.setBounds(141, 491, 94, 29);
-		marcatext = new JTextField(10);
-		marcatext.setBounds(371, 491, 99, 29);
-		productotext = new JTextField(10);
-		productotext.setBounds(494, 491, 99, 28);
-		cantidadtext = new JTextField(10);
-		cantidadtext.setBounds(620, 487, 94, 37);
-		fechatext = new JTextField(10);
-		fechatext.setBounds(724, 491, 114, 28);
+		Foto.setBounds(863, 79, 258, 287);
 
 		Delete = new JButton("Eliminar");
-		Delete.setBounds(634, 568, 120, 60);
+		Delete.setBounds(618, 568, 120, 60);
 		Delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				try {
+					Test.os.removeTransaccion(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(), Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())));
+				    JOptionPane.showMessageDialog(JFrameTransactions.this, "Transaccion Eliminada Correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+				    EscribirTabla();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -129,8 +111,24 @@ public class JFrameTransactions extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
-			}
+				try {
+					t = Test.os.getTransaccion(ConexionBDSql.obtener(), Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString()));
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}catch (ArrayIndexOutOfBoundsException ex) {
+					JOptionPane.showMessageDialog(JFrameTransactions.this, "Seleccione una transaccion para Actualizar", "Aviso", JOptionPane.WARNING_MESSAGE);
+				}
+                dispose();
+                JFrameUpdateTransaction jf = new JFrameUpdateTransaction();
+                jf.setVisible(true);
+                }
 		});
 
 		Return = new JButton("Return");
@@ -204,7 +202,7 @@ public class JFrameTransactions extends JFrame {
 		Filtro_Producto = new JComboBox<String>();
 		Filtro_Producto
 				.setFont(new Font("Arial", Filtro_Producto.getFont().getStyle(), Filtro_Producto.getFont().getSize()));
-		Filtro_Producto.setBounds(700, 18, 180, 50);
+		Filtro_Producto.setBounds(696, 18, 180, 50);
 		Nombre = new ArrayList<>();
 		Filtro_Producto.addItem("Ninguno");
 		try {
@@ -225,7 +223,7 @@ public class JFrameTransactions extends JFrame {
 
 		Filtro_Marca = new JComboBox<String>();
 		Filtro_Marca.setFont(new Font("Arial", Filtro_Marca.getFont().getStyle(), Filtro_Marca.getFont().getSize()));
-		Filtro_Marca.setBounds(499, 19, 180, 50);
+		Filtro_Marca.setBounds(491, 19, 180, 50);
 		Marca = new ArrayList<>();
 		Filtro_Marca.addItem("Ninguno");
 		try {
@@ -244,70 +242,6 @@ public class JFrameTransactions extends JFrame {
 			e1.printStackTrace();
 		}
 
-		table.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				if (table.getSelectedRow() != -1) {
-					Object o = model.getValueAt(table.getSelectedRow(), 0);
-					try {
-						for (Transaccion t : Test.os.getAllTransacciones(ConexionBDSql.obtener())) {
-							if (t.getIdinventario() == Integer.valueOf(o.toString())) {
-								Idtransactiontext.setEditable(true);
-								Idtransactiontext.setText(o.toString());
-								Idtransactiontext.setEditable(false);
-								for (Proveedor p : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
-									if(p.getIdproveedor()==t.getIdproveedor())
-								    proveedortext.setText(p.getNombre());
-								}
-								empleadotext.setEditable(true);
-								empleadotext.setText(JFrameLogin.EmActivo.getUsername());
-								empleadotext.setEditable(false);
-								for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
-									if (p.getIdproducto() == t.getIdproducto()) {
-										marcatext.setText(p.getMarca());
-										productotext.setText(p.getNombre());
-									}
-								}
-								cantidadtext.setText(String.valueOf(t.getCantidad()));
-								fechatext.setText(String.valueOf(t.getFecha()));
-							}
-						}
-					} catch (ClassNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
 		getContentPane().setLayout(null);
 
 		getContentPane().add(scrollPane);
@@ -319,20 +253,9 @@ public class JFrameTransactions extends JFrame {
 		getContentPane().add(Register);
 		getContentPane().add(Update);
 		getContentPane().add(Delete);
-		getContentPane().add(Idtransaction);
-		getContentPane().add(proveedor);
-		getContentPane().add(empleado);
-		getContentPane().add(marca);
-		getContentPane().add(producto);
-		getContentPane().add(cantidad);
-		getContentPane().add(fecha);
-		getContentPane().add(Idtransactiontext);
-		getContentPane().add(proveedortext);
-		getContentPane().add(empleadotext);
-		getContentPane().add(marcatext);
-		getContentPane().add(productotext);
-		getContentPane().add(cantidadtext);
-		getContentPane().add(fechatext);
+		getContentPane().add(Return);
+		getContentPane().add(Delete);
+		getContentPane().add(Register);
 		getContentPane().add(Return);
 		getContentPane().add(Foto);
 
@@ -340,6 +263,10 @@ public class JFrameTransactions extends JFrame {
 
 	public static void EscribirTabla() {
 		try {
+			for (int x = 0; x < (table.getRowCount() * Test.os.getAllTransacciones(ConexionBDSql.obtener()).size()); x++) {
+				if (table.getRowCount() > 0)
+					model.removeRow(0);
+			}
 			for (Transaccion t : Test.os.getAllTransacciones(ConexionBDSql.obtener())) {
 				Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
 				Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
@@ -360,33 +287,12 @@ public class JFrameTransactions extends JFrame {
 		}
 	}
 
-	public static void EscribirTablaFiltro() {
-		try {
-			for (Transaccion t : Test.os.getAllTransacciones(ConexionBDSql.obtener())) {
-				Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
-				Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
-				Empleado em = Test.os.getEmpleado(ConexionBDSql.obtener(), t.getIdempleado());
-				Object[] Fila = new Object[model.getColumnCount()];
-				Fila[0] = t.getIdinventario();
-				Fila[1] = em.getUsername();
-				Fila[2] = pro.getNombre();
-				Fila[3] = p.getMarca();
-				Fila[4] = p.getNombre();
-				Fila[5] = t.getCantidad();
-				Fila[6] = t.getFecha();
-				model.addRow(Fila);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void TransaccionesConFiltros (Connection conexion, String nombre) throws SQLException {
 		List<Transaccion> ListaTransacciones = new ArrayList<>();
+		if(!nombre.equals("Ninguno")) {
 		try {
-			PreparedStatement consulta = conexion
-					.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + nombre);
+			PreparedStatement consulta = conexion.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)");
+			consulta.setString(1, nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
 				ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
@@ -397,12 +303,11 @@ public class JFrameTransactions extends JFrame {
 			throw new SQLException(ex);
 		}
 		
-		for (int x = 0; x < (table.getRowCount() * ListaTransacciones.size()); x++) {
-			if (table.getRowCount() > 0)
-				model.removeRow(0);
-		}
-		
 		try {
+			for (int x = 0; x < (table.getRowCount() * ListaTransacciones.size()); x++) {
+				if (table.getRowCount() > 0)
+					model.removeRow(0);
+			}
 			for (Transaccion t : ListaTransacciones) {
 				Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
 				Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
@@ -420,6 +325,9 @@ public class JFrameTransactions extends JFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		}else {
+			EscribirTabla();
 		}
 	}
 }
