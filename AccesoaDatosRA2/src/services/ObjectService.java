@@ -81,6 +81,25 @@ public class ObjectService {
 			throw new SQLException(ex);
 		}
 	}
+	
+	public void removeProductoID(Connection conexion, int id) throws SQLException {
+		try {
+			
+			  // Eliminar registros relacionados en la tabla transaccion
+	        PreparedStatement eliminarTransacciones = conexion.prepareStatement("DELETE FROM transaccion WHERE idproducto = ?");
+	        eliminarTransacciones.setInt(1, id);
+	        eliminarTransacciones.executeUpdate();
+			
+			// Eliminar el producto
+	        PreparedStatement eliminarProducto = conexion.prepareStatement("DELETE FROM " + this.tablaProducto + " WHERE idproducto = ?");
+	        eliminarProducto.setInt(1, id);
+	        eliminarProducto.executeUpdate();
+
+		} catch (SQLException ex) {
+			throw new SQLException(ex);
+		}
+		
+	}
 
 	public List<Producto> getAllProducts(Connection conexion) throws SQLException {
 		List<Producto> ListaProductos = new ArrayList<>();
