@@ -66,8 +66,8 @@ public class JFrameCreateTransaction extends JFrame {
 		Proveedortext.setBounds(570, 92, 300, 50);
 		Proveedor = new ArrayList<>();
 		try {
-			for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
-				String m = em.getUsername();
+			for (Proveedor pro : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
+				String m = pro.getNombre();
 				if (!Proveedor.contains(m)) {
 					Proveedor.add(m);
 					Proveedortext.addItem(m);
@@ -139,6 +139,7 @@ public class JFrameCreateTransaction extends JFrame {
 				 try {
 					 Transaccion t = new Transaccion ( d, getProductoId(ConexionBDSql.obtener(), Productotext.getSelectedItem().toString()).getIdproducto(), 
 							 getProveedorId(ConexionBDSql.obtener(), Proveedortext.getSelectedItem().toString()).getIdproveedor(),Integer.valueOf(cantidadtext.getText()), JFrameLogin.EmActivo.getIduser());
+					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 1);
 					 JOptionPane.showMessageDialog(JFrameCreateTransaction.this, "Transaccion agregada correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 				 } catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
@@ -197,6 +198,7 @@ public class JFrameCreateTransaction extends JFrame {
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
+		System.out.println("Producto: " + product);
 		return product;
 	}
 	
@@ -204,16 +206,17 @@ public class JFrameCreateTransaction extends JFrame {
 		Proveedor proveedor = null;
 		try {
 			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT idproveedor, direccion, numero FROM proveedor WHERE nombre = ?");
+					"SELECT idproveedor, nombre, direccion, numero FROM proveedor WHERE nombre = ?");
 			consulta.setString(1, nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				proveedor = new Proveedor(resultado.getInt("idproducto"), nombre, resultado.getString("direccion"),
+				proveedor = new Proveedor(resultado.getInt("idproveedor"), nombre, resultado.getString("direccion"),
 						resultado.getInt("numero"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
+		System.out.println("Proveedor: " + proveedor);
 		return proveedor;
 	}
 }

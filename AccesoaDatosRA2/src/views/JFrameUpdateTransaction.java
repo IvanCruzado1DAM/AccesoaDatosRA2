@@ -20,7 +20,7 @@ public class JFrameUpdateTransaction extends JFrame {
 	private JLabel  Idtransaction, empleado, proveedor, marca, producto, cantidad, fecha;
 	private JTextField Idtransactiontext, empleadotext, proveedortext, marcatext, productotext, cantidadtext, fechatext;
     private JButton Register, Return;
-    private Date d = new Date (124);
+    private Date d = new Date (0);
 	
 	public JFrameUpdateTransaction () {
 		super("Crear Transacciones");
@@ -64,7 +64,7 @@ public class JFrameUpdateTransaction extends JFrame {
 		proveedortext = new JTextField(10);
 		proveedortext.setBounds(175, 95, 300, 30);
 		try {
-			proveedortext.setText(String.valueOf(Test.os.getProveedor(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproveedor())));
+			proveedortext.setText(String.valueOf(Test.os.getProveedor(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproveedor()).getIdproveedor()));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

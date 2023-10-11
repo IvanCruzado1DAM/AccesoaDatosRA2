@@ -3,6 +3,9 @@ package views;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -64,23 +67,11 @@ public class JFrameLogin extends JFrame {
 							, "Aviso",
 							JOptionPane.ERROR_MESSAGE);
 				}else if(!Usuariotext.getText().isEmpty() && !(Clavetext.getPassword().length==0)) {
-					boolean encontrado = false;
-						for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
-							if (em.getUsername().equals(Usuariotext.getText())
-									&& em.getPassword().equals(String.valueOf(Clavetext.getPassword()))) {
 								JOptionPane.showMessageDialog(JFrameLogin.this, "Bienvenido " + Usuariotext.getText());
-							    encontrado = true;
-								EmActivo = em;
+								EmActivo = getEmpleado(ConexionBDSql.obtener(), Usuariotext.getText(), Clavetext.getText());
 							    dispose();
 							    JFrameAdmin jf = new JFrameAdmin ();
 							    jf.setVisible(true);
-							}
-						}
-						if(encontrado==false) {
-							JOptionPane.showMessageDialog(JFrameLogin.this, "El Empleado no existe ");
-						    Usuariotext.setText("");
-						    Clavetext.setText("");
-						}
 					}
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
@@ -127,5 +118,22 @@ public class JFrameLogin extends JFrame {
 		getContentPane().add(Enter);
 		getContentPane().add(Close);
 		getContentPane().add(Register);
+	}
+	
+	public Empleado getEmpleado(Connection conexion, String nombre, String password) throws SQLException {
+		Empleado empleado = null;
+		try {
+			PreparedStatement consulta = conexion.prepareStatement(
+					"SELECT idempleado, username, password FROM empleado WHERE (username = ?) AND (password = ?)");
+			consulta.setString(1, nombre);
+			consulta.setString(2, password);
+			ResultSet resultado = consulta.executeQuery();
+			while (resultado.next()) {
+				empleado = new Empleado(resultado.getInt("idempleado"), resultado.getString("username"), resultado.getString("password"));
+			}
+		} catch (SQLException ex) {
+			throw new SQLException(ex);
+		}
+		return empleado;
 	}
 }
