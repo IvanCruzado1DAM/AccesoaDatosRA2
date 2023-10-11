@@ -36,7 +36,7 @@ public class ObjectService {
 				consulta.execute();
 			} else {
 				consulta = conexion.prepareStatement("UPDATE " + this.tablaProducto
-						+ " SET idproducto = idproducto, nombre = ?, marca = ?, precio = ?, img = ?, proveedorid = ? ,stock =?, categoria = ? WHERE id_producto = "
+						+ " SET idproducto = idproducto, nombre = ?, marca = ?, precio = ?, img = ?, proveedorid = ? ,stock =?, categoria = ? WHERE idproducto = "
 						+ product.getIdproducto());
 				consulta.setString(1, product.getNombre());
 				consulta.setString(2, product.getMarca());
@@ -290,7 +290,7 @@ public class ObjectService {
 				consulta.execute();
 			} else {
 				consulta = conexion.prepareStatement("UPDATE " + this.tablaTransacion
-						+ " SET fecha = ?, idproducto = ?, id proveedor = ?, cantidad = ?, idempleado = ? WHERE idinventario = "
+						+ " SET fecha = ?, idproducto = ?, idproveedor = ?, cantidad = ?, idempleado = ? WHERE idinventario = "
 						+ transaccion.getIdinventario());
 				consulta.setDate(1, (Date) transaccion.getFecha());
 				consulta.setInt(2, transaccion.getIdproducto());

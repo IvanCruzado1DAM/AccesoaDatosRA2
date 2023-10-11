@@ -140,6 +140,9 @@ public class JFrameCreateTransaction extends JFrame {
 					 Transaccion t = new Transaccion ( d, getProductoId(ConexionBDSql.obtener(), Productotext.getSelectedItem().toString()).getIdproducto(), 
 							 getProveedorId(ConexionBDSql.obtener(), Proveedortext.getSelectedItem().toString()).getIdproveedor(),Integer.valueOf(cantidadtext.getText()), JFrameLogin.EmActivo.getIduser());
 					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 1);
+					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Productotext.getSelectedItem().toString()).getIdproducto());
+					 p.setStock(p.getStock() + t.getCantidad());
+					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
 					 JOptionPane.showMessageDialog(JFrameCreateTransaction.this, "Transaccion agregada correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 				 } catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
@@ -198,7 +201,6 @@ public class JFrameCreateTransaction extends JFrame {
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
-		System.out.println("Producto: " + product);
 		return product;
 	}
 	
@@ -216,7 +218,6 @@ public class JFrameCreateTransaction extends JFrame {
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
-		System.out.println("Proveedor: " + proveedor);
 		return proveedor;
 	}
 }
