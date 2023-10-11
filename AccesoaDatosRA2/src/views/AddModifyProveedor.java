@@ -21,9 +21,9 @@ public class AddModifyProveedor extends JFrame {
 
 	// Product window add-modify
 	private JFrame ProductWindowAM;
-	private JLabel lblInsert, lblName, lblBrand, lblPrice, lblSupplier, lblStock, lblCategory, lblImage;
-	private JTextField txtName, txtBrand, txtPrice, txtStock, txtCategory, txtPath;
-	private JButton btnBack, btnInsert, btnAddImg;
+	private JLabel lblInsert, lblName, lblBrand, lblPrice, lblSupplier, lblStock, lblCategory;
+	private JTextField txtName, txtBrand, txtPrice, txtStock, txtCategory;
+	private JButton btnBack, btnInsert;
 	
 	Manejador mane=new Manejador();
 
@@ -78,21 +78,6 @@ public class AddModifyProveedor extends JFrame {
 	    comboBox.setBounds(185, 225, 96, 19);
 	    ProductWindowAM.getContentPane().add(comboBox);
 
-	    lblImage = new JLabel("Image:");
-	    lblImage.setBounds(62, 354, 51, 18);
-	    ProductWindowAM.getContentPane().add(lblImage);
-
-	    txtPath = new JTextField();
-	    txtPath.setEnabled(false);
-	    txtPath.setEditable(false);
-	    txtPath.setColumns(10);
-	    txtPath.setBounds(141, 354, 140, 19);
-	    ProductWindowAM.getContentPane().add(txtPath);
-
-	    btnAddImg = new JButton("Add IMG");
-	    btnAddImg.setBounds(291, 353, 85, 21);
-	    ProductWindowAM.getContentPane().add(btnAddImg);
-
 	    btnInsert = new JButton("Insert");
 	    btnInsert.setBounds(64, 436, 85, 21);
 	    ProductWindowAM.getContentPane().add(btnInsert);
@@ -109,7 +94,7 @@ public class AddModifyProveedor extends JFrame {
 	        lblInsert.setToolTipText("text choice");
 	        lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 	        lblInsert.setBounds(100, 10, 223, 66);
-	        ProductWindowAM.add(lblInsert);
+	        ProductWindowAM.getContentPane().add(lblInsert);
 
 	    } else {
 	        // Label choose an option
@@ -117,7 +102,7 @@ public class AddModifyProveedor extends JFrame {
 	        lblInsert.setToolTipText("text choice");
 	        lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 	        lblInsert.setBounds(100, 10, 223, 66);
-	        ProductWindowAM.add(lblInsert);
+	        ProductWindowAM.getContentPane().add(lblInsert);
 
 	        try {
 	            product = OS.getProduct(ConexionBDSql.obtener(), productId);
@@ -131,7 +116,6 @@ public class AddModifyProveedor extends JFrame {
 	        txtCategory.setText(product.getCategoria());
 	        txtBrand.setText(product.getMarca());
 	        txtStock.setText(String.valueOf(product.getStock()));
-	        txtPath.setText(product.getImg());
 	        txtPrice.setText(String.valueOf(product.getPrecio()));
 	    }
 

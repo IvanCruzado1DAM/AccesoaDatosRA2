@@ -45,15 +45,15 @@ public class CrudProveedores extends JFrame {
 		// Ventana principal
 		ProductWindow = new JFrame("Administrar proveedores");
 		ProductWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ProductWindow.setBounds(100, 100, 650, 519);
+		ProductWindow.setBounds(100, 100, 691, 546);
 		ProductWindow.setLocationRelativeTo(null);
 		ProductWindow.getContentPane().setLayout(null);
 		// Texto menu admin
 		ProductLabel = new JLabel("Menú proveedores");
 		ProductLabel.setToolTipText("texto eleccion");
 		ProductLabel.setFont(new Font("Tahoma", Font.PLAIN, 25));
-		ProductLabel.setBounds(145, -10, 223, 66);
-		ProductWindow.add(ProductLabel);
+		ProductLabel.setBounds(160, -10, 223, 66);
+		ProductWindow.getContentPane().add(ProductLabel);
 		// Botones
 		createButtons();
 		// tabla
@@ -102,29 +102,29 @@ public class CrudProveedores extends JFrame {
 		}
 		ProductScroll = new JScrollPane(getTablaProducto());
 		ProductScroll.setBounds(10, 45, 500, 430);
-		ProductWindow.add(ProductScroll);
+		ProductWindow.getContentPane().add(ProductScroll);
 
 	}
 
 	private void createButtons() {
 		// añadir
 		AddProduct = new JButton("Añadir");
-		AddProduct.setBounds(525, 300, 100, 34);
+		AddProduct.setBounds(553, 323, 100, 34);
 		AddProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(AddProduct);
 		// modificar
 		ModifyProduct = new JButton("Modificar");
-		ModifyProduct.setBounds(525, 340, 100, 34);
+		ModifyProduct.setBounds(553, 363, 100, 34);
 		ModifyProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(ModifyProduct);
 		// eliminar
 		DeleteProduct = new JButton("Borrar");
-		DeleteProduct.setBounds(525, 380, 100, 34);
+		DeleteProduct.setBounds(553, 403, 100, 34);
 		DeleteProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(DeleteProduct);
 		// volver
-		Exit = new JButton("Salir");
-		Exit.setBounds(540, 438, 77, 34);
+		Exit = new JButton("Volver");
+		Exit.setBounds(566, 12, 77, 34);
 		Exit.addActionListener(mane);
 		ProductWindow.getContentPane().add(Exit);
 
