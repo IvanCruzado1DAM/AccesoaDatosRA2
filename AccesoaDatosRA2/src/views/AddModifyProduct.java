@@ -197,12 +197,11 @@ public class AddModifyProduct extends JFrame {
 				String nombre = txtName.getText();
 				String marca = txtBrand.getText();
 				Float precio = Float.parseFloat(txtPrice.getText());
-//				String imagen = txtPath.getText();
 				Proveedor Prove = (Proveedor) comboBox.getSelectedItem();
 				int Idproveedor = Prove.getIdproveedor();
 				String stock = txtStock.getText();
 				String categoria = txtCategory.getText();
-				if (nombre.equals("") || marca.equals("") || precio.equals("") || Idproveedor == 0 || stock.equals("")
+				if (nombre.equals("") || marca.equals("") || precio == 0 || Idproveedor == 0 || stock.equals("")
 						|| categoria.equals("")) {
 					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos no pueden estar vacíos.",
 							"Error de Registro", JOptionPane.ERROR_MESSAGE);
@@ -215,7 +214,6 @@ public class AddModifyProduct extends JFrame {
 					os.saveProducto(ConexionBDSql.obtener(),
 							(new Producto(nombre, marca, precio, img, Idproveedor, stockint, categoria)), 1);
 				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
@@ -268,7 +266,7 @@ public class AddModifyProduct extends JFrame {
 
 			String nombre = txtName.getText();
 			String marca = txtBrand.getText();
-			if(!nombre.equals("") && !marca.equals("")) {
+			if (!nombre.equals("") && !marca.equals("")) {
 				if (fileChooser.getSelectedFile() != null) {
 					extension = fileChooser.getSelectedFile().toString()
 							.substring(fileChooser.getSelectedFile().toString().lastIndexOf('.'));
@@ -280,10 +278,10 @@ public class AddModifyProduct extends JFrame {
 					JOptionPane.showMessageDialog(AddModifyProduct.this, "Imagen insertada", "INFO",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-				
-			}else {
-				JOptionPane.showMessageDialog(AddModifyProduct.this, "Necesitas escribir el nombre y la marca del producto", "ERROR",
-						JOptionPane.ERROR_MESSAGE);
+
+			} else {
+				JOptionPane.showMessageDialog(AddModifyProduct.this,
+						"Necesitas escribir el nombre y la marca del producto", "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

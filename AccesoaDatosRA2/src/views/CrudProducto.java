@@ -30,23 +30,23 @@ import services.ObjectService;
 
 public class CrudProducto extends JFrame {
 	private static final long serialVersionUID = 1L;
-	//ventana
+	// ventana
 	private JFrame ProductWindow;
-	private JLabel ProductLabel,ProductImg,
-	//filtro
-	LabelCategoria,LabelNombre,LabelMarca,LabelPrecio,LabelProveedor,LabelStock;
-	private JTextField FieldNombre,FieldStock,FieldPrecio;
-	//desplegables
+	private JLabel ProductLabel, ProductImg,
+			// filtro
+			LabelCategoria, LabelNombre, LabelMarca, LabelPrecio, LabelProveedor, LabelStock;
+	private JTextField FieldNombre, FieldStock, FieldPrecio;
+	// desplegables
 	private JComboBox<Proveedor> ComboProveedor;
-	private JComboBox<Producto> ComboCategoria,ComboMarca;
-	private JComboBox<String> ComboPrecio,ComboStock;
-	//ventana
+	private JComboBox<Producto> ComboCategoria, ComboMarca;
+	private JComboBox<String> ComboPrecio, ComboStock;
+	// ventana
 	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit;
 	private static JTable ProductTable;
 	private DefaultTableModel ProductCombo;
 	private JScrollPane ProductScroll;
 	private JPanel ProductPanel;
-	//manejador
+	// manejador
 	ManejadorImagen mi = new ManejadorImagen();
 	ObjectService OS = new ObjectService();
 	Manejador mane = new Manejador();
@@ -68,7 +68,7 @@ public class CrudProducto extends JFrame {
 		ProductLabel.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		ProductLabel.setBounds(259, -13, 203, 66);
 		ProductWindow.getContentPane().add(ProductLabel);
-		//Imagen
+		// Imagen
 		ProductImg = new JLabel("");
 		ProductImg.setBounds(529, 142, 180, 180);
 		ProductWindow.getContentPane().add(ProductImg);
@@ -76,82 +76,83 @@ public class CrudProducto extends JFrame {
 		createButtons();
 		// tabla
 		createTable();
-		
-		//filtros
+
+		// filtros
 		createFilters();
-		
+
 		ProductWindow.setVisible(true);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void createFilters() {
-		//filtro categoria
-				LabelCategoria = new JLabel("Categoria: ");
-				LabelCategoria.setToolTipText("Filtrar por categoria");
-				LabelCategoria.setBounds(23, 31, 64, 48);
-				ProductWindow.getContentPane().add(LabelCategoria);
-				//desplegable categoria
-				ComboCategoria = new JComboBox();
-				ComboCategoria.setBounds(10, 78, 100, 21);
-				ProductWindow.getContentPane().add(ComboCategoria);
-				
-				//filtro nombre
-				LabelNombre = new JLabel("Nombre: ");
-				LabelNombre.setToolTipText("Filtrar por nombre");
-				LabelNombre.setBounds(259, 31, 58, 48);
-				ProductWindow.getContentPane().add(LabelNombre);
-				//field nombre
-				FieldNombre = new JTextField();
-				FieldNombre.setBounds(231, 79, 96, 19);
-				ProductWindow.getContentPane().add(FieldNombre);
-				FieldNombre.setColumns(10);
-				
-				//filtro marca
-				LabelMarca = new JLabel("Marca: ");
-				LabelMarca.setToolTipText("Filtrar por marca");
-				LabelMarca.setBounds(150, 22, 58, 66);
-				ProductWindow.getContentPane().add(LabelMarca);
-				//desplegable marca
-				ComboMarca = new JComboBox();
-				ComboMarca.setBounds(121, 78, 90, 21);
-				ProductWindow.getContentPane().add(ComboMarca);
-				
-				//filtro precio
-				LabelPrecio = new JLabel("Precio: ");
-				LabelPrecio.setToolTipText("Filtrar por marca");
-				LabelPrecio.setBounds(493, 22, 64, 66);
-				ProductWindow.getContentPane().add(LabelPrecio);
-				//desplegable simbolos
-				ComboPrecio = new JComboBox();
-				ComboPrecio.setBounds(447, 78, 38, 21);
-				ProductWindow.getContentPane().add(ComboPrecio);
-				//field precio
-				FieldPrecio = new JTextField();
-				FieldPrecio.setBounds(493, 79, 64, 19);
-				ProductWindow.getContentPane().add(FieldPrecio);
-				FieldPrecio.setColumns(10);
-				//filtro stock
-				LabelStock = new JLabel("Stock: ");
-				LabelStock.setToolTipText("Filtrar por marca");
-				LabelStock.setBounds(605, 22, 58, 66);
-				ProductWindow.getContentPane().add(LabelStock);
-				//desplegable simbolos
-				ComboStock = new JComboBox();
-				ComboStock.setBounds(567, 78, 38, 21);
-				ProductWindow.getContentPane().add(ComboStock);
-				//field stock
-				FieldStock = new JTextField();
-				FieldStock.setColumns(10);
-				FieldStock.setBounds(617, 79, 74, 19);
-				ProductWindow.getContentPane().add(FieldStock);
-				//filtro proveedor
-				LabelProveedor = new JLabel("Proovedor: ");
-				LabelProveedor.setToolTipText("Filtrar por marca");
-				LabelProveedor.setBounds(360, 22, 70, 66);
-				ProductWindow.getContentPane().add(LabelProveedor);
-				//desplegable proveedor
-				ComboProveedor = new JComboBox();
-				ComboProveedor.setBounds(337, 78, 100, 21);
-				ProductWindow.getContentPane().add(ComboProveedor);
+		// filtro categoria
+		LabelCategoria = new JLabel("Categoria: ");
+		LabelCategoria.setToolTipText("Filtrar por categoria");
+		LabelCategoria.setBounds(23, 31, 64, 48);
+		ProductWindow.getContentPane().add(LabelCategoria);
+		// desplegable categoria
+		ComboCategoria = new JComboBox();
+		ComboCategoria.setBounds(10, 78, 100, 21);
+		ProductWindow.getContentPane().add(ComboCategoria);
+
+		// filtro nombre
+		LabelNombre = new JLabel("Nombre: ");
+		LabelNombre.setToolTipText("Filtrar por nombre");
+		LabelNombre.setBounds(259, 31, 58, 48);
+		ProductWindow.getContentPane().add(LabelNombre);
+		// field nombre
+		FieldNombre = new JTextField();
+		FieldNombre.setBounds(231, 79, 96, 19);
+		ProductWindow.getContentPane().add(FieldNombre);
+		FieldNombre.setColumns(10);
+
+		// filtro marca
+		LabelMarca = new JLabel("Marca: ");
+		LabelMarca.setToolTipText("Filtrar por marca");
+		LabelMarca.setBounds(150, 22, 58, 66);
+		ProductWindow.getContentPane().add(LabelMarca);
+		// desplegable marca
+		ComboMarca = new JComboBox();
+		ComboMarca.setBounds(121, 78, 90, 21);
+		ProductWindow.getContentPane().add(ComboMarca);
+
+		// filtro precio
+		LabelPrecio = new JLabel("Precio: ");
+		LabelPrecio.setToolTipText("Filtrar por marca");
+		LabelPrecio.setBounds(493, 22, 64, 66);
+		ProductWindow.getContentPane().add(LabelPrecio);
+		// desplegable simbolos
+		ComboPrecio = new JComboBox();
+		ComboPrecio.setBounds(447, 78, 38, 21);
+		ProductWindow.getContentPane().add(ComboPrecio);
+		// field precio
+		FieldPrecio = new JTextField();
+		FieldPrecio.setBounds(493, 79, 64, 19);
+		ProductWindow.getContentPane().add(FieldPrecio);
+		FieldPrecio.setColumns(10);
+		// filtro stock
+		LabelStock = new JLabel("Stock: ");
+		LabelStock.setToolTipText("Filtrar por marca");
+		LabelStock.setBounds(605, 22, 58, 66);
+		ProductWindow.getContentPane().add(LabelStock);
+		// desplegable simbolos
+		ComboStock = new JComboBox();
+		ComboStock.setBounds(567, 78, 38, 21);
+		ProductWindow.getContentPane().add(ComboStock);
+		// field stock
+		FieldStock = new JTextField();
+		FieldStock.setColumns(10);
+		FieldStock.setBounds(617, 79, 74, 19);
+		ProductWindow.getContentPane().add(FieldStock);
+		// filtro proveedor
+		LabelProveedor = new JLabel("Proovedor: ");
+		LabelProveedor.setToolTipText("Filtrar por marca");
+		LabelProveedor.setBounds(360, 22, 70, 66);
+		ProductWindow.getContentPane().add(LabelProveedor);
+		// desplegable proveedor
+		ComboProveedor = new JComboBox();
+		ComboProveedor.setBounds(337, 78, 100, 21);
+		ProductWindow.getContentPane().add(ComboProveedor);
 	}
 
 	@SuppressWarnings("serial")
@@ -163,8 +164,8 @@ public class CrudProducto extends JFrame {
 		// int id, String nombre, Float precio, String img, int stock,
 		// String categoria,String marca,int proveedorid,nombre proveedor para
 		// localizarlo mejor
-		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria",
-				"Id Proveedor", "Nombre proovedor" };
+		String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria", "Id Proveedor",
+				"Nombre proovedor" };
 		ProductCombo = new DefaultTableModel(columnas, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -172,14 +173,14 @@ public class CrudProducto extends JFrame {
 			}
 		};
 		setTablaProducto(new JTable(ProductCombo));
-		getTablaProducto().setPreferredScrollableViewportSize(new Dimension(250, 100));
-		getTablaProducto().getTableHeader().setReorderingAllowed(true);
-		getTablaProducto().setEnabled(true);
+		ProductTable.setPreferredScrollableViewportSize(new Dimension(250, 100));
+		ProductTable.getTableHeader().setReorderingAllowed(true);
+		ProductTable.setEnabled(true);
 		// imagenes
-		getTablaProducto().getSelectionModel().addListSelectionListener(mi);
+		ProductTable.getSelectionModel().addListSelectionListener(mi);
 		// Crear el ordenador de filas
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(ProductCombo);
-		getTablaProducto().setRowSorter(sorter);
+		ProductTable.setRowSorter(sorter);
 		sorter.sort();
 		// rellenar Productos
 		List<Producto> listP;
@@ -192,17 +193,18 @@ public class CrudProducto extends JFrame {
 				for (Proveedor pro : listPro) {
 					if (p.getProveedorid() == pro.getIdproveedor()) {
 						nomPro = pro.getNombre();
-					}}
-					Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
-							p.getCategoria(), p.getProveedorid(), nomPro };
-
-					ProductCombo.addRow(data);
+					}
 				}
-			
+				Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
+						p.getCategoria(), p.getProveedorid(), nomPro };
+
+				ProductCombo.addRow(data);
+			}
+
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		ProductScroll = new JScrollPane(getTablaProducto());
+		ProductScroll = new JScrollPane(ProductTable);
 		ProductScroll.setBounds(10, 123, 500, 430);
 		ProductWindow.getContentPane().add(ProductScroll);
 
@@ -237,7 +239,7 @@ public class CrudProducto extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object obj = e.getSource();
-			int selectedRow = getTablaProducto().getSelectedRow();
+			int selectedRow = ProductTable.getSelectedRow();
 			if (obj == AddProduct) {
 				try {
 					new AddModifyProduct();
@@ -249,7 +251,6 @@ public class CrudProducto extends JFrame {
 				// eliminar producto
 				if (selectedRow != -1) {
 					int id = (int) ProductCombo.getValueAt(selectedRow, 0);
-					String ruta = ProductCombo.getValueAt(selectedRow, 4).toString();
 					String nombre = ProductCombo.getValueAt(selectedRow, 1).toString();
 					int confirmResult = JOptionPane.showConfirmDialog(null,
 							"¿Estás seguro de que quieres eliminar este registro?\nID: " + id + "\nNombre: " + nombre,
@@ -257,11 +258,11 @@ public class CrudProducto extends JFrame {
 					if (confirmResult == JOptionPane.YES_OPTION) {
 						try {
 							OS.removeProductoID(ConexionBDSql.obtener(), id);
-						} catch (ClassNotFoundException e1) { 
+						} catch (ClassNotFoundException e1) {
 							e1.printStackTrace();
 						} catch (SQLException e1) {
 							e1.printStackTrace();
-						
+
 //						try {
 //							try {
 //								//remover con id4
@@ -275,42 +276,45 @@ public class CrudProducto extends JFrame {
 //						} catch (IOException e1) {
 //							e1.printStackTrace();
 //						}
-						
-						JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
-								"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
-						//RELOAD
-						try {
-							new CrudProducto();
-						} catch (ClassNotFoundException e2) {
-							e2.printStackTrace();
-						} catch (SQLException e2) {
-							e2.printStackTrace();
+
+							JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
+									"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+							// RELOAD
+							try {
+								new CrudProducto();
+							} catch (ClassNotFoundException e2) {
+								e2.printStackTrace();
+							} catch (SQLException e2) {
+								e2.printStackTrace();
+							}
+							ProductWindow.dispose();
+
 						}
-						ProductWindow.dispose();
-						
-				}}else{
-					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para eliminar.",
+					} else {
+						JOptionPane.showMessageDialog(CrudProducto.this,
+								"Por favor, selecciona una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para modificar.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 				}
-			}else {
-				JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para modificar.",
-						"Error", JOptionPane.ERROR_MESSAGE);
-			}
-			}else if (obj == ModifyProduct) {
+			} else if (obj == ModifyProduct) {
 				System.out.println("Modificar");
 //				AddModifyProduct.productId=
 				// modificar profesor
 				if (selectedRow != -1) {
 					int id = (int) ProductCombo.getValueAt(selectedRow, 0);
 					try {
-						AddModifyProduct.productId= id;
+						AddModifyProduct.productId = id;
 						new AddModifyProduct();
 						ProductWindow.setVisible(false);
-					
+
 					} catch (ClassNotFoundException e1) {
-						JOptionPane.showMessageDialog(CrudProducto.this, "ERROR CLASS NOT FOUND ","Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(CrudProducto.this, "ERROR CLASS NOT FOUND ", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					} catch (SQLException e1) {
-						JOptionPane.showMessageDialog(CrudProducto.this, "SQL ERROR ","Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(CrudProducto.this, "SQL ERROR ", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
 					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para modificar.",
@@ -319,7 +323,7 @@ public class CrudProducto extends JFrame {
 			} else if (obj == Exit) {
 				System.out.println("Salir");
 				// volver al menu principal
-				JFrameAdmin jf = new JFrameAdmin ();
+				JFrameAdmin jf = new JFrameAdmin();
 				jf.setVisible(true);
 				// Cerrar ventana crud producto
 				ProductWindow.dispose();
@@ -327,24 +331,19 @@ public class CrudProducto extends JFrame {
 		}
 
 	}
-	
+
 	public class ManejadorImagen implements ListSelectionListener {
-	public void valueChanged(ListSelectionEvent e) {
-		if (getTablaProducto().getValueAt(getTablaProducto().getSelectedRow(), 4) != null) {
-			Image img = new ImageIcon(
-					getTablaProducto().getValueAt(getTablaProducto().getSelectedRow(), 4).toString())
-					.getImage();
+		public void valueChanged(ListSelectionEvent e) {
+			if (ProductTable.getValueAt(ProductTable.getSelectedRow(), 4) != null) {
+				Image img = new ImageIcon(ProductTable.getValueAt(ProductTable.getSelectedRow(), 4).toString())
+						.getImage();
 
-			Image newimg = img.getScaledInstance(150, 180, java.awt.Image.SCALE_SMOOTH);
-			ImageIcon imageIcon = new ImageIcon(newimg);
-			ProductImg.setIcon(imageIcon);
+				Image newimg = img.getScaledInstance(150, 180, java.awt.Image.SCALE_SMOOTH);
+				ImageIcon imageIcon = new ImageIcon(newimg);
+				ProductImg.setIcon(imageIcon);
+			}
+
 		}
-
-	}
-}
-
-	public static JTable getTablaProducto() {
-		return ProductTable;
 	}
 
 	public void setTablaProducto(JTable ProductTable) {

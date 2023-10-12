@@ -31,7 +31,7 @@ public class ObjectService {
 				consulta.setFloat(4, product.getPrecio());
 				consulta.setString(5, product.getImg());
 				consulta.setInt(6, product.getProveedorid());
-				consulta.setFloat(7, product.getStock());
+				consulta.setInt(7, product.getStock());
 				consulta.setString(8, product.getCategoria());
 				consulta.execute();
 			} else {
@@ -43,7 +43,7 @@ public class ObjectService {
 				consulta.setFloat(3, product.getPrecio());
 				consulta.setString(4, product.getImg());
 				consulta.setInt(5, product.getProveedorid());
-				consulta.setFloat(6, product.getStock());
+				consulta.setInt(6, product.getStock());
 				consulta.setString(7, product.getCategoria());
 			}
 			consulta.executeUpdate();
