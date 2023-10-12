@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -32,6 +33,7 @@ public class AddModifyProduct extends JFrame {
 	private JTextField txtName, txtBrand, txtPrice, txtStock, txtCategory, txtPath;
 	private JButton btnBack, btnInsert, btnModify, btnAddImg;
 	private JComboBox<Proveedor> comboBox;
+	private JComboBox comboCategory;
 
 	ManejadorBtn maneBtn = new ManejadorBtn();
 	// manejador imagen
@@ -49,6 +51,7 @@ public class AddModifyProduct extends JFrame {
 		createWindow();
 	}
 
+	@SuppressWarnings({ "unchecked", "unchecked", "unchecked", "rawtypes" })
 	private void createWindow() throws ClassNotFoundException, SQLException {
 
 		ProductWindowAM = new JFrame("Insert Menu");
@@ -56,6 +59,8 @@ public class AddModifyProduct extends JFrame {
 		ProductWindowAM.setBounds(100, 100, 420, 580);
 		ProductWindowAM.setLocationRelativeTo(null);
 		ProductWindowAM.getContentPane().setLayout(null);
+
+		ProductWindowAM.setContentPane(new JLabel(new ImageIcon("./background/backgroundTransactions.jpg")));
 
 		lblName = new JLabel("Name:");
 		lblName.setBounds(62, 110, 102, 18);
@@ -101,10 +106,14 @@ public class AddModifyProduct extends JFrame {
 		txtStock.setBounds(185, 268, 96, 19);
 		ProductWindowAM.getContentPane().add(txtStock);
 
-		txtCategory = new JTextField();
-		txtCategory.setColumns(10);
-		txtCategory.setBounds(185, 310, 96, 19);
-		ProductWindowAM.getContentPane().add(txtCategory);
+		comboCategory = new JComboBox();
+		comboCategory.setBounds(185, 310, 96, 19);
+		comboCategory.addItem("Alimentacion");
+		comboCategory.addItem("Tecnologia");
+		comboCategory.addItem("Ropa");
+		comboCategory.addItem("Mueble");
+		comboCategory.setSelectedIndex(0);
+		ProductWindowAM.getContentPane().add(comboCategory);
 
 		comboBox = new JComboBox<>();
 		List<Proveedor> listProveedor = OS.getAllProveedor(ConexionBDSql.obtener());
@@ -112,7 +121,7 @@ public class AddModifyProduct extends JFrame {
 			comboBox.addItem(p);
 		}
 
-		comboBox.setBounds(185, 225, 96, 19);
+		comboBox.setBounds(141, 226, 255, 19);
 		ProductWindowAM.getContentPane().add(comboBox);
 
 		lblImage = new JLabel("Image:");
@@ -143,7 +152,7 @@ public class AddModifyProduct extends JFrame {
 			lblInsert.setToolTipText("text choice");
 			lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblInsert.setBounds(100, 10, 223, 66);
-			ProductWindowAM.add(lblInsert);
+			ProductWindowAM.getContentPane().add(lblInsert);
 
 			btnInsert = new JButton("Insert");
 			btnInsert.setBounds(64, 436, 85, 21);
@@ -156,7 +165,7 @@ public class AddModifyProduct extends JFrame {
 			lblInsert.setToolTipText("text choice");
 			lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblInsert.setBounds(100, 10, 223, 66);
-			ProductWindowAM.add(lblInsert);
+			ProductWindowAM.getContentPane().add(lblInsert);
 
 			btnModify = new JButton("Modify");
 			btnModify.setBounds(64, 436, 85, 21);
@@ -172,7 +181,8 @@ public class AddModifyProduct extends JFrame {
 			}
 			// Insertar los datos que vamos a modificar
 			txtName.setText(product.getNombre());
-			txtCategory.setText(product.getCategoria());
+			// txtCategory.setText(product.getCategoria());
+			comboCategory.setSelectedItem(product.getCategoria());
 			txtBrand.setText(product.getMarca());
 			txtStock.setText(String.valueOf(product.getStock()));
 			txtPath.setText(product.getImg());
@@ -188,52 +198,51 @@ public class AddModifyProduct extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			ObjectService os = new ObjectService();
 			Object obj = e.getSource();
-			System.out.println("Hola");
 			if (obj == btnInsert) {
-				System.out.println("Hola");
+				System.out.println("Hola estas insertando un producto");
 				// insertar producto
-				// String nombre, String marca, Float precio, String img, int proveedorid, int
-				// stock,String categoria
 				String nombre = txtName.getText();
 				String marca = txtBrand.getText();
 				Float precio = Float.parseFloat(txtPrice.getText());
 				Proveedor Prove = (Proveedor) comboBox.getSelectedItem();
 				int Idproveedor = Prove.getIdproveedor();
 				String stock = txtStock.getText();
-				String categoria = txtCategory.getText();
-				if (nombre.equals("") || marca.equals("") || precio == 0 || Idproveedor == 0 || stock.equals("")
-						|| categoria.equals("")) {
+				String categoria = comboCategory.getSelectedItem().toString();
+
+				if (nombre.equals("") || marca.equals("") || precio == 0 || stock.equals("")) {
 					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos no pueden estar vacíos.",
 							"Error de Registro", JOptionPane.ERROR_MESSAGE);
-				}
+				} else {
 
-				int stockint = Integer.parseInt(stock);
-				String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
+					int stockint = Integer.parseInt(stock);
+					String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
 
-				try {
-					os.saveProducto(ConexionBDSql.obtener(),
-							(new Producto(nombre, marca, precio, img, Idproveedor, stockint, categoria)), 1);
-				} catch (ClassNotFoundException | SQLException e1) {
-					e1.printStackTrace();
-				}
-
-				if (sourcer != null)
+					Producto p = new Producto(nombre, marca, precio, img, Idproveedor, stockint, categoria);
 					try {
-						Files.copy(sourcer, destination);
-					} catch (IOException e1) {
+						os.saveProducto(ConexionBDSql.obtener(), p, 1);
+					} catch (ClassNotFoundException | SQLException e1) {
 						e1.printStackTrace();
 					}
 
-				JOptionPane.showMessageDialog(AddModifyProduct.this, "El producto se ha registrado correctamente.",
-						"Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
-				productId = 0;
-				ProductWindowAM.setVisible(false);
-				try {
-					new CrudProducto();
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+					if (sourcer != null) {
+						try {
+							Files.copy(sourcer, destination);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "El producto se ha registrado correctamente.",
+							"Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+					productId = 0;
+					ProductWindowAM.setVisible(false);
+					try {
+						new CrudProducto();
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
 				}
 				// volver
 			} else if (obj == btnBack) {
@@ -247,8 +256,48 @@ public class AddModifyProduct extends JFrame {
 				}
 				ProductWindowAM.setVisible(false);
 
-			} else {
+			} else if (obj == btnModify) {
+				// modificar producto
+				String nombre = txtName.getText();
+				String marca = txtBrand.getText();
+				Float precio = Float.parseFloat(txtPrice.getText());
+				Proveedor Prove = (Proveedor) comboBox.getSelectedItem();
+				int Idproveedor = Prove.getIdproveedor();
+				String stock = txtStock.getText();
+				String categoria = comboCategory.getSelectedItem().toString();
+				String img = txtPath.getText();
+				if (nombre.equals("") || marca.equals("") || precio == 0 || stock.equals("")) {
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos no pueden estar vacíos.",
+							"Error de Registro", JOptionPane.ERROR_MESSAGE);
+				}
+				int stockint = Integer.parseInt(stock);
+//				String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
 
+				try {
+					os.saveProducto(ConexionBDSql.obtener(), (new Producto(product.getIdproducto(), nombre, marca,
+							precio, img, Idproveedor, stockint, categoria)), 2);
+				} catch (ClassNotFoundException | SQLException e1) {
+					e1.printStackTrace();
+				}
+
+//				if (sourcer != null)
+//					try {
+//						Files.copy(sourcer, destination);
+//					} catch (IOException e1) {
+//						e1.printStackTrace();
+//					}
+
+				JOptionPane.showMessageDialog(AddModifyProduct.this, "El producto se ha actualizado correctamente.",
+						"Actualizado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+				productId = 0;
+				ProductWindowAM.setVisible(false);
+				try {
+					new CrudProducto();
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 	}

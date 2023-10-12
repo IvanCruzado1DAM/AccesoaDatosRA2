@@ -5,12 +5,18 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,9 +43,7 @@ public class CrudProducto extends JFrame {
 			LabelCategoria, LabelNombre, LabelMarca, LabelPrecio, LabelProveedor, LabelStock;
 	private JTextField FieldNombre, FieldStock, FieldPrecio;
 	// desplegables
-	private JComboBox<Proveedor> ComboProveedor;
-	private JComboBox<Producto> ComboCategoria, ComboMarca;
-	private JComboBox<String> ComboPrecio, ComboStock;
+	private JComboBox<String> ComboPrecio, ComboStock, ComboCategoria, ComboMarca, ComboProveedor;
 	// ventana
 	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit;
 	private static JTable ProductTable;
@@ -55,6 +59,7 @@ public class CrudProducto extends JFrame {
 		createWindow();
 	}
 
+	@SuppressWarnings("serial")
 	private void createWindow() throws ClassNotFoundException, SQLException {
 		// Ventana principal
 		ProductWindow = new JFrame("Administrar productos");
@@ -62,6 +67,8 @@ public class CrudProducto extends JFrame {
 		ProductWindow.setBounds(100, 100, 749, 600);
 		ProductWindow.setLocationRelativeTo(null);
 		ProductWindow.getContentPane().setLayout(null);
+		//background
+        ProductWindow.setContentPane(new JLabel(new ImageIcon("./background/backgroundTransactions.jpg")));
 		// Texto menu admin
 		ProductLabel = new JLabel("Menu productos");
 		ProductLabel.setToolTipText("texto eleccion");
@@ -84,7 +91,10 @@ public class CrudProducto extends JFrame {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void createFilters() {
+	private void createFilters() throws ClassNotFoundException, SQLException {
+		List<Producto> listProduct = OS.getAllProducts(ConexionBDSql.obtener());
+		List<Proveedor> listSupplier = OS.getAllProveedor(ConexionBDSql.obtener());
+
 		// filtro categoria
 		LabelCategoria = new JLabel("Categoria: ");
 		LabelCategoria.setToolTipText("Filtrar por categoria");
@@ -93,6 +103,12 @@ public class CrudProducto extends JFrame {
 		// desplegable categoria
 		ComboCategoria = new JComboBox();
 		ComboCategoria.setBounds(10, 78, 100, 21);
+		ComboCategoria.addItem("Elige...");
+		ComboCategoria.addItem("Alimentacion");
+		ComboCategoria.addItem("Tecnologia");
+		ComboCategoria.addItem("Ropa");
+		ComboCategoria.addItem("Mueble");
+		ComboCategoria.setSelectedIndex(0);
 		ProductWindow.getContentPane().add(ComboCategoria);
 
 		// filtro nombre
@@ -112,7 +128,13 @@ public class CrudProducto extends JFrame {
 		LabelMarca.setBounds(150, 22, 58, 66);
 		ProductWindow.getContentPane().add(LabelMarca);
 		// desplegable marca
-		ComboMarca = new JComboBox();
+		Set<String> marcasUnicas = new HashSet<>();
+		marcasUnicas.add("Elige...");
+		for (Producto producto : listProduct) {
+			marcasUnicas.add(producto.getMarca());
+		}
+//	    ComboMarca.addItem("Elige...");
+		ComboMarca = new JComboBox<>(marcasUnicas.toArray(new String[0]));
 		ComboMarca.setBounds(121, 78, 90, 21);
 		ProductWindow.getContentPane().add(ComboMarca);
 
@@ -124,6 +146,10 @@ public class CrudProducto extends JFrame {
 		// desplegable simbolos
 		ComboPrecio = new JComboBox();
 		ComboPrecio.setBounds(447, 78, 38, 21);
+		ComboPrecio.addItem("Elige...");
+		ComboPrecio.addItem(">");
+		ComboPrecio.addItem("<");
+		ComboPrecio.addItem("=");
 		ProductWindow.getContentPane().add(ComboPrecio);
 		// field precio
 		FieldPrecio = new JTextField();
@@ -138,6 +164,10 @@ public class CrudProducto extends JFrame {
 		// desplegable simbolos
 		ComboStock = new JComboBox();
 		ComboStock.setBounds(567, 78, 38, 21);
+		ComboStock.addItem("Elige...");
+		ComboStock.addItem(">");
+		ComboStock.addItem("<");
+		ComboStock.addItem("=");
 		ProductWindow.getContentPane().add(ComboStock);
 		// field stock
 		FieldStock = new JTextField();
@@ -150,8 +180,14 @@ public class CrudProducto extends JFrame {
 		LabelProveedor.setBounds(360, 22, 70, 66);
 		ProductWindow.getContentPane().add(LabelProveedor);
 		// desplegable proveedor
-		ComboProveedor = new JComboBox();
+		Set<String> nombresProveedores = new HashSet<>();
+		nombresProveedores.add("Elige...");
+		for (Proveedor proveedor : listSupplier) {
+			nombresProveedores.add(proveedor.getNombre() + " ID:" + proveedor.getIdproveedor());
+		}
+		ComboProveedor = new JComboBox<>(nombresProveedores.toArray(new String[0]));
 		ComboProveedor.setBounds(337, 78, 100, 21);
+
 		ProductWindow.getContentPane().add(ComboProveedor);
 	}
 
@@ -213,24 +249,50 @@ public class CrudProducto extends JFrame {
 	private void createButtons() {
 		// añadir
 		AddProduct = new JButton("ADD");
-		AddProduct.setBounds(567, 357, 100, 34);
+		AddProduct.setBounds(529, 357, 180, 34);
 		AddProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(AddProduct);
+		// redminesionar imagen
+		ImageIcon iconoOriginal = new ImageIcon("./icons/IconRegister.png");
+		Image imagenOriginal = iconoOriginal.getImage();
+		Image nuevaImagen = imagenOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon iconoRedimensionado = new ImageIcon(nuevaImagen);
+		AddProduct.setIcon(iconoRedimensionado);
 		// modificar
 		ModifyProduct = new JButton("MODIFY");
-		ModifyProduct.setBounds(567, 401, 100, 34);
+		ModifyProduct.setBounds(529, 401, 180, 34);
 		ModifyProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(ModifyProduct);
+		// redminesionar imagen
+		iconoOriginal = new ImageIcon("./icons/IconUpdate.png");
+		imagenOriginal = iconoOriginal.getImage();
+		nuevaImagen = imagenOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		iconoRedimensionado = new ImageIcon(nuevaImagen);
+		ModifyProduct.setIcon(iconoRedimensionado);
 		// eliminar
 		DeleteProduct = new JButton("DELETE");
-		DeleteProduct.setBounds(567, 450, 100, 34);
+		DeleteProduct.setBounds(529, 450, 180, 34);
+
+		// redimensionar imagen
+		iconoOriginal = new ImageIcon("./icons/IconDelete.png");
+		imagenOriginal = iconoOriginal.getImage();
+		nuevaImagen = imagenOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		iconoRedimensionado = new ImageIcon(nuevaImagen);
+		DeleteProduct.setIcon(iconoRedimensionado);
+
 		DeleteProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(DeleteProduct);
 		// volver
 		Exit = new JButton("EXIT");
-		Exit.setBounds(580, 519, 77, 34);
+		Exit.setBounds(567, 519, 112, 34);
 		Exit.addActionListener(mane);
 		ProductWindow.getContentPane().add(Exit);
+		// redminesionar imagen
+		iconoOriginal = new ImageIcon("./icons/IconReturn.png");
+		imagenOriginal = iconoOriginal.getImage();
+		nuevaImagen = imagenOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		iconoRedimensionado = new ImageIcon(nuevaImagen);
+		Exit.setIcon(iconoRedimensionado);
 
 	}
 
@@ -257,51 +319,38 @@ public class CrudProducto extends JFrame {
 							"Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
 					if (confirmResult == JOptionPane.YES_OPTION) {
 						try {
+							String ruta = ProductCombo.getValueAt(selectedRow, 4).toString();
+							System.out.println(ruta);
+							File imagenes = new File(ruta);
+							Files.deleteIfExists(imagenes.toPath());
 							OS.removeProductoID(ConexionBDSql.obtener(), id);
 						} catch (ClassNotFoundException e1) {
 							e1.printStackTrace();
 						} catch (SQLException e1) {
 							e1.printStackTrace();
-
-//						try {
-//							try {
-//								//remover con id4
-//							} catch (ClassNotFoundException e1) {
-//								e1.printStackTrace();
-//							} catch (SQLException e1) {
-//								e1.printStackTrace();
-//							}
-//							File imagenes = new File(ruta);
-//							Files.deleteIfExists(imagenes.toPath());
-//						} catch (IOException e1) {
-//							e1.printStackTrace();
-//						}
-
-							JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
-									"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
-							// RELOAD
-							try {
-								new CrudProducto();
-							} catch (ClassNotFoundException e2) {
-								e2.printStackTrace();
-							} catch (SQLException e2) {
-								e2.printStackTrace();
-							}
-							ProductWindow.dispose();
-
+						} catch (IOException e1) {
+							e1.printStackTrace();
 						}
-					} else {
-						JOptionPane.showMessageDialog(CrudProducto.this,
-								"Por favor, selecciona una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
+								"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+						// RELOAD
+						try {
+							new CrudProducto();
+						} catch (ClassNotFoundException e2) {
+							e2.printStackTrace();
+						} catch (SQLException e2) {
+							e2.printStackTrace();
+						}
+						ProductWindow.dispose();
+
 					}
 				} else {
-					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para modificar.",
+					JOptionPane.showMessageDialog(CrudProducto.this, "Por favor, selecciona una fila para eliminar.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 				}
+
 			} else if (obj == ModifyProduct) {
-				System.out.println("Modificar");
-//				AddModifyProduct.productId=
-				// modificar profesor
+				// modificar producto
 				if (selectedRow != -1) {
 					int id = (int) ProductCombo.getValueAt(selectedRow, 0);
 					try {

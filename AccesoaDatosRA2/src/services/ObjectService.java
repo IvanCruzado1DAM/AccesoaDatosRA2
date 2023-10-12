@@ -45,8 +45,9 @@ public class ObjectService {
 				consulta.setInt(5, product.getProveedorid());
 				consulta.setInt(6, product.getStock());
 				consulta.setString(7, product.getCategoria());
+				consulta.executeUpdate();
 			}
-			consulta.executeUpdate();
+			
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
