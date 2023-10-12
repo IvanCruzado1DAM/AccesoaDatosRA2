@@ -131,10 +131,15 @@ public class CrudProducto extends JFrame {
 		Set<String> marcasUnicas = new HashSet<>();
 		marcasUnicas.add("Elige...");
 		for (Producto producto : listProduct) {
-			marcasUnicas.add(producto.getMarca());
+		    marcasUnicas.add(producto.getMarca());
 		}
-//	    ComboMarca.addItem("Elige...");
+
 		ComboMarca = new JComboBox<>(marcasUnicas.toArray(new String[0]));
+		ComboMarca.setBounds(121, 78, 90, 21);
+		ProductWindow.getContentPane().add(ComboMarca);
+
+		// Establecer "Elige..." como elemento seleccionado por defecto
+		ComboMarca.setSelectedItem("Elige...");
 		ComboMarca.setBounds(121, 78, 90, 21);
 		ProductWindow.getContentPane().add(ComboMarca);
 

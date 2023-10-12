@@ -215,7 +215,7 @@ public class AddModifyProduct extends JFrame {
 				} else {
 
 					int stockint = Integer.parseInt(stock);
-					String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
+					String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") +Idproveedor+ extension);
 
 					Producto p = new Producto(nombre, marca, precio, img, Idproveedor, stockint, categoria);
 					try {
@@ -271,21 +271,12 @@ public class AddModifyProduct extends JFrame {
 							"Error de Registro", JOptionPane.ERROR_MESSAGE);
 				}
 				int stockint = Integer.parseInt(stock);
-//				String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
-
 				try {
 					os.saveProducto(ConexionBDSql.obtener(), (new Producto(product.getIdproducto(), nombre, marca,
 							precio, img, Idproveedor, stockint, categoria)), 2);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
-
-//				if (sourcer != null)
-//					try {
-//						Files.copy(sourcer, destination);
-//					} catch (IOException e1) {
-//						e1.printStackTrace();
-//					}
 
 				JOptionPane.showMessageDialog(AddModifyProduct.this, "El producto se ha actualizado correctamente.",
 						"Actualizado Exitoso", JOptionPane.INFORMATION_MESSAGE);
@@ -307,6 +298,8 @@ public class AddModifyProduct extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("Hola esto es el manejador img");
+			Proveedor Prove = (Proveedor) comboBox.getSelectedItem();
+			int Idproveedor = Prove.getIdproveedor();
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			FileNameExtensionFilter soloImg = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png", "jpeg");
@@ -320,7 +313,7 @@ public class AddModifyProduct extends JFrame {
 					extension = fileChooser.getSelectedFile().toString()
 							.substring(fileChooser.getSelectedFile().toString().lastIndexOf('.'));
 					File imagenes = new File("images/" + txtName.getText().replace(" ", "")
-							+ txtBrand.getText().replace(" ", "") + extension);
+							+ txtBrand.getText().replace(" ", "") + Idproveedor+  extension);
 					sourcer = fileChooser.getSelectedFile().getAbsoluteFile().toPath();
 					destination = imagenes.toPath();
 					txtPath.setText(destination.toString());
