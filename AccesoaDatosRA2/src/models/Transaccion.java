@@ -16,9 +16,9 @@ public class Transaccion {
 		this.idempleado = idempleado;
 	}
 	
-	public Transaccion( Date fecha, int idproducto, int idproveedor, int cantidad, int idempleado) {
+	public Transaccion (Date d, int idproducto, int idproveedor, int cantidad, int idempleado) {
 		super();
-		this.fecha = fecha;
+		this.fecha = d;
 		this.idproducto = idproducto;
 		this.idproveedor = idproveedor;
 		this.cantidad = cantidad;

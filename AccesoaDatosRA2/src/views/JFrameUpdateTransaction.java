@@ -1,8 +1,12 @@
 package views;
 
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -10,14 +14,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import models.Producto;
 import models.Proveedor;
 import models.Transaccion;
@@ -33,6 +39,7 @@ public class JFrameUpdateTransaction extends JFrame {
 	private List<String> Producto = new ArrayList<>();
 	private List<String> Marca = new ArrayList<>();
 	private JButton Update, Return;
+	private final Icon IconUpdate = new ImageIcon("icons/IconUpdate.png"), IconReturn = new ImageIcon("icons/IconReturn.png");
 	private Date d = new Date(0);
 
 	public JFrameUpdateTransaction() {
@@ -41,6 +48,25 @@ public class JFrameUpdateTransaction extends JFrame {
 		setSize(951, 695);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		
+		setContentPane(new JPanel() {
+			BufferedImage backgroundImage;
+			{
+				try {
+//---------------------------Load your background image--------------------------//
+					backgroundImage = ImageIO.read(new File("background/backgroundTransactions.jpg"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+//-------------------------------Draw the background image------------------------//
+				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+			}
+		});
 
 		Idtransaction = new JLabel("Idtransacccion");
 		Idtransaction.setBounds(34, 98, 112, 25);
@@ -63,6 +89,7 @@ public class JFrameUpdateTransaction extends JFrame {
 		Idtransactiontext.setEditable(false);
 		empleadotext = new JTextField(10);
 		empleadotext.setBounds(266, 489, 86, 33);
+		
 		try {
 			empleadotext.setText(
 					String.valueOf(Test.os.getEmpleado(ConexionBDSql.obtener(), JFrameTransactions.t.getIdempleado())));
@@ -138,7 +165,8 @@ public class JFrameUpdateTransaction extends JFrame {
 		fechatext.setBounds(571, 343, 300, 30);
 		fechatext.setText(String.valueOf(d));
 		Update = new JButton("Actualizar");
-		Update.setBounds(554, 516, 120, 60);
+		Update.setBounds(554, 516, 160, 60);
+		Update.setIcon(IconUpdate);
 		Update.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -168,7 +196,8 @@ public class JFrameUpdateTransaction extends JFrame {
 		});
 
 		Return = new JButton("Return");
-		Return.setBounds(233, 516, 120, 60);
+		Return.setBounds(233, 516, 160, 60);
+		Return.setIcon(IconReturn);
 		Return.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
