@@ -214,12 +214,13 @@ public class ObjectService {
 		}
 	}
 
-	public Empleado getExisteEmpleado(Connection conexion, String username) throws SQLException {
+	public Empleado getExisteEmpleado(Connection conexion, String username, String clave) throws SQLException {
 		Empleado e = null;
 		try {
 			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT idempleado, username,password" + " FROM " + this.tablaEmpleado + " WHERE username = ?");
+					"SELECT idempleado, username,password" + " FROM " + this.tablaEmpleado + " WHERE username = ? AND password = ?");
 			consulta.setString(1, username);
+			consulta.setString(2, username);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
 				e = new Empleado(resultado.getInt("idempleado"), resultado.getString("username"), resultado.getString("password"));

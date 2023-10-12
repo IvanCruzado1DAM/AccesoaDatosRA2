@@ -1,29 +1,57 @@
 package views;
 
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class JFrameAdmin extends JFrame {
 	
 	private JButton Products, Supplier, Transaction, SignOff;
+	private final Icon IconProducts = new ImageIcon("icons/IconProducts.png"), IconSuppliers = new ImageIcon("icons/IconSuppliers.png")
+			,IconTransaction = new ImageIcon("icons/IconTransactions.png"), IconSignOff = new ImageIcon ("icons/IconSignOff.png");
 
 	public JFrameAdmin () {
-		super("Empleado " + JFrameLogin.EmActivo.getUsername());
+		super("Admin | Empleado : " + JFrameLogin.EmActivo.getUsername());
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(643,429);
 	    setResizable(false);
 	    setLocationRelativeTo(null);
 	    
+	    setContentPane(new JPanel() {
+			BufferedImage backgroundImage;
+			{
+				try {
+//---------------------------Load your background image--------------------------//
+					backgroundImage = ImageIO.read(new File("background/backgroundTransactions.jpg"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+//-------------------------------Draw the background image------------------------//
+				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+			}
+		});
+	    
 	    Products = new JButton ("Productos");
 	    Products.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Products.setBounds(201, 33, 200, 100);
+	    Products.setIcon(IconProducts);
 	    Products.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -44,6 +72,7 @@ public class JFrameAdmin extends JFrame {
 	    Supplier = new JButton ("Proveedores");
 	    Supplier.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Supplier.setBounds(76, 169, 200, 100);
+	    Supplier.setIcon(IconSuppliers);
 	    Supplier.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -64,7 +93,6 @@ public class JFrameAdmin extends JFrame {
 	    Transaction = new JButton ("Transacción");
 	    Transaction.setFont(new Font("Arial", Font.PLAIN, 16));
 	    Transaction.setBounds(347, 169, 200, 100);
-	    Icon IconTransaction = new ImageIcon ("icons/IconTransactions.png");
 	    Transaction.setIcon(IconTransaction);
 	    Transaction.addActionListener(new ActionListener() {
 			@Override
@@ -79,7 +107,6 @@ public class JFrameAdmin extends JFrame {
 	    SignOff = new JButton ("Cerrar Sesión");
 	    SignOff.setFont(new Font("Arial", Font.PLAIN, 16));
 	    SignOff.setBounds(118, 288, 341, 77);
-	    Icon IconSignOff = new ImageIcon ("icons/IconSignOff.png");
 	    SignOff.setIcon(IconSignOff);
 	    SignOff.addActionListener(new ActionListener() {
 			@Override

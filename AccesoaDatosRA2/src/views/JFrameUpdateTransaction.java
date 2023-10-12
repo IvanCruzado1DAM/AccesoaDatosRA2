@@ -43,7 +43,7 @@ public class JFrameUpdateTransaction extends JFrame {
 	private Date d = new Date(0);
 
 	public JFrameUpdateTransaction() {
-		super("Actualizar Transacciones");
+		super("Actualizar Transacciones | Empleado: " + JFrameLogin.EmActivo.getUsername());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(951, 695);
 		setResizable(false);

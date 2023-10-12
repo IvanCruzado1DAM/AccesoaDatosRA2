@@ -43,7 +43,7 @@ public class JFrameCreateTransaction extends JFrame {
 	private Date d = new Date(new java.util.Date().getTime());
 
 	public JFrameCreateTransaction() {
-		super("Crear Transacciones");
+		super("Crear Transacciones| Empleado: " + JFrameLogin.EmActivo.getUsername());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(954, 579);
 		setResizable(false);

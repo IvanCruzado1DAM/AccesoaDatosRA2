@@ -60,7 +60,7 @@ public class JFrameTransactions extends JFrame {
 	private static List<Transaccion> ListaTransacciones = new ArrayList<>();
 
 	public JFrameTransactions() {
-		super("Transacciones");
+		super("Transacciones | Empleado : " + JFrameLogin.EmActivo.getUsername());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1159, 699);
 		setResizable(false);

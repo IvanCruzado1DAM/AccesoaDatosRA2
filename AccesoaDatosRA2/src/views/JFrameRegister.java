@@ -2,17 +2,26 @@ package views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import models.Empleado;
 import services.ConexionBDSql;
 import services.Test;
 import java.awt.Font;
+import java.awt.Graphics;
 
 public class JFrameRegister extends JFrame {
 
@@ -20,6 +29,8 @@ public class JFrameRegister extends JFrame {
 	private JTextField Usernametext;
 	private JPasswordField Passwordtext;
 	private JButton Register, Close, Login;
+	private final Icon IconRegister = new ImageIcon("icons/IconRegister.png"), IconReturn = new ImageIcon("icons/IconReturn.png")
+			,IconClose = new ImageIcon("icons/IconSignOff.png");
 
 	public JFrameRegister() {
 		super("Registro");
@@ -27,23 +38,43 @@ public class JFrameRegister extends JFrame {
 		setSize(654, 424);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		
+		setContentPane(new JPanel() {
+			BufferedImage backgroundImage;
+			{
+				try {
+//---------------------------Load your background image--------------------------//
+					backgroundImage = ImageIO.read(new File("background/backgroundLogin.jpg"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+//-------------------------------Draw the background image------------------------//
+				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+			}
+		});
 
 		Username = new JLabel("Nombre Usuario: ");
 		Username.setFont(new Font("Arial", Font.PLAIN, 16));
-		Username.setBounds(106, 92, 86, 45);
+		Username.setBounds(66, 92, 141, 45);
 
 		Password = new JLabel("Contraseña: ");
 		Password.setFont(new Font("Arial", Font.PLAIN, 16));
-		Password.setBounds(106, 159, 78, 45);
+		Password.setBounds(102, 159, 89, 45);
 
 		Usernametext = new JTextField(20);
-		Usernametext.setBounds(247, 101, 300, 30);
+		Usernametext.setBounds(217, 101, 300, 30);
 
 		Passwordtext = new JPasswordField(20);
-		Passwordtext.setBounds(247, 168, 300, 30);
+		Passwordtext.setBounds(217, 168, 300, 30);
 
 		Register = new JButton("Registrar");
-		Register.setBounds(247, 278, 120, 60);
+		Register.setBounds(234, 278, 160, 60);
+		Register.setIcon(IconRegister);
 		Register.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -52,23 +83,28 @@ public class JFrameRegister extends JFrame {
 					if (Usernametext.getText().isEmpty() || Passwordtext.getPassword().length == 0) {
 						JOptionPane.showMessageDialog(JFrameRegister.this, "*Rellene todos los campos", "Aviso",
 								JOptionPane.ERROR_MESSAGE);
-					} else if (!Usernametext.getText().matches("^[A-Z][a-z]+")) {
+					} else if (!Usernametext.getText().matches("^[A-Z](?=\\w*\\d)(?=\\w*[a-z])\\S{6,16}$")) {
 						JOptionPane.showMessageDialog(JFrameRegister.this,
-								"*Campo Usuario debe tener solo letras\n" + "*Debe tener primer caracter en Mayuscula",
+								"Campo Usuario \n" + "*Debe tener primer caracter en Mayuscula \n " + "Debe tener letras, al menos un numero \n"
+						        + "*Y puede tener un caracter especial",
 								"Aviso", JOptionPane.ERROR_MESSAGE);
-					} else if (!(Passwordtext.getPassword().length > 4)) {
-						JOptionPane.showMessageDialog(JFrameRegister.this, "*Campo Clave debe tener longitud mayor a 4\n",
+					} else if (!String.valueOf(Passwordtext.getPassword()).matches("^(?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,10}$")) {
+						JOptionPane.showMessageDialog(JFrameRegister.this, "CAMPO CLAVE \n" + "*Debe contener 1 Digito\n"
+								+"*Debe tener Mayuscula y minuscula\n "+ "*Debe tener longitud entre 6 a 10",
 								"Aviso", JOptionPane.ERROR_MESSAGE);
 					} else if (!Usernametext.getText().isEmpty() && !(Passwordtext.getPassword().length == 0)) {
-						if (Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usernametext.getText()) == null) {
+						if (Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usernametext.getText(), String.valueOf(Passwordtext.getPassword())) == null){
 							Empleado e1 = new Empleado(Usernametext.getText(),
 									String.valueOf(Passwordtext.getPassword()));
 							Test.os.saveEmpleado(ConexionBDSql.obtener(), e1, 1);
 							JOptionPane.showMessageDialog(JFrameRegister.this, "Empleando Registrado", "Informacion",
 									JOptionPane.INFORMATION_MESSAGE);
+							Usernametext.setText("");
+							Passwordtext.setText("");
 						}else {
 							JOptionPane.showMessageDialog(JFrameRegister.this, "Empleando Ya existe", "Informacion",
 									JOptionPane.INFORMATION_MESSAGE);
+							Passwordtext.setText("");
 						}
 					}
 				} catch (ClassNotFoundException e1) {
@@ -82,7 +118,8 @@ public class JFrameRegister extends JFrame {
 		});
 
 		Login = new JButton("Login");
-		Login.setBounds(442, 278, 120, 60);
+		Login.setBounds(422, 278, 160, 60);
+		Login.setIcon(IconReturn);
 		Login.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -94,7 +131,8 @@ public class JFrameRegister extends JFrame {
 		});
 
 		Close = new JButton("Cerrar");
-		Close.setBounds(64, 278, 120, 60);
+		Close.setBounds(31, 278, 160, 60);
+		Close.setIcon(IconClose);
 		Close.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
