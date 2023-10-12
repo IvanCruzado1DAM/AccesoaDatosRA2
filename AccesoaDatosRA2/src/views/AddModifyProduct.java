@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,21 +24,19 @@ import models.Proveedor;
 import services.ConexionBDSql;
 import services.ObjectService;
 
-
 public class AddModifyProduct extends JFrame {
 
 	// Product window add-modify
 	private JFrame ProductWindowAM;
 	private JLabel lblInsert, lblName, lblBrand, lblPrice, lblSupplier, lblStock, lblCategory, lblImage;
 	private JTextField txtName, txtBrand, txtPrice, txtStock, txtCategory, txtPath;
-	private JButton btnBack, btnInsert, btnModify,btnAddImg;
+	private JButton btnBack, btnInsert, btnModify, btnAddImg;
 	private JComboBox<Proveedor> comboBox;
 
 	ManejadorBtn maneBtn = new ManejadorBtn();
-	//manejador imagen
+	// manejador imagen
 	insertImg im = new insertImg();
 
-	
 	ObjectService OS = new ObjectService();
 	public static int productId;
 	private Producto product;
@@ -144,12 +144,11 @@ public class AddModifyProduct extends JFrame {
 			lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblInsert.setBounds(100, 10, 223, 66);
 			ProductWindowAM.add(lblInsert);
-			
+
 			btnInsert = new JButton("Insert");
 			btnInsert.setBounds(64, 436, 85, 21);
 			btnInsert.addActionListener(maneBtn);
 			ProductWindowAM.getContentPane().add(btnInsert);
-			
 
 		} else {
 			// Label choose an option
@@ -158,7 +157,7 @@ public class AddModifyProduct extends JFrame {
 			lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblInsert.setBounds(100, 10, 223, 66);
 			ProductWindowAM.add(lblInsert);
-			
+
 			btnModify = new JButton("Modify");
 			btnModify.setBounds(64, 436, 85, 21);
 			btnModify.addActionListener(maneBtn);
@@ -198,33 +197,35 @@ public class AddModifyProduct extends JFrame {
 				String nombre = txtName.getText();
 				String marca = txtBrand.getText();
 				Float precio = Float.parseFloat(txtPrice.getText());
-				String imagen = txtPath.getText();
-				String proveedor = (String) comboBox.getSelectedItem();
+//				String imagen = txtPath.getText();
+				Proveedor Prove = (Proveedor) comboBox.getSelectedItem();
+				int Idproveedor = Prove.getIdproveedor();
 				String stock = txtStock.getText();
 				String categoria = txtCategory.getText();
-				if (nombre.equals("") || marca.equals("") || precio.equals("") || proveedor.equals("")
-						|| stock.equals("") || categoria.equals("")) {
+				if (nombre.equals("") || marca.equals("") || precio.equals("") || Idproveedor == 0 || stock.equals("")
+						|| categoria.equals("")) {
 					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos no pueden estar vacíos.",
 							"Error de Registro", JOptionPane.ERROR_MESSAGE);
 				}
-//				int idproov = Integer.parseInt(proveedor);
-//				int stockint = Integer.parseInt(stock);
-//				String img = ("imagen/producto/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
-//				try {
-//					os.saveProducto(ConexionBDSql.obtener(),
-//							(new Producto(nombre, marca, precio, img, idproov, stockint, categoria)), 1);
-//				} catch (ClassNotFoundException e1) {
-//					e1.printStackTrace();
-//				} catch (SQLException e1) {
-//					e1.printStackTrace();
-//				}
-//				if (sourcer != null)
-//					try {
-//						Files.copy(sourcer, destination);
-//					} catch (IOException e1) {
-//						e1.printStackTrace();
-//					}
-				
+
+				int stockint = Integer.parseInt(stock);
+				String img = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") + extension);
+
+				try {
+					os.saveProducto(ConexionBDSql.obtener(),
+							(new Producto(nombre, marca, precio, img, Idproveedor, stockint, categoria)), 1);
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				if (sourcer != null)
+					try {
+						Files.copy(sourcer, destination);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+
 				JOptionPane.showMessageDialog(AddModifyProduct.this, "El producto se ha registrado correctamente.",
 						"Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
 				productId = 0;
@@ -236,7 +237,7 @@ public class AddModifyProduct extends JFrame {
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-				//volver
+				// volver
 			} else if (obj == btnBack) {
 				productId = 0;
 				try {
@@ -248,13 +249,12 @@ public class AddModifyProduct extends JFrame {
 				}
 				ProductWindowAM.setVisible(false);
 
-			}
-			else {
-				
+			} else {
+
 			}
 		}
 	}
-	
+
 	// Manejador de insertar imagen
 	public class insertImg implements ActionListener {
 		@Override
@@ -266,16 +266,25 @@ public class AddModifyProduct extends JFrame {
 			fileChooser.setFileFilter(soloImg);
 			fileChooser.showSaveDialog(null);
 
-			if (fileChooser.getSelectedFile() != null) {
-				extension = fileChooser.getSelectedFile().toString()
-						.substring(fileChooser.getSelectedFile().toString().lastIndexOf('.'));
-				File imagenes = new File("imagen/producto/" + txtName.getText().replace(" ", "") + txtBrand.getText().replace(" ", "") + extension);
-				sourcer = fileChooser.getSelectedFile().getAbsoluteFile().toPath();
-				destination = imagenes.toPath();
-				JOptionPane.showMessageDialog(AddModifyProduct.this, "Imagen insertada", "INFO",
-						JOptionPane.INFORMATION_MESSAGE);
+			String nombre = txtName.getText();
+			String marca = txtBrand.getText();
+			if(!nombre.equals("") && !marca.equals("")) {
+				if (fileChooser.getSelectedFile() != null) {
+					extension = fileChooser.getSelectedFile().toString()
+							.substring(fileChooser.getSelectedFile().toString().lastIndexOf('.'));
+					File imagenes = new File("images/" + txtName.getText().replace(" ", "")
+							+ txtBrand.getText().replace(" ", "") + extension);
+					sourcer = fileChooser.getSelectedFile().getAbsoluteFile().toPath();
+					destination = imagenes.toPath();
+					txtPath.setText(destination.toString());
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Imagen insertada", "INFO",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}else {
+				JOptionPane.showMessageDialog(AddModifyProduct.this, "Necesitas escribir el nombre y la marca del producto", "ERROR",
+						JOptionPane.ERROR_MESSAGE);
 			}
-
 		}
 	}
 }
