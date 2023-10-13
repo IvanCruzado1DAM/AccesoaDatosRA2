@@ -112,6 +112,11 @@ public class CrudProveedor extends JFrame {
 	private void createButtons() {
 		// añadir
 		AddSupplier = new JButton("Insertar");
+		ImageIcon iconoRegisterOriginal = new ImageIcon("./icons/IconRegister.png");
+		Image imagenRegisterOriginal = iconoRegisterOriginal.getImage();
+		Image nuevaImagenRegister =imagenRegisterOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon iconoRegisterRedimensionado = new ImageIcon(nuevaImagenRegister);
+		AddSupplier.setIcon(iconoRegisterRedimensionado);
 		AddSupplier.setBounds(539, 103, 162, 34);
 		AddSupplier.addActionListener(mane);
 		ProveedorWindow.getContentPane().add(AddSupplier);
@@ -126,14 +131,24 @@ public class CrudProveedor extends JFrame {
 		ModifySupplier.addActionListener(mane);
 		ProveedorWindow.getContentPane().add(ModifySupplier);
 		// eliminar
-		DeleteSupplier = new JButton("Borrar");
+		DeleteSupplier = new JButton("Eliminar");
 		DeleteSupplier.setBounds(539, 190, 162, 34);
 		DeleteSupplier.addActionListener(mane);
+		ImageIcon iconoDeleteOriginal = new ImageIcon("./icons/IconDelete.png");
+		Image imagenDeleteOriginal = iconoDeleteOriginal.getImage();
+		Image nuevaImagenDelete =imagenDeleteOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon iconoDeleteRedimensionado = new ImageIcon(nuevaImagenDelete);
+		DeleteSupplier.setIcon(iconoDeleteRedimensionado);
 		ProveedorWindow.getContentPane().add(DeleteSupplier);
 		// volver
 		Exit = new JButton("Volver");
 		Exit.setBounds(539, 12, 162, 34);
 		Exit.addActionListener(mane);
+		ImageIcon iconoExitOriginal = new ImageIcon("./icons/IconReturn.png");
+		Image imagenExitOriginal = iconoExitOriginal.getImage();
+		Image nuevaImagenExit =imagenExitOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon iconoExitRedimensionado = new ImageIcon(nuevaImagenExit);
+		Exit.setIcon(iconoExitRedimensionado);
 		ProveedorWindow.getContentPane().add(Exit);
 
 	}
@@ -145,7 +160,7 @@ public class CrudProveedor extends JFrame {
 			Object obj = e.getSource();
 			if (obj == AddSupplier) {
 				try {
-					new AddModifyProveedor();
+					new AddProveedor();
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
