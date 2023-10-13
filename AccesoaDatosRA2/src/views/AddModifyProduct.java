@@ -64,19 +64,19 @@ public class AddModifyProduct extends JFrame {
 
 		ProductWindowAM.setContentPane(new JLabel(new ImageIcon("./background/backgroundTransactions.jpg")));
 
-		lblName = new JLabel("Name:");
+		lblName = new JLabel("Nombre:");
 		lblName.setBounds(62, 110, 102, 18);
 		ProductWindowAM.getContentPane().add(lblName);
 
-		lblBrand = new JLabel("Brand:");
+		lblBrand = new JLabel("Marca:");
 		lblBrand.setBounds(62, 146, 102, 18);
 		ProductWindowAM.getContentPane().add(lblBrand);
 
-		lblPrice = new JLabel("Price:");
+		lblPrice = new JLabel("Precio:");
 		lblPrice.setBounds(62, 184, 102, 18);
 		ProductWindowAM.getContentPane().add(lblPrice);
 
-		lblSupplier = new JLabel("Supplier:");
+		lblSupplier = new JLabel("Proveedor:");
 		lblSupplier.setBounds(62, 226, 102, 18);
 		ProductWindowAM.getContentPane().add(lblSupplier);
 
@@ -84,7 +84,7 @@ public class AddModifyProduct extends JFrame {
 		lblStock.setBounds(62, 268, 102, 18);
 		ProductWindowAM.getContentPane().add(lblStock);
 
-		lblCategory = new JLabel("Category:");
+		lblCategory = new JLabel("Categoria:");
 		lblCategory.setBounds(62, 310, 102, 18);
 		ProductWindowAM.getContentPane().add(lblCategory);
 
@@ -126,7 +126,7 @@ public class AddModifyProduct extends JFrame {
 		comboBox.setBounds(141, 226, 255, 19);
 		ProductWindowAM.getContentPane().add(comboBox);
 
-		lblImage = new JLabel("Image:");
+		lblImage = new JLabel("Imagen:");
 		lblImage.setBounds(62, 354, 51, 18);
 		ProductWindowAM.getContentPane().add(lblImage);
 
@@ -137,12 +137,12 @@ public class AddModifyProduct extends JFrame {
 		txtPath.setBounds(141, 354, 140, 19);
 		ProductWindowAM.getContentPane().add(txtPath);
 
-		btnAddImg = new JButton("Add IMG");
-		btnAddImg.setBounds(291, 353, 85, 21);
+		btnAddImg = new JButton("INSERTAR");
+		btnAddImg.setBounds(291, 353, 110, 21);
 		btnAddImg.addActionListener(im);
 		ProductWindowAM.getContentPane().add(btnAddImg);
 
-		btnBack = new JButton("Back");
+		btnBack = new JButton("VOLVER");
 		btnBack.setBounds(222, 436, 85, 21);
 		btnBack.addActionListener(maneBtn);
 		ProductWindowAM.getContentPane().add(btnBack);
@@ -150,27 +150,26 @@ public class AddModifyProduct extends JFrame {
 		if (productId == 0) {
 
 			// Label choose an option
-			lblInsert = new JLabel("Insert Menu");
+			lblInsert = new JLabel("Menu insertar");
 			lblInsert.setToolTipText("text choice");
 			lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblInsert.setBounds(100, 10, 223, 66);
 			ProductWindowAM.getContentPane().add(lblInsert);
 
-			btnInsert = new JButton("Insert");
-			btnInsert.setBounds(64, 436, 85, 21);
+			btnInsert = new JButton("INSERTAR");
+			btnInsert.setBounds(64, 436, 100, 21);
 			btnInsert.addActionListener(maneBtn);
 			ProductWindowAM.getContentPane().add(btnInsert);
 
 		} else {
 			// Label choose an option
-			lblInsert = new JLabel("Modify Menu");
-			lblInsert.setToolTipText("text choice");
+			lblInsert = new JLabel("MENU MODIFICAR");
 			lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblInsert.setBounds(100, 10, 223, 66);
 			ProductWindowAM.getContentPane().add(lblInsert);
 
-			btnModify = new JButton("Modify");
-			btnModify.setBounds(64, 436, 85, 21);
+			btnModify = new JButton("MODIFICAR");
+			btnModify.setBounds(64, 436, 110, 21);
 			btnModify.addActionListener(maneBtn);
 			ProductWindowAM.getContentPane().add(btnModify);
 

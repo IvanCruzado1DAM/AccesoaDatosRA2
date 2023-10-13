@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class CrudProducto extends JFrame {
 			// filtro
 			LabelCategoria, LabelNombre, LabelMarca, LabelPrecio, LabelProveedor, LabelStock;
 	private JTextField FieldNombre, FieldStock, FieldPrecio;
+	private List <Producto> listaFiltrados ;
 	// desplegables
 	private JComboBox<String> ComboPrecio, ComboStock, ComboCategoria, ComboMarca, ComboProveedor;
 	// ventana
@@ -135,12 +137,12 @@ public class CrudProducto extends JFrame {
 		ProductWindow.getContentPane().add(LabelMarca);
 		// desplegable marca
 		Set<String> marcasUnicas = new HashSet<>();
-		marcasUnicas.add("Elige...");
 		for (Producto producto : listProduct) {
 		    marcasUnicas.add(producto.getMarca());
 		}
 
 		ComboMarca = new JComboBox<>(marcasUnicas.toArray(new String[0]));
+		ComboMarca.insertItemAt("Elige...", 0);
 		ComboMarca.setBounds(121, 78, 90, 21);
 		ProductWindow.getContentPane().add(ComboMarca);
 
@@ -200,7 +202,7 @@ public class CrudProducto extends JFrame {
 		ComboProveedor.setBounds(337, 78, 100, 21);
 		
 		//boton filtrar
-		Filter = new JButton("Filter");
+		Filter = new JButton("Filtrar");
 		Filter.setBounds(570, 107, 100, 34);
 		Filter.addActionListener(mf);
 		//icono
@@ -272,7 +274,7 @@ public class CrudProducto extends JFrame {
 
 	private void createButtons() {
 		// añadir
-		AddProduct = new JButton("ADD");
+		AddProduct = new JButton("INSERTAR");
 		AddProduct.setBounds(529, 357, 180, 34);
 		AddProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(AddProduct);
@@ -283,7 +285,7 @@ public class CrudProducto extends JFrame {
 		ImageIcon iconoRedimensionado = new ImageIcon(nuevaImagen);
 		AddProduct.setIcon(iconoRedimensionado);
 		// modificar
-		ModifyProduct = new JButton("MODIFY");
+		ModifyProduct = new JButton("MODIFICAR");
 		ModifyProduct.setBounds(529, 401, 180, 34);
 		ModifyProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(ModifyProduct);
@@ -294,7 +296,7 @@ public class CrudProducto extends JFrame {
 		iconoRedimensionado = new ImageIcon(nuevaImagen);
 		ModifyProduct.setIcon(iconoRedimensionado);
 		// eliminar
-		DeleteProduct = new JButton("DELETE");
+		DeleteProduct = new JButton("ELIMINAR");
 		DeleteProduct.setBounds(529, 450, 180, 34);
 
 		// redimensionar imagen
@@ -307,7 +309,7 @@ public class CrudProducto extends JFrame {
 		DeleteProduct.addActionListener(mane);
 		ProductWindow.getContentPane().add(DeleteProduct);
 		// volver
-		Exit = new JButton("EXIT");
+		Exit = new JButton("SALIR");
 		Exit.setBounds(567, 519, 112, 34);
 		Exit.addActionListener(mane);
 		ProductWindow.getContentPane().add(Exit);
@@ -324,7 +326,71 @@ public class CrudProducto extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("Manejador filtro");
+			try {
+			//variables
+			String nombre=null,operacionstock=null,operacionprecio=null,categoria=null,marca=null;
+			Proveedor proveedor=null;
+			int idproveedor=0,stock=0;
+			float precio=0;
+			//comprobar que no está vacío
+			if(!(FieldNombre.getText().equalsIgnoreCase(""))){
+				nombre = FieldNombre.getText();
+			}
+			//comprobacion que no esta elegida la opcion por defecto
+			if(ComboPrecio.getSelectedIndex()!=0) {
+				operacionprecio=ComboPrecio.getSelectedItem().toString();
+			}
+			if(ComboStock.getSelectedIndex()!=0) {
+				operacionstock=ComboStock.getSelectedItem().toString();
+			}
+			if(ComboProveedor.getSelectedIndex()!=0) {
+			try {
+				String[] subcadenas = ComboProveedor.toString().split(":");
+				idproveedor=Integer.parseInt(subcadenas[1]);
+				proveedor=OS.getProveedor(ConexionBDSql.obtener(), idproveedor);
+				System.out.println(proveedor);
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			} 
+			if(ComboCategoria.getSelectedIndex()!=0) {
+				categoria=ComboCategoria.getSelectedItem().toString();
+			}
+			if(ComboMarca.getSelectedIndex()!=0) {
+				marca=ComboMarca.getSelectedItem().toString();
+			}
+			
+			if(!(FieldStock.getText().equalsIgnoreCase(""))&&(Integer.parseInt(FieldStock.getText())!=0)){
+				stock=Integer.parseInt(FieldStock.getText());
+			}
+			if(!(FieldPrecio.getText().equalsIgnoreCase(""))&&(Float.parseFloat(FieldPrecio.getText())!=0)) {
+				precio=Float.parseFloat(FieldPrecio.getText());
+			}
+					System.out.println(
+							nombre+" "+operacionprecio+" "+operacionstock+" "+idproveedor+" "+proveedor+" "
+							+categoria+" "+marca+" "+stock+" "+precio+" ");
+					
+				try {
+					List<Producto> listaFiltrados=OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca, precio, categoria, stock, marca, idproveedor);
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				for(Producto p:listaFiltrados) {
+					System.out.println(p);
+				}
+		
+			
+			}catch(NumberFormatException eee) {
+				JOptionPane.showMessageDialog(CrudProducto.this, "Error de formato, revisa el tipo "
+						+ "de dato ingresado en los filtros","Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
 		}
 		
 	}
@@ -428,5 +494,15 @@ public class CrudProducto extends JFrame {
 
 	public void setTablaProducto(JTable ProductTable) {
 		CrudProducto.ProductTable = ProductTable;
+	}
+	
+	public List<Producto> filtroNombre(List<Producto> lispro,String name) {
+		List<Producto> listName= new ArrayList<>();
+		for(Producto p:lispro) {
+			if(p.getNombre().equalsIgnoreCase(name)) {
+				listName.add(p);
+			}
+		}
+		return listName;
 	}
 }
