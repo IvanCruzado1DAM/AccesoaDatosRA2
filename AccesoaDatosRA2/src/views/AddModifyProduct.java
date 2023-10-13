@@ -25,14 +25,16 @@ import models.Proveedor;
 import services.ConexionBDSql;
 import services.ObjectService;
 
+@SuppressWarnings("serial")
 public class AddModifyProduct extends JFrame {
 
 	// Product window add-modify
 	private JFrame ProductWindowAM;
 	private JLabel lblInsert, lblName, lblBrand, lblPrice, lblSupplier, lblStock, lblCategory, lblImage;
-	private JTextField txtName, txtBrand, txtPrice, txtStock, txtCategory, txtPath;
+	private JTextField txtName, txtBrand, txtPrice, txtStock, txtPath;
 	private JButton btnBack, btnInsert, btnModify, btnAddImg;
 	private JComboBox<Proveedor> comboBox;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboCategory;
 
 	ManejadorBtn maneBtn = new ManejadorBtn();
@@ -51,7 +53,7 @@ public class AddModifyProduct extends JFrame {
 		createWindow();
 	}
 
-	@SuppressWarnings({ "unchecked", "unchecked", "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void createWindow() throws ClassNotFoundException, SQLException {
 
 		ProductWindowAM = new JFrame("Insert Menu");
@@ -177,7 +179,7 @@ public class AddModifyProduct extends JFrame {
 
 			} catch (ClassNotFoundException | SQLException e) {
 
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 			}
 			// Insertar los datos que vamos a modificar
 			txtName.setText(product.getNombre());
@@ -201,6 +203,7 @@ public class AddModifyProduct extends JFrame {
 			if (obj == btnInsert) {
 				System.out.println("Hola estas insertando un producto");
 				// insertar producto
+				try {
 				String nombre = txtName.getText();
 				String marca = txtBrand.getText();
 				Float precio = Float.parseFloat(txtPrice.getText());
@@ -221,14 +224,14 @@ public class AddModifyProduct extends JFrame {
 					try {
 						os.saveProducto(ConexionBDSql.obtener(), p, 1);
 					} catch (ClassNotFoundException | SQLException e1) {
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 					}
 
 					if (sourcer != null) {
 						try {
 							Files.copy(sourcer, destination);
 						} catch (IOException e1) {
-							e1.printStackTrace();
+						JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -239,25 +242,31 @@ public class AddModifyProduct extends JFrame {
 					try {
 						new CrudProducto();
 					} catch (ClassNotFoundException e1) {
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 					} catch (SQLException e1) {
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
+				}catch (NumberFormatException e0) {
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos numericos no pueden ser String.",
+							"Error de Registro", JOptionPane.ERROR_MESSAGE);
+				}
+				
 				// volver
 			} else if (obj == btnBack) {
 				productId = 0;
 				try {
 					new CrudProducto();
 				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 				}
 				ProductWindowAM.setVisible(false);
 
 			} else if (obj == btnModify) {
 				// modificar producto
+				try {
 				String nombre = txtName.getText();
 				String marca = txtBrand.getText();
 				Float precio = Float.parseFloat(txtPrice.getText());
@@ -275,7 +284,7 @@ public class AddModifyProduct extends JFrame {
 					os.saveProducto(ConexionBDSql.obtener(), (new Producto(product.getIdproducto(), nombre, marca,
 							precio, img, Idproveedor, stockint, categoria)), 2);
 				} catch (ClassNotFoundException | SQLException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 				}
 
 				JOptionPane.showMessageDialog(AddModifyProduct.this, "El producto se ha actualizado correctamente.",
@@ -284,13 +293,16 @@ public class AddModifyProduct extends JFrame {
 				ProductWindowAM.setVisible(false);
 				try {
 					new CrudProducto();
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
+				} catch (ClassNotFoundException | SQLException e1) {
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
+				} 
 			}
+				catch(NumberFormatException ee) {
+					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos numericos no pueden ser String.",
+							"Error de Modificacion", JOptionPane.ERROR_MESSAGE);
+				}
 		}
+	}
 	}
 
 	// Manejador de insertar imagen

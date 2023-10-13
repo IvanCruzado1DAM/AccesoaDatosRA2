@@ -16,7 +16,6 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -54,12 +53,13 @@ public class CrudProducto extends JFrame {
 	ManejadorImagen mi = new ManejadorImagen();
 	ObjectService OS = new ObjectService();
 	Manejador mane = new Manejador();
+	ManejadorFiltro mf=new ManejadorFiltro();
 
 	public CrudProducto() throws ClassNotFoundException, SQLException {
 		createWindow();
+
 	}
 
-	@SuppressWarnings("serial")
 	private void createWindow() throws ClassNotFoundException, SQLException {
 		// Ventana principal
 		ProductWindow = new JFrame("Administrar productos");
@@ -69,6 +69,10 @@ public class CrudProducto extends JFrame {
 		ProductWindow.getContentPane().setLayout(null);
 		//background
         ProductWindow.setContentPane(new JLabel(new ImageIcon("./background/backgroundTransactions.jpg")));
+        //icono
+        ImageIcon icono = new ImageIcon("icons/IconProducts.png");
+        // Establecer el icono de la ventana
+        ProductWindow.setIconImage(icono.getImage());
 		// Texto menu admin
 		ProductLabel = new JLabel("Menu productos");
 		ProductLabel.setToolTipText("texto eleccion");
@@ -82,12 +86,14 @@ public class CrudProducto extends JFrame {
 		// Botones
 		createButtons();
 		// tabla
-		createTable();
 
+		createTable();
+		
 		// filtros
 		createFilters();
 
 		ProductWindow.setVisible(true);
+
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -196,7 +202,7 @@ public class CrudProducto extends JFrame {
 		//boton filtrar
 		Filter = new JButton("Filter");
 		Filter.setBounds(570, 107, 100, 34);
-		Filter.addActionListener(mane);
+		Filter.addActionListener(mf);
 		//icono
 		// redminesionar imagen
 		ImageIcon iconoOriginal = new ImageIcon("./icons/IconFilter.png");
@@ -314,6 +320,15 @@ public class CrudProducto extends JFrame {
 
 	}
 
+	private class ManejadorFiltro implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("Manejador filtro");
+		}
+		
+	}
+	
 	private class Manejador implements ActionListener {
 
 		@Override
@@ -324,7 +339,7 @@ public class CrudProducto extends JFrame {
 				try {
 					new AddModifyProduct();
 				} catch (ClassNotFoundException | SQLException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 				}
 				ProductWindow.setVisible(false);
 			} else if (obj == DeleteProduct) {
@@ -342,22 +357,16 @@ public class CrudProducto extends JFrame {
 							File imagenes = new File(ruta);
 							Files.deleteIfExists(imagenes.toPath());
 							OS.removeProductoID(ConexionBDSql.obtener(), id);
-						} catch (ClassNotFoundException e1) {
-							e1.printStackTrace();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						} catch (ClassNotFoundException  | SQLException  | IOException ee ) {
+							JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
+						} 
 						JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
 								"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
 						// RELOAD
 						try {
 							new CrudProducto();
-						} catch (ClassNotFoundException e2) {
-							e2.printStackTrace();
-						} catch (SQLException e2) {
-							e2.printStackTrace();
+						} catch (ClassNotFoundException | SQLException e2) {
+							JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 						}
 						ProductWindow.dispose();
 
@@ -401,6 +410,7 @@ public class CrudProducto extends JFrame {
 
 	public class ManejadorImagen implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e) {
+			try {
 			if (ProductTable.getValueAt(ProductTable.getSelectedRow(), 4) != null) {
 				Image img = new ImageIcon(ProductTable.getValueAt(ProductTable.getSelectedRow(), 4).toString())
 						.getImage();
@@ -408,6 +418,9 @@ public class CrudProducto extends JFrame {
 				Image newimg = img.getScaledInstance(150, 180, java.awt.Image.SCALE_SMOOTH);
 				ImageIcon imageIcon = new ImageIcon(newimg);
 				ProductImg.setIcon(imageIcon);
+			}
+			
+		}catch(ArrayIndexOutOfBoundsException ee) {
 			}
 
 		}
