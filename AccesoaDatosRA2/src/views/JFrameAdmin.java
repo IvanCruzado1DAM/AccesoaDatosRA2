@@ -25,7 +25,7 @@ public class JFrameAdmin extends JFrame {
 	public JFrameAdmin () {
 		super("Admin | Empleado : " + JFrameLogin.EmActivo.getUsername());
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setSize(643,429);
+	    setSize(700,429);
 	    setResizable(false);
 	    setLocationRelativeTo(null);
 	    
@@ -50,7 +50,7 @@ public class JFrameAdmin extends JFrame {
 	    
 	    Products = new JButton ("Productos");
 	    Products.setFont(new Font("Arial", Font.PLAIN, 16));
-	    Products.setBounds(201, 33, 200, 100);
+	    Products.setBounds(241, 33, 200, 236);
 	    Products.setIcon(IconProducts);
 	    Products.addActionListener(new ActionListener() {
 			@Override
@@ -71,7 +71,7 @@ public class JFrameAdmin extends JFrame {
 	    
 	    Supplier = new JButton ("Proveedores");
 	    Supplier.setFont(new Font("Arial", Font.PLAIN, 16));
-	    Supplier.setBounds(76, 169, 200, 100);
+	    Supplier.setBounds(31, 33, 200, 236);
 	    Supplier.setIcon(IconSuppliers);
 	    Supplier.addActionListener(new ActionListener() {
 			@Override
@@ -79,7 +79,7 @@ public class JFrameAdmin extends JFrame {
 				// TODO Auto-generated method stub
 				dispose();
 				try {
-					CrudProveedores cprov=new CrudProveedores();
+					CrudProveedor cprov=new CrudProveedor();
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -92,7 +92,7 @@ public class JFrameAdmin extends JFrame {
 	    
 	    Transaction = new JButton ("Transacción");
 	    Transaction.setFont(new Font("Arial", Font.PLAIN, 16));
-	    Transaction.setBounds(347, 169, 200, 100);
+	    Transaction.setBounds(451, 33, 200, 236);
 	    Transaction.setIcon(IconTransaction);
 	    Transaction.addActionListener(new ActionListener() {
 			@Override
@@ -106,7 +106,7 @@ public class JFrameAdmin extends JFrame {
 	    
 	    SignOff = new JButton ("Cerrar Sesión");
 	    SignOff.setFont(new Font("Arial", Font.PLAIN, 16));
-	    SignOff.setBounds(118, 288, 341, 77);
+	    SignOff.setBounds(181, 289, 341, 77);
 	    SignOff.setIcon(IconSignOff);
 	    SignOff.addActionListener(new ActionListener() {
 			@Override

@@ -64,21 +64,21 @@ public class JFrameLogin extends JFrame {
 		});
 
 		Usuario = new JLabel("Usuario: ");
-		Usuario.setBounds(85, 69, 79, 44);
+		Usuario.setBounds(84, 84, 79, 44);
 		Usuario.setFont(new Font("Arial", Font.PLAIN, 16));
 
 		Clave = new JLabel("Clave: ");
-		Clave.setBounds(85, 147, 54, 37);
+		Clave.setBounds(84, 162, 54, 37);
 		Clave.setFont(new Font("Arial", Font.PLAIN, 16));
 
 		Usuariotext = new JTextField(20);
-		Usuariotext.setBounds(216, 78, 300, 30);
+		Usuariotext.setBounds(215, 93, 300, 30);
 
 		Passwordtext = new JPasswordField(20);
-		Passwordtext.setBounds(216, 154, 300, 30);
+		Passwordtext.setBounds(215, 169, 300, 30);
 
 		Enter = new JButton("Entrar");
-		Enter.setBounds(233, 267, 160, 60);
+		Enter.setBounds(99, 244, 160, 60);
 		Enter.setFont(new Font("Arial", Font.PLAIN, 16));
 		Enter.setIcon(IconEnter);
 		Enter.addActionListener(new ActionListener() {
@@ -130,7 +130,7 @@ public class JFrameLogin extends JFrame {
 
 		Register = new JButton("Registrar");
 		Register.setFont(new Font("Arial", Font.PLAIN, 16));
-		Register.setBounds(422, 267, 160, 60);
+		Register.setBounds(360, 244, 160, 60);
 		Register.setIcon(IconRegister);
 		Register.addActionListener(new ActionListener() {
 			@Override
@@ -145,7 +145,7 @@ public class JFrameLogin extends JFrame {
 		});
 
 		Close = new JButton("Cerrar");
-		Close.setBounds(41, 267, 160, 60);
+		Close.setBounds(477, 10, 141, 49);
 		Close.setFont(new Font("Arial", Font.PLAIN, 16));
 		Close.setIcon(IconClose);
 		Close.addActionListener(new ActionListener() {
