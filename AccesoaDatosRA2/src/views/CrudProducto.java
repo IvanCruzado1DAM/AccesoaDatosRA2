@@ -45,7 +45,7 @@ public class CrudProducto extends JFrame {
 	// desplegables
 	private JComboBox<String> ComboPrecio, ComboStock, ComboCategoria, ComboMarca, ComboProveedor;
 	// ventana
-	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit;
+	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit,Filter;
 	private static JTable ProductTable;
 	private DefaultTableModel ProductCombo;
 	private JScrollPane ProductScroll;
@@ -77,7 +77,7 @@ public class CrudProducto extends JFrame {
 		ProductWindow.getContentPane().add(ProductLabel);
 		// Imagen
 		ProductImg = new JLabel("");
-		ProductImg.setBounds(529, 142, 180, 180);
+		ProductImg.setBounds(545, 155, 250, 180);
 		ProductWindow.getContentPane().add(ProductImg);
 		// Botones
 		createButtons();
@@ -192,6 +192,19 @@ public class CrudProducto extends JFrame {
 		}
 		ComboProveedor = new JComboBox<>(nombresProveedores.toArray(new String[0]));
 		ComboProveedor.setBounds(337, 78, 100, 21);
+		
+		//boton filtrar
+		Filter = new JButton("Filter");
+		Filter.setBounds(570, 107, 100, 34);
+		Filter.addActionListener(mane);
+		//icono
+		// redminesionar imagen
+		ImageIcon iconoOriginal = new ImageIcon("./icons/IconFilter.png");
+		Image imagenOriginal = iconoOriginal.getImage();
+		Image nuevaImagen = imagenOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon iconoRedimensionado = new ImageIcon(nuevaImagen);
+		Filter.setIcon(iconoRedimensionado);
+		ProductWindow.getContentPane().add(Filter);
 
 		ProductWindow.getContentPane().add(ComboProveedor);
 	}
