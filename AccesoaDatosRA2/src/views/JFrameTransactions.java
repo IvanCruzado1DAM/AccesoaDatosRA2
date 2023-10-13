@@ -16,11 +16,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -34,7 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-
 import models.Empleado;
 import models.Producto;
 import models.Proveedor;
@@ -66,6 +63,8 @@ public class JFrameTransactions extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
+		ImageIcon IconTransaction = new ImageIcon("icons/IconTransactions.png");
+		this.setIconImage(IconTransaction.getImage());
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;
 			{
@@ -118,7 +117,7 @@ public class JFrameTransactions extends JFrame {
 		}
 		EscribirTabla();
 
-		Register = new JButton("Resgistrar");
+		Register = new JButton("Registrar");
 		Register.setBounds(722, 568, 160, 60);
 		Register.setIcon(IconRegister);
 		Register.addActionListener(new ActionListener() {
@@ -471,7 +470,7 @@ public class JFrameTransactions extends JFrame {
 
 	private static void EscribirTabla() {
 		try {
-			for (int x = 0; x < (table.getRowCount() * 6); x++) {
+			for (int x = 0; x < (table.getRowCount() * 100); x++) {
 				if (table.getRowCount() > 0)
 					model.removeRow(0);
 			}
@@ -549,6 +548,26 @@ public class JFrameTransactions extends JFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
+			}else {
+				try {
+					PreparedStatement consulta = conexion.prepareStatement(
+							"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)"
+									+ "AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+									+ "AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ?)");
+					consulta.setString(1, proveedornombre);
+					consulta.setString(2, empleadonombre);
+					consulta.setString(3, marca);
+					consulta.setString(4, productonombre);
+					ResultSet resultado = consulta.executeQuery();
+					while (resultado.next()) {
+						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
+								resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
+								resultado.getInt("cantidad"), resultado.getInt("idempleado")));
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} else if (!proveedornombre.equals("Proveedores") || !empleadonombre.equals("Empleados")
 				|| !marca.equals("Marcas") || !productonombre.equals("Productos")
@@ -558,13 +577,25 @@ public class JFrameTransactions extends JFrame {
 			if(TipoTransaccion.equals("Exportacion")) {
 			try {
 				PreparedStatement consulta = conexion.prepareStatement(
-						"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + proveedornombre + ")"
-								+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = " + empleadonombre+ ")"
-								+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = " + marca +" OR nombre = " + productonombre + ")"
-								+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + proveedornombre + ") AND idempleado = (SELECT idempleado FROM empleado WHERE username = " + empleadonombre + ")"
-								+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  " + proveedornombre + ") AND idproducto = (SELECT idproducto FROM producto WHERE marca = " + marca +" OR nombre = " + productonombre +")"
-								+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = " + empleadonombre+ " ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = " + marca +" OR nombre = " +productonombre + ")"
-								+ "AND cantidad < 0");
+						"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? )"
+								+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+								+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
+								+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? ) AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+								+ "AND idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
+								+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
+								+ "OR (cantidad < 0)");
+				consulta.setString(1, proveedornombre);
+				consulta.setString(2, empleadonombre);
+				consulta.setString(3, marca);
+				consulta.setString(4, productonombre);
+				consulta.setString(5, proveedornombre);
+				consulta.setString(6, empleadonombre);
+				consulta.setString(7, proveedornombre);
+				consulta.setString(8, marca);
+				consulta.setString(9, productonombre);
+				consulta.setString(10, empleadonombre);
+				consulta.setString(11, marca);
+				consulta.setString(12, productonombre);
 				ResultSet resultado = consulta.executeQuery();
 				while (resultado.next()) {
 					ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
@@ -577,14 +608,56 @@ public class JFrameTransactions extends JFrame {
 			}
 			}else if (TipoTransaccion.equals("Importacion")) {
 				try {
-					PreparedStatement consulta = conexion.prepareStatement(
-							"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + proveedornombre + ")"
-									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = " + empleadonombre+ ")"
-									+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = " + marca +" OR nombre = " + productonombre + ")"
-									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = " + proveedornombre + ") AND idempleado = (SELECT idempleado FROM empleado WHERE username = " + empleadonombre + ")"
-									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  " + proveedornombre + ") AND idproducto = (SELECT idproducto FROM producto WHERE marca = " + marca +" OR nombre = " + productonombre +")"
-									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = " + empleadonombre+ " ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = " + marca +" OR nombre = " +productonombre + ")"
-									+ "AND cantidad > 0");
+					PreparedStatement consulta = conexion.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? )"
+									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+									+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
+									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? ) AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+									+ "AND idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
+									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
+									+ "OR (cantidad > 0)");
+					System.out.println("Importacion");
+					consulta.setString(1, proveedornombre);
+					consulta.setString(2, empleadonombre);
+					consulta.setString(3, marca);
+					consulta.setString(4, productonombre);
+					consulta.setString(5, proveedornombre);
+					consulta.setString(6, empleadonombre);
+					consulta.setString(7, proveedornombre);
+					consulta.setString(8, marca);
+					consulta.setString(9, productonombre);
+					consulta.setString(10, empleadonombre);
+					consulta.setString(11, marca);
+					consulta.setString(12, productonombre);
+					ResultSet resultado = consulta.executeQuery();
+					while (resultado.next()) {
+						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
+								resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
+								resultado.getInt("cantidad"), resultado.getInt("idempleado")));
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else {
+				try {
+					PreparedStatement consulta = conexion.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? )"
+									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+									+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = ? OR nombre = ? )"
+									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? ) AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
+									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? OR nombre = ? )"
+									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? OR nombre = ? )");
+					consulta.setString(1, proveedornombre);
+					consulta.setString(2, empleadonombre);
+					consulta.setString(3, marca);
+					consulta.setString(4, productonombre);
+					consulta.setString(5, proveedornombre);
+					consulta.setString(6, empleadonombre);
+					consulta.setString(7, proveedornombre);
+					consulta.setString(8, marca);
+					consulta.setString(9, productonombre);
+					consulta.setString(10, empleadonombre);
+					consulta.setString(11, marca);
+					consulta.setString(12, productonombre);
 					ResultSet resultado = consulta.executeQuery();
 					while (resultado.next()) {
 						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
