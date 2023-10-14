@@ -43,7 +43,7 @@ public class JFrameRegister extends JFrame {
 			BufferedImage backgroundImage;
 			{
 				try {
-//---------------------------Load your background image--------------------------//
+//---------------------------Carga de imagen de fondo--------------------------//
 					backgroundImage = ImageIO.read(new File("background/backgroundLogin.jpg"));
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -53,7 +53,7 @@ public class JFrameRegister extends JFrame {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-//-------------------------------Draw the background image------------------------//
+//-------------------------------Dibuja la imagen de fondo------------------------//
 				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 			}
 		});
@@ -83,16 +83,20 @@ public class JFrameRegister extends JFrame {
 					if (Usernametext.getText().isEmpty() || Passwordtext.getPassword().length == 0) {
 						JOptionPane.showMessageDialog(JFrameRegister.this, "*Rellene todos los campos", "Aviso",
 								JOptionPane.ERROR_MESSAGE);
+						//Obligamos a que el usertext tenga letra mayuscula al principio, luego tenga letras minusculas, mayuscualas o letras
+						//hasta llegar a 16 o minimo 6
 					} else if (!Usernametext.getText().matches("^[A-Z](?=\\w*\\d)(?=\\w*[a-z])\\S{6,16}$")) {
 						JOptionPane.showMessageDialog(JFrameRegister.this,
 								"Campo Usuario \n" + "*Debe tener primer caracter en Mayuscula \n " + "Debe tener letras, al menos un numero \n"
 						        + "*Y puede tener un caracter especial",
 								"Aviso", JOptionPane.ERROR_MESSAGE);
+						//Comprueba si hay al menos una minuscula, mayuscula y numero, debe tener longitud de al menos 6 a 10
 					} else if (!String.valueOf(Passwordtext.getPassword()).matches("^(?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,10}$")) {
 						JOptionPane.showMessageDialog(JFrameRegister.this, "CAMPO CLAVE \n" + "*Debe contener 1 Digito\n"
 								+"*Debe tener Mayuscula y minuscula\n "+ "*Debe tener longitud entre 6 a 10",
 								"Aviso", JOptionPane.ERROR_MESSAGE);
 					} else if (!Usernametext.getText().isEmpty() && !(Passwordtext.getPassword().length == 0)) {
+						//Si los campos no estan vacios y el usuario no existe se registrara sino, nos avisara de que existe
 						if (Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usernametext.getText(), String.valueOf(Passwordtext.getPassword())) == null){
 							Empleado e1 = new Empleado(Usernametext.getText(),
 									String.valueOf(Passwordtext.getPassword()));

@@ -1,0 +1,8 @@
+Transaccion [idinventario=25, idproducto=30, idproveedor=1, cantidad=2000, idempleado=12, fecha=2023-10-13]
+Transaccion [idinventario=26, idproducto=27, idproveedor=1, cantidad=10000, idempleado=12, fecha=2023-10-13]
+Transaccion [idinventario=27, idproducto=27, idproveedor=1, cantidad=55, idempleado=12, fecha=2023-10-14]
+Transaccion [idinventario=28, idproducto=27, idproveedor=1, cantidad=90, idempleado=12, fecha=2023-10-14]
+Transaccion [idinventario=29, idproducto=32, idproveedor=1, cantidad=200, idempleado=12, fecha=2023-10-14]
+Transaccion [idinventario=31, idproducto=31, idproveedor=1, cantidad=1200, idempleado=12, fecha=2023-10-14]
+Transaccion [idinventario=32, idproducto=31, idproveedor=2, cantidad=1200, idempleado=12, fecha=2023-10-14]
+Transaccion [idinventario=30, idproducto=28, idproveedor=12, cantidad=1200, idempleado=12, fecha=2023-10-14]

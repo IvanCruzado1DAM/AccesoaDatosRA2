@@ -48,7 +48,7 @@ public class JFrameLogin extends JFrame {
 			BufferedImage backgroundImage;
 			{
 				try {
-//---------------------------Load your background image--------------------------//
+//---------------------------Carga de imagen de fondo--------------------------//
 					backgroundImage = ImageIO.read(new File("background/backgroundLogin.jpg"));
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -58,7 +58,7 @@ public class JFrameLogin extends JFrame {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-//-------------------------------Draw the background image------------------------//
+//-------------------------------Dibuja la imagen de fondo------------------------//
 				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 			}
 		});
@@ -89,6 +89,8 @@ public class JFrameLogin extends JFrame {
 					if (Usertext.getText().isEmpty() || Passwordtext.getPassword().length == 0) {
 						JOptionPane.showMessageDialog(JFrameLogin.this, "*Rellene todos los campos", "Aviso",
 								JOptionPane.ERROR_MESSAGE);
+						//Obligamos a que el usertext tenga letra mayuscula al principio, luego tenga letras minusculas, mayuscualas o letras
+						//hasta llegar a 16 o minimo 6
 					} else if (!Usertext.getText()
 							.matches("^[A-Z](?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,16}$")) {
 						JOptionPane.showMessageDialog(JFrameLogin.this,
@@ -96,8 +98,9 @@ public class JFrameLogin extends JFrame {
 										+ "Debe tener letras, al menos un numero \n"
 										+ "*Y puede tener un caracter especial",
 								"Aviso", JOptionPane.ERROR_MESSAGE);
+						//Comprueba si hay al menos una minuscula, mayuscula y numero, debe tener longitud de al menos 6 a 10
 					} else if (!String.valueOf(Passwordtext.getPassword())
-							.matches("^(?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{8,16}$")) {
+							.matches("^(?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,10}$")) {
 						JOptionPane.showMessageDialog(
 								JFrameLogin.this, "CAMPO CLAVE \n" + "*Debe contener 1 Digito\n"
 										+ "*Debe tener Mayuscula y minuscula\n " + "*Debe tener longitud entre 6 a 10",
@@ -107,6 +110,7 @@ public class JFrameLogin extends JFrame {
 								String.valueOf(Passwordtext.getPassword())).toString() == null) {
 						} else {
 							JOptionPane.showMessageDialog(JFrameLogin.this, "Bienvenido " + Usertext.getText());
+							//Guardamos el empleado que ha iniciado
 							EmActivo = Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usertext.getText(),
 									String.valueOf(Passwordtext.getPassword()));
 							dispose();
@@ -165,23 +169,5 @@ public class JFrameLogin extends JFrame {
 		getContentPane().add(Enter);
 		getContentPane().add(Close);
 		getContentPane().add(Register);
-	}
-
-	public Empleado getEmpleado(Connection conexion, String nombre, String password) throws SQLException {
-		Empleado empleado = null;
-		try {
-			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT idempleado, username, password FROM empleado WHERE (username = ?) AND (password = ?)");
-			consulta.setString(1, nombre);
-			consulta.setString(2, password);
-			ResultSet resultado = consulta.executeQuery();
-			while (resultado.next()) {
-				empleado = new Empleado(resultado.getInt("idempleado"), resultado.getString("username"),
-						resultado.getString("password"));
-			}
-		} catch (SQLException ex) {
-			throw new SQLException(ex);
-		}
-		return empleado;
 	}
 }

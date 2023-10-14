@@ -41,8 +41,11 @@ public class JFrameUpdateTransaction extends JFrame {
 	private List<String> ListProduct = new ArrayList<>();
 	private List<String> ListBrand = new ArrayList<>();
 	private JButton Update, Return, UpdateDate;
-	private final Icon IconUpdate = new ImageIcon("icons/IconUpdate.png"), IconReturn = new ImageIcon("icons/IconReturn.png");
-	private Date d = new Date(new java.util.Date().getTime());
+	private final Icon IconUpdate = new ImageIcon("icons/IconUpdate.png"),
+			IconReturn = new ImageIcon("icons/IconReturn.png");
+	// Variable para la fecha, estatica ya que es la misma para toda las clases
+	private static Date d = new Date(new java.util.Date().getTime());
+	private static Date d2 ;
 
 	public JFrameUpdateTransaction() {
 		super("Actualizar Transacciones | Empleado : " + JFrameLogin.EmActivo.getUsername());
@@ -50,12 +53,12 @@ public class JFrameUpdateTransaction extends JFrame {
 		setSize(951, 695);
 		setResizable(false);
 		setLocationRelativeTo(null);
-		
+
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;
 			{
 				try {
-//---------------------------Load your background image--------------------------//
+//---------------------------Carga de imagen de fondo--------------------------//
 					backgroundImage = ImageIO.read(new File("background/backgroundTransactions.jpg"));
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -65,7 +68,7 @@ public class JFrameUpdateTransaction extends JFrame {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-//-------------------------------Draw the background image------------------------//
+//-------------------------------Dibuja la imagen de fondo------------------------//
 				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 			}
 		});
@@ -91,8 +94,9 @@ public class JFrameUpdateTransaction extends JFrame {
 		Idtransactiontext.setEditable(false);
 		Employeetext = new JTextField(10);
 		Employeetext.setBounds(266, 489, 86, 33);
-	
+
 		try {
+			// Ponemos el empleado que realiza la actualizacion
 			Employeetext.setText(
 					String.valueOf(Test.os.getEmpleado(ConexionBDSql.obtener(), JFrameTransactions.t.getIdempleado())));
 		} catch (ClassNotFoundException e) {
@@ -108,6 +112,7 @@ public class JFrameUpdateTransaction extends JFrame {
 		Suppliertext.setBounds(571, 85, 300, 50);
 		ListSupplier = new ArrayList<>();
 		try {
+			// Rellenamos el combobox de proveedores, sin que se repitan
 			for (Proveedor pro : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
 				String m = pro.getNombre();
 				if (!ListSupplier.contains(m)) {
@@ -115,7 +120,9 @@ public class JFrameUpdateTransaction extends JFrame {
 					Suppliertext.addItem(m);
 				}
 			}
-			Suppliertext.setSelectedItem(Test.os.getProveedor(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproveedor()).getNombre());
+			// Ponemos el proveedor de la transaccion seleccionado para actualizar
+			Suppliertext.setSelectedItem(
+					Test.os.getProveedor(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproveedor()).getNombre());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,12 +130,13 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Producttext = new JComboBox<String>();
 		Producttext.setFont(new Font("Arial", Producttext.getFont().getStyle(), Producttext.getFont().getSize()));
 		Producttext.setBounds(571, 217, 300, 50);
 		ListProduct = new ArrayList<>();
 		try {
+			// Rellenamos el combobox con el nombre de la transaccion , sin que se repitan
 			for (Producto em : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = em.getNombre();
 				if (!ListProduct.contains(m)) {
@@ -136,7 +144,8 @@ public class JFrameUpdateTransaction extends JFrame {
 					Producttext.addItem(m);
 				}
 			}
-			Producttext.setSelectedItem(Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getNombre());
+			Producttext.setSelectedItem(
+					Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getNombre());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -149,6 +158,7 @@ public class JFrameUpdateTransaction extends JFrame {
 		Brandtext.setBounds(126, 217, 300, 50);
 		ListBrand = new ArrayList<>();
 		try {
+			// Rellenamos el combobox con las marcas de los productos, sin que se repitan
 			for (models.Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = p.getMarca();
 				if (!ListBrand.contains(m)) {
@@ -156,7 +166,9 @@ public class JFrameUpdateTransaction extends JFrame {
 					Brandtext.addItem(m);
 				}
 			}
-			Brandtext.setSelectedItem(Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getMarca());
+			// Ponemos la marca del producto seleccionado para actualizar
+			Brandtext.setSelectedItem(
+					Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getMarca());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -164,7 +176,7 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 		Amounttext = new JTextField(10);
 		Amounttext.setBounds(126, 344, 300, 29);
 		Amounttext.setText(String.valueOf(JFrameTransactions.t.getCantidad()));
@@ -179,30 +191,47 @@ public class JFrameUpdateTransaction extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				Connection conexion = null;
 				try {
-					 Transaccion t = new Transaccion ();
-					 t = Test.os.getTransaccion(ConexionBDSql.obtener(), Integer.valueOf(Idtransactiontext.getText()));
-					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Producttext.getSelectedItem().toString()).getIdproducto());
-					 p.setStock(p.getStock()-t.getCantidad());
-					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
-				     t.setIdproducto(getProductoId(ConexionBDSql.obtener(),Producttext.getSelectedItem().toString()).getIdproducto());
-					 t.setIdproveedor(getProveedorId(ConexionBDSql.obtener(),Suppliertext.getSelectedItem().toString()).getIdproveedor());
-					 t.setCantidad(Integer.valueOf(Amounttext.getText()));	
-					 t.setFecha(d);
-					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 2);
-					 p.setStock(p.getStock()+t.getCantidad());
-					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
-					 JOptionPane.showMessageDialog(JFrameUpdateTransaction.this, "Actualizacion Realizada Correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+					conexion = ConexionBDSql.obtener();
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				}
+				try {
+					// Obtener la transacción y el producto
+					Transaccion t = Test.os.getTransaccion(conexion, Integer.valueOf(Idtransactiontext.getText()));
+					Producto p = Test.os.getProduct(conexion, getProductoId(conexion, Producttext.getSelectedItem().toString()).getIdproducto());
+
+					// Actualizar el stock del producto
+					p.setStock(p.getStock() - t.getCantidad());
+					Test.os.saveProducto(conexion, p, 2);
+
+					// Actualizar nuevamente el stock del producto
+					p.setStock(p.getStock() + t.getCantidad());
+					Test.os.saveProducto(conexion, p, 2);
+
+					// Eliminar la transacción antigua
+					Test.os.removeTransaccion(conexion, t);
+					
+					// Crear y guardar la nueva transacción
+					Transaccion tnew = new Transaccion(d2, getProductoId(conexion, Producttext.getSelectedItem().toString()).getIdproducto(),
+					        getProveedorId(conexion, Suppliertext.getSelectedItem().toString()).getIdproveedor(),
+					        Integer.valueOf(Amounttext.getText()), JFrameLogin.EmActivo.getIduser());
+					Test.os.saveTransaccion(conexion, tnew, 1);
+
+					// Mostrar un mensaje de confirmación
+					JOptionPane.showMessageDialog(JFrameUpdateTransaction.this, "Actualizacion Realizada Correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				} catch (NumberFormatException ex) {
-					 JOptionPane.showMessageDialog(JFrameUpdateTransaction.this, "Cantidad solo debe contener numeros", "Aviso",  JOptionPane.ERROR_MESSAGE);
-					    Amounttext.setText("");
+					JOptionPane.showMessageDialog(JFrameUpdateTransaction.this, "Cantidad solo debe contener numeros",
+							"Aviso", JOptionPane.ERROR_MESSAGE);
+					Amounttext.setText("");
 				}
 			}
 		});
@@ -219,15 +248,15 @@ public class JFrameUpdateTransaction extends JFrame {
 				jf.setVisible(true);
 			}
 		});
-		
-		UpdateDate = new JButton ("Actualizar Fecha");
+
+		UpdateDate = new JButton("Actualizar Fecha");
 		UpdateDate.setBounds(640, 373, 146, 50);
 		UpdateDate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				d = new Date(new java.util.Date().getTime());
-				datetext.setText(JFrameTransactions.dateFormat.format(d));
+				d2 = new Date(new java.util.Date().getTime());
+				datetext.setText(JFrameTransactions.dateFormat.format(d2));
 			}
 		});
 
@@ -248,7 +277,9 @@ public class JFrameUpdateTransaction extends JFrame {
 		getContentPane().add(Update);
 		getContentPane().add(Return);
 	}
-	
+
+	// Obtenemos el producto a traves del nombre, para poder mostrar solo el
+	// nombre, en el jtable
 	public Producto getProductoId(Connection conexion, String nombre) throws SQLException {
 		Producto product = null;
 		try {
@@ -266,12 +297,14 @@ public class JFrameUpdateTransaction extends JFrame {
 		}
 		return product;
 	}
-	
+
+	// Obtenemos el proveedor a traves del nombre, para poder mostrar solo el
+	// nombre, en el jtable
 	public Proveedor getProveedorId(Connection conexion, String nombre) throws SQLException {
 		Proveedor Supplier = null;
 		try {
-			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT idproveedor, nombre, direccion, numero FROM proveedor WHERE nombre = ?");
+			PreparedStatement consulta = conexion
+					.prepareStatement("SELECT idproveedor, nombre, direccion, numero FROM proveedor WHERE nombre = ?");
 			consulta.setString(1, nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
@@ -284,4 +317,3 @@ public class JFrameUpdateTransaction extends JFrame {
 		return Supplier;
 	}
 }
-

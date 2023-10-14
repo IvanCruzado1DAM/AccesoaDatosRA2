@@ -47,6 +47,7 @@ import services.Test;
 public class JFrameTransactions extends JFrame {
 
 	private JLabel NameTable, Picture;
+	//Clase modificada para bloquear celdas del jtable
 	private static JTableBloqueoCeldas model;
 	private static JTable table;
 	private static JComboBox<String> Filter_Employee, Filter_Supplier, Filter_Brand, Filter_Product, Transaction_Type;
@@ -59,11 +60,14 @@ public class JFrameTransactions extends JFrame {
 			IconDelete = new ImageIcon("icons/IconDelete.png"), IconUpdate = new ImageIcon("icons/IconUpdate.png"),
 			IconReturn = new ImageIcon("icons/IconReturn.png"),
 			IconGenerateReport = new ImageIcon("icons/IconDocument.png");
+	//Declaramos como static y protected para poder acceder a ella en las otras clases
 	protected static Transaccion t;
-	private static String fEmployee = "Empleados", fSupplier = "Proveedores", fBrand = "brands",
-			fProduct = "Productos", tTransaction = "TiposTransacciones";
+	private static String fEmployee = "Empleados", fSupplier = "Proveedores", fBrand = "brands", fProduct = "Productos",
+			tTransaction = "TiposTransacciones";
 	private static List<Transaccion> ListaTransacciones = new ArrayList<>();
 	protected static Date date;
+	
+	//Para dar un formato con horas, minutos y segundos a fecha (ademas de dia, año, mes)
 	protected static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z");
 
 	public JFrameTransactions() {
@@ -73,13 +77,14 @@ public class JFrameTransactions extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 
+		//Con estas dos lineas conseguimos tener el icono en e logo de la app cuando se ejecuta
 		ImageIcon IconTransaction = new ImageIcon("icons/IconTransactions.png");
 		this.setIconImage(IconTransaction.getImage());
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;
 			{
 				try {
-//---------------------------Load your background image--------------------------//
+//---------------------------Carga de imagen de fondo--------------------------//
 					backgroundImage = ImageIO.read(new File("background/backgroundTransactions.jpg"));
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -89,7 +94,7 @@ public class JFrameTransactions extends JFrame {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-//-------------------------------Draw the background image------------------------//
+//-------------------------------Dibuja la imagen de fondo------------------------//
 				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 			}
 		});
@@ -101,6 +106,7 @@ public class JFrameTransactions extends JFrame {
 
 		table = new JTable();
 		model = new JTableBloqueoCeldas();
+		//Permite que ordenemos de arriba a abajo las columnas, dando en el nombre de esta
 		table.getTableHeader().setReorderingAllowed(true);
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
 		table.setRowSorter(sorter);
@@ -115,8 +121,9 @@ public class JFrameTransactions extends JFrame {
 		model.addColumn("PRODUCTO");
 		model.addColumn("CANTIDAD");
 		model.addColumn("FECHA");
+		//Ajustamos el tamaño de jtable, en filas y en la columna de fecha
 		table.setRowHeight(30);
-	    table.getColumnModel().getColumn(6).setPreferredWidth(180);
+		table.getColumnModel().getColumn(6).setPreferredWidth(180);
 		try {
 			ListaTransacciones = Test.os.getAllTransacciones(ConexionBDSql.obtener());
 		} catch (ClassNotFoundException e) {
@@ -151,16 +158,13 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					t = Test.os.getTransaccion(ConexionBDSql.obtener(),
-							Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
-					Producto p = Test.os
-							.getProduct(
-									ConexionBDSql.obtener(), Test.os
-											.getTransaccion(ConexionBDSql.obtener(),
-													Integer.valueOf(
-															model.getValueAt(table.getSelectedRow(), 0).toString()))
-											.getIdproducto());
+					//Recogemos la transaccion a eliminar
+					t = Test.os.getTransaccion(ConexionBDSql.obtener(),Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
+					//Recuperamos el producto para reestablecer su valor al de antes de la transaccion
+					Producto p = Test.os.getProduct(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(),
+			         Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())).getIdproducto());
 					p.setStock(p.getStock() - t.getCantidad());
+					//Eliminamos la transaccion
 					Test.os.removeTransaccion(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())));
 					JOptionPane.showMessageDialog(JFrameTransactions.this, "Transaccion Eliminada Correctamente",
@@ -188,8 +192,10 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
+					//Recuperamos la transaccion seleccionada en el jtable con el id
 					t = Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString()));
+					//Obtenemos la fecha de la transaccion para, poder recuperar en la siguiente clase
 					date = Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())).getFecha();
 					dispose();
@@ -240,12 +246,14 @@ public class JFrameTransactions extends JFrame {
 		});
 
 		Filter_Employee = new JComboBox<String>();
-		Filter_Employee.setFont(new Font("Arial", Filter_Employee.getFont().getStyle(), Filter_Employee.getFont().getSize()));
+		Filter_Employee
+				.setFont(new Font("Arial", Filter_Employee.getFont().getStyle(), Filter_Employee.getFont().getSize()));
 		Filter_Employee.setBounds(111, 18, 180, 50);
 		Employee = new ArrayList<>();
 		Filter_Employee.addItem("Empleados");
 		Filter_Employee.setSelectedIndex(0);
 		try {
+			//Rellenamos el filtro de empleado con el nombre para que sea mas facil , sin que se repita
 			for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
 				String m = em.getUsername();
 				if (!Employee.contains(m)) {
@@ -267,8 +275,9 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
+					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
 					fEmployee = (String) Filter_Employee.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
@@ -278,12 +287,14 @@ public class JFrameTransactions extends JFrame {
 		});
 
 		Filter_Supplier = new JComboBox<String>();
-		Filter_Supplier.setFont(new Font("Arial", Filter_Supplier.getFont().getStyle(), Filter_Supplier.getFont().getSize()));
+		Filter_Supplier
+				.setFont(new Font("Arial", Filter_Supplier.getFont().getStyle(), Filter_Supplier.getFont().getSize()));
 		Filter_Supplier.setBounds(301, 19, 180, 50);
 		Supplier = new ArrayList<>();
 		Filter_Supplier.addItem("Proveedores");
 		Filter_Supplier.setSelectedIndex(0);
 		try {
+			//Rellenamos el combobox de proveedor con su nombre para filtrar con ellos, sin que se repitan
 			for (Proveedor p : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
 				String m = p.getNombre();
 				if (!Supplier.contains(m)) {
@@ -304,8 +315,9 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					fSupplier  = (String) Filter_Supplier.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
+					fSupplier = (String) Filter_Supplier.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
@@ -315,12 +327,14 @@ public class JFrameTransactions extends JFrame {
 		});
 
 		Filter_Product = new JComboBox<String>();
-		Filter_Product.setFont(new Font("Arial", Filter_Product.getFont().getStyle(), Filter_Product.getFont().getSize()));
+		Filter_Product
+				.setFont(new Font("Arial", Filter_Product.getFont().getStyle(), Filter_Product.getFont().getSize()));
 		Filter_Product.setBounds(696, 18, 180, 50);
 		Name = new ArrayList<>();
 		Filter_Product.addItem("Productos");
 		Filter_Product.setSelectedIndex(0);
 		try {
+			//Rellenamos el combobox de productos con su nombre para filtrar con ellos, sin que repita
 			for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String n = p.getNombre();
 				if (!Name.contains(n)) {
@@ -341,8 +355,9 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
+					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
 					fProduct = (String) Filter_Product.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
@@ -358,6 +373,7 @@ public class JFrameTransactions extends JFrame {
 		Filter_Brand.addItem("Marcas");
 		Filter_Brand.setSelectedIndex(0);
 		try {
+			//Rellenamos el combobox de marcas para filtrar con ellas, sin que se repita
 			for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = p.getMarca();
 				if (!Brand.contains(m)) {
@@ -378,8 +394,9 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
+					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
 					fBrand = (String) Filter_Brand.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
@@ -389,8 +406,8 @@ public class JFrameTransactions extends JFrame {
 		});
 
 		Transaction_Type = new JComboBox<String>();
-		Transaction_Type
-				.setFont(new Font("Arial", Transaction_Type.getFont().getStyle(), Transaction_Type.getFont().getSize()));
+		Transaction_Type.setFont(
+				new Font("Arial", Transaction_Type.getFont().getStyle(), Transaction_Type.getFont().getSize()));
 		Transaction_Type.setBounds(902, 19, 180, 50);
 		Transaction_Type.addItem("TiposTransacciones");
 		Transaction_Type.addItem("Exportacion");
@@ -401,8 +418,9 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
+					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
 					tTransaction = (String) Transaction_Type.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
@@ -423,8 +441,8 @@ public class JFrameTransactions extends JFrame {
 															table.getValueAt(table.getSelectedRow(), 0).toString()))
 											.getIdproducto())
 									.getImg());
-					ImageIcon icon = new ImageIcon(
-							i.getImage().getScaledInstance(Picture.getWidth(), Picture.getHeight(), Image.SCALE_DEFAULT));
+					ImageIcon icon = new ImageIcon(i.getImage().getScaledInstance(Picture.getWidth(),
+							Picture.getHeight(), Image.SCALE_DEFAULT));
 					Picture.setIcon(icon);
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
@@ -482,10 +500,9 @@ public class JFrameTransactions extends JFrame {
 
 	private static void EscribirTabla() {
 		try {
-			for (int x = 0; x < (table.getRowCount() * 100); x++) {
-				if (table.getRowCount() > 0)
-					model.removeRow(0);
-			}
+			while (model.getRowCount() > 0) {
+	            model.removeRow(0);
+	        }
 			for (Transaccion t : ListaTransacciones) {
 				Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
 				Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
@@ -506,10 +523,11 @@ public class JFrameTransactions extends JFrame {
 		}
 	}
 
-	private void TransaccionesConFiltros(Connection conexion, String suppliername, String employeename,
-			String brand, String productname, String TransactionType) throws SQLException {
+	private void TransaccionesConFiltros(Connection conexion, String suppliername, String employeename, String brand,
+			String productname, String TransactionType) throws SQLException {
 		ListaTransacciones = new ArrayList<>();
 		String sql = null;
+		//Cuando no elegimos nada los valores puesto son estos, lo cual serian nulos
 		if (suppliername.equals("Proveedores"))
 			suppliername = null;
 		if (employeename.equals("Empleados"))
@@ -519,6 +537,9 @@ public class JFrameTransactions extends JFrame {
 		if (productname.equals("Productos"))
 			productname = null;
 		if (TransactionType.equals("Exportacion")) {
+			//Filtramos primero con if para separar si es exportacion o importacion, mediante Join unimos las tablas y colocamos un identicador(apodo)
+			// a las tablas para acortar, como el valor puede ser nulo(no elegir nada en el filtro) colocamos esa condicion o si la elegido, puede ser
+			//filtro o varios
 			sql = "SELECT t.* FROM transaccion t " + "JOIN producto p ON t.idproducto = p.idproducto "
 					+ "JOIN empleado e ON t.idempleado = e.idempleado "
 					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
@@ -530,7 +551,7 @@ public class JFrameTransactions extends JFrame {
 					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
 					+ "AND (p.marca = ? OR ? IS NULL) " + "AND (e.username = ? OR ? IS NULL) "
 					+ "AND (pr.nombre = ? OR ? IS NULL)" + "AND cantidad > 0";
-		}else if (TransactionType.equals("TiposTransacciones")){
+		} else if (TransactionType.equals("TiposTransacciones")) {
 			sql = "SELECT t.* FROM transaccion t " + "JOIN producto p ON t.idproducto = p.idproducto "
 					+ "JOIN empleado e ON t.idempleado = e.idempleado "
 					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
@@ -554,11 +575,12 @@ public class JFrameTransactions extends JFrame {
 						resultado.getInt("idempleado")));
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			
 		}
 		EscribirTabla();
 	}
 
+	//Obtenemos el producto por el nombre para poder poner el nombre simplemente en tabla
 	public Producto getProductoId(Connection conexion, String nombre) throws SQLException {
 		Producto product = null;
 		try {

@@ -45,7 +45,6 @@ public class JFrameCreateTransaction extends JFrame {
 	private List<String> ListProduct = new ArrayList<>();
 	private List<String> ListBrand = new ArrayList<>();
 	private Date d = new Date(new java.util.Date().getTime());
-	private DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z");
 	
 	public JFrameCreateTransaction() {
 		super("Crear Transacciones| Empleado: " + JFrameLogin.EmActivo.getUsername());
@@ -153,7 +152,8 @@ public class JFrameCreateTransaction extends JFrame {
 		
 		datetext = new JTextField(10);
 		datetext.setBounds(692, 11, 236, 30);
-		datetext.setText(String.valueOf(dateFormat.format(d)));
+		//Aplicamos el formato para date
+		datetext.setText(String.valueOf(JFrameTransactions.dateFormat.format(d)));
 		datetext.setEditable(false);
 		
 		Register = new JButton("Registrar");
@@ -166,8 +166,10 @@ public class JFrameCreateTransaction extends JFrame {
 				 try {
 					 Transaccion t = new Transaccion ( d, getProductoId(ConexionBDSql.obtener(), Producttext.getSelectedItem().toString()).getIdproducto(), 
 							 getProveedorId(ConexionBDSql.obtener(), Suppliertext.getSelectedItem().toString()).getIdproveedor(),Integer.valueOf(Amounttext.getText()), JFrameLogin.EmActivo.getIduser());
+					 //Creamos la transaccion y la guardamos
 					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 1);
 					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Producttext.getSelectedItem().toString()).getIdproducto());
+					 //Ajustamos el producto con la transaccion y lo guardamos
 					 p.setStock(p.getStock() + t.getCantidad());
 					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
 					 JOptionPane.showMessageDialog(JFrameCreateTransaction.this, "Transaccion agregada correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
@@ -212,7 +214,9 @@ public class JFrameCreateTransaction extends JFrame {
 		getContentPane().add(Register);
 		getContentPane().add(Return);
 	}
-
+	
+	// Obtenemos el producto a traves del nombre, para poder mostrar solo el
+		// nombre, en el jtable
 	public Producto getProductoId(Connection conexion, String nombre) throws SQLException {
 		Producto product = null;
 		try {
@@ -231,6 +235,8 @@ public class JFrameCreateTransaction extends JFrame {
 		return product;
 	}
 	
+	// Obtenemos el proveedor a traves del nombre, para poder mostrar solo el
+		// nombre, en el jtable
 	public Proveedor getProveedorId(Connection conexion, String nombre) throws SQLException {
 		Proveedor Supplier = null;
 		try {

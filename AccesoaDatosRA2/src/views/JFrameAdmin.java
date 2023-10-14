@@ -23,6 +23,7 @@ public class JFrameAdmin extends JFrame {
 			,IconTransaction = new ImageIcon("icons/IconTransactions.png"), IconSignOff = new ImageIcon ("icons/IconSignOff.png");
 
 	public JFrameAdmin () {
+		//Recuperamos al empleado que ha iniciado antes
 		super("Admin | Empleado : " + JFrameLogin.EmActivo.getUsername());
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(700,429);

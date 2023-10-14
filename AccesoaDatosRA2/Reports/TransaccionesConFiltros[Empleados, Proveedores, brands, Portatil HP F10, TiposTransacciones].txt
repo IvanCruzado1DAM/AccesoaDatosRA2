@@ -1,0 +1,1 @@
+Transaccion [idinventario=25, idproducto=30, idproveedor=1, cantidad=2000, idempleado=12, fecha=2023-10-13]
