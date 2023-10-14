@@ -41,19 +41,22 @@ import services.Test;
 
 public class JFrameTransactions extends JFrame {
 
-	private JLabel NombreTabla, Foto;
+	private JLabel NameTable, Picture;
 	private static JTableBloqueoCeldas model;
 	private static JTable table;
-	private static JComboBox<String> Filtro_Empleado, Filtro_Proveedor, Filtro_Marca, Filtro_Producto, Tipo_Transaccion;
-	private List<String> Empleado = new ArrayList<>();
-	private List<String> Proveedor = new ArrayList<>();
-	private List<String> Marca = new ArrayList<>();
-	private List<String> Nombre = new ArrayList<>();
+	private static JComboBox<String> Filter_Employee, Filter_Supplier, Filter_Brand, Filter_Product, Transaction_Type;
+	private List<String> Employee = new ArrayList<>();
+	private List<String> Supplier = new ArrayList<>();
+	private List<String> Brand = new ArrayList<>();
+	private List<String> Name = new ArrayList<>();
 	private JButton Register, Delete, Update, Return, GenerateReport;
-	private final Icon IconRegister = new ImageIcon("icons/IconRegister.png"), IconDelete = new ImageIcon("icons/IconDelete.png"), IconUpdate = new ImageIcon("icons/IconUpdate.png"),
-			IconReturn = new ImageIcon("icons/IconReturn.png"), IconGenerateReport = new ImageIcon("icons/IconDocument.png");
+	private final Icon IconRegister = new ImageIcon("icons/IconRegister.png"),
+			IconDelete = new ImageIcon("icons/IconDelete.png"), IconUpdate = new ImageIcon("icons/IconUpdate.png"),
+			IconReturn = new ImageIcon("icons/IconReturn.png"),
+			IconGenerateReport = new ImageIcon("icons/IconDocument.png");
 	protected static Transaccion t;
-	private static String fEmpleado = "Empleados", fProveedor = "Proveedores", fMarca = "Marcas", fProducto = "Productos", tTransaccion = "TiposTransacciones";
+	private static String fEmployee = "Empleados", fSupplier = "Proveedores", fBrand = "brands",
+			fProduct = "Productos", tTransaction = "TiposTransacciones";
 	private static List<Transaccion> ListaTransacciones = new ArrayList<>();
 
 	public JFrameTransactions() {
@@ -62,7 +65,7 @@ public class JFrameTransactions extends JFrame {
 		setSize(1159, 699);
 		setResizable(false);
 		setLocationRelativeTo(null);
-		
+
 		ImageIcon IconTransaction = new ImageIcon("icons/IconTransactions.png");
 		this.setIconImage(IconTransaction.getImage());
 		setContentPane(new JPanel() {
@@ -84,8 +87,8 @@ public class JFrameTransactions extends JFrame {
 			}
 		});
 
-		NombreTabla = new JLabel("Transacciones");
-		NombreTabla.setBounds(10, 19, 122, 50);
+		NameTable = new JLabel("Transacciones");
+		NameTable.setBounds(10, 19, 122, 50);
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(36, 79, 806, 439);
 
@@ -97,11 +100,11 @@ public class JFrameTransactions extends JFrame {
 		table.setModel(model);
 
 		scrollPane.setViewportView(table);
-		
+
 		model.addColumn("ID");
 		model.addColumn("EMPLEADO");
 		model.addColumn("PROVEEDOR");
-		model.addColumn("MARCA");
+		model.addColumn("brand");
 		model.addColumn("PRODUCTO");
 		model.addColumn("CANTIDAD");
 		model.addColumn("FECHA");
@@ -130,8 +133,8 @@ public class JFrameTransactions extends JFrame {
 			}
 		});
 
-		Foto = new JLabel("");
-		Foto.setBounds(863, 79, 258, 287);
+		Picture = new JLabel("");
+		Picture.setBounds(863, 79, 258, 287);
 		Delete = new JButton("Eliminar");
 		Delete.setBounds(507, 568, 140, 60);
 		Delete.setIcon(IconDelete);
@@ -222,22 +225,22 @@ public class JFrameTransactions extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				EscribirTexto(fEmpleado, fProveedor, fMarca, fProducto, tTransaccion);
+				EscribirTexto(fEmployee, fSupplier, fBrand, fProduct, tTransaction);
 			}
 		});
 
-		Filtro_Empleado = new JComboBox<String>();
-		Filtro_Empleado.setFont(new Font("Arial", Filtro_Empleado.getFont().getStyle(), Filtro_Empleado.getFont().getSize()));
-		Filtro_Empleado.setBounds(111, 18, 180, 50);
-		Empleado = new ArrayList<>();
-		Filtro_Empleado.addItem("Empleados");
-		Filtro_Empleado.setSelectedIndex(0);
+		Filter_Employee = new JComboBox<String>();
+		Filter_Employee.setFont(new Font("Arial", Filter_Employee.getFont().getStyle(), Filter_Employee.getFont().getSize()));
+		Filter_Employee.setBounds(111, 18, 180, 50);
+		Employee = new ArrayList<>();
+		Filter_Employee.addItem("Empleados");
+		Filter_Employee.setSelectedIndex(0);
 		try {
 			for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
 				String m = em.getUsername();
-				if (!Empleado.contains(m)) {
-					Empleado.add(m);
-					Filtro_Empleado.addItem(m);
+				if (!Employee.contains(m)) {
+					Employee.add(m);
+					Filter_Employee.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -248,15 +251,15 @@ public class JFrameTransactions extends JFrame {
 			e.printStackTrace();
 		}
 
-		Filtro_Empleado.addActionListener(new ActionListener() {
+		Filter_Employee.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					fEmpleado = (String) Filtro_Empleado.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor, fEmpleado, fMarca, fProducto,
-							tTransaccion);
+					fEmployee = (String) Filter_Employee.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -264,18 +267,18 @@ public class JFrameTransactions extends JFrame {
 			}
 		});
 
-		Filtro_Proveedor = new JComboBox<String>();
-		Filtro_Proveedor.setFont(new Font("Arial", Filtro_Proveedor.getFont().getStyle(), Filtro_Proveedor.getFont().getSize()));
-		Filtro_Proveedor.setBounds(301, 19, 180, 50);
-		Proveedor = new ArrayList<>();
-		Filtro_Proveedor.addItem("Proveedores");
-		Filtro_Proveedor.setSelectedIndex(0);
+		Filter_Supplier = new JComboBox<String>();
+		Filter_Supplier.setFont(new Font("Arial", Filter_Supplier.getFont().getStyle(), Filter_Supplier.getFont().getSize()));
+		Filter_Supplier.setBounds(301, 19, 180, 50);
+		Supplier = new ArrayList<>();
+		Filter_Supplier.addItem("Proveedores");
+		Filter_Supplier.setSelectedIndex(0);
 		try {
 			for (Proveedor p : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
 				String m = p.getNombre();
-				if (!Proveedor.contains(m)) {
-					Proveedor.add(m);
-					Filtro_Proveedor.addItem(m);
+				if (!Supplier.contains(m)) {
+					Supplier.add(m);
+					Filter_Supplier.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -286,14 +289,14 @@ public class JFrameTransactions extends JFrame {
 			e.printStackTrace();
 		}
 
-		Filtro_Proveedor.addActionListener(new ActionListener() {
+		Filter_Supplier.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					fProveedor = (String) Filtro_Proveedor.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor, fEmpleado, fMarca, fProducto,
-							tTransaccion);
+					fSupplier  = (String) Filter_Supplier.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -301,18 +304,18 @@ public class JFrameTransactions extends JFrame {
 			}
 		});
 
-		Filtro_Producto = new JComboBox<String>();
-		Filtro_Producto.setFont(new Font("Arial", Filtro_Producto.getFont().getStyle(), Filtro_Producto.getFont().getSize()));
-		Filtro_Producto.setBounds(696, 18, 180, 50);
-		Nombre = new ArrayList<>();
-		Filtro_Producto.addItem("Productos");
-	    Filtro_Producto.setSelectedIndex(0);
+		Filter_Product = new JComboBox<String>();
+		Filter_Product.setFont(new Font("Arial", Filter_Product.getFont().getStyle(), Filter_Product.getFont().getSize()));
+		Filter_Product.setBounds(696, 18, 180, 50);
+		Name = new ArrayList<>();
+		Filter_Product.addItem("Productos");
+		Filter_Product.setSelectedIndex(0);
 		try {
 			for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String n = p.getNombre();
-				if (!Nombre.contains(n)) {
-					Nombre.add(n);
-					Filtro_Producto.addItem(n);
+				if (!Name.contains(n)) {
+					Name.add(n);
+					Filter_Product.addItem(n);
 				}
 			}
 		} catch (ClassNotFoundException e1) {
@@ -323,14 +326,14 @@ public class JFrameTransactions extends JFrame {
 			e1.printStackTrace();
 		}
 
-		Filtro_Producto.addActionListener(new ActionListener() {
+		Filter_Product.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					fProducto = (String) Filtro_Producto.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor, fEmpleado, fMarca, fProducto,
-							tTransaccion);
+					fProduct = (String) Filter_Product.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -338,18 +341,18 @@ public class JFrameTransactions extends JFrame {
 			}
 		});
 
-		Filtro_Marca = new JComboBox<String>();
-		Filtro_Marca.setFont(new Font("Arial", Filtro_Marca.getFont().getStyle(), Filtro_Marca.getFont().getSize()));
-		Filtro_Marca.setBounds(506, 19, 180, 50);
-		Marca = new ArrayList<>();
-		Filtro_Marca.addItem("Marcas");
-		Filtro_Marca.setSelectedIndex(0);
+		Filter_Brand = new JComboBox<String>();
+		Filter_Brand.setFont(new Font("Arial", Filter_Brand.getFont().getStyle(), Filter_Brand.getFont().getSize()));
+		Filter_Brand.setBounds(506, 19, 180, 50);
+		Brand = new ArrayList<>();
+		Filter_Brand.addItem("Marcas");
+		Filter_Brand.setSelectedIndex(0);
 		try {
 			for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = p.getMarca();
-				if (!Marca.contains(m)) {
-					Marca.add(m);
-					Filtro_Marca.addItem(m);
+				if (!Brand.contains(m)) {
+					Brand.add(m);
+					Filter_Brand.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e1) {
@@ -360,14 +363,14 @@ public class JFrameTransactions extends JFrame {
 			e1.printStackTrace();
 		}
 
-		Filtro_Marca.addActionListener(new ActionListener() {
+		Filter_Brand.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					fMarca = (String) Filtro_Marca.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor, fEmpleado, fMarca, fProducto,
-							tTransaccion);
+					fBrand = (String) Filter_Brand.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -375,22 +378,22 @@ public class JFrameTransactions extends JFrame {
 			}
 		});
 
-		Tipo_Transaccion = new JComboBox<String>();
-		Tipo_Transaccion
-				.setFont(new Font("Arial", Filtro_Marca.getFont().getStyle(), Filtro_Marca.getFont().getSize()));
-		Tipo_Transaccion.setBounds(902, 19, 180, 50);
-		Tipo_Transaccion.addItem("TiposTransacciones");
-		Tipo_Transaccion.addItem("Exportacion");
-		Tipo_Transaccion.addItem("Importacion");
-        Tipo_Transaccion.setSelectedIndex(0);
-		Tipo_Transaccion.addActionListener(new ActionListener() {
+		Transaction_Type = new JComboBox<String>();
+		Transaction_Type
+				.setFont(new Font("Arial", Transaction_Type.getFont().getStyle(), Transaction_Type.getFont().getSize()));
+		Transaction_Type.setBounds(902, 19, 180, 50);
+		Transaction_Type.addItem("TiposTransacciones");
+		Transaction_Type.addItem("Exportacion");
+		Transaction_Type.addItem("Importacion");
+		Transaction_Type.setSelectedIndex(0);
+		Transaction_Type.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					tTransaccion = (String) Tipo_Transaccion.getSelectedItem();
-					TransaccionesConFiltros(ConexionBDSql.obtener(), fProveedor, fEmpleado, fMarca, fProducto,
-							tTransaccion);
+					tTransaction = (String) Transaction_Type.getSelectedItem();
+					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier , fEmployee, fBrand, fProduct,
+							tTransaction);
 				} catch (NumberFormatException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -411,8 +414,8 @@ public class JFrameTransactions extends JFrame {
 											.getIdproducto())
 									.getImg());
 					ImageIcon icon = new ImageIcon(
-							i.getImage().getScaledInstance(Foto.getWidth(), Foto.getHeight(), Image.SCALE_DEFAULT));
-					Foto.setIcon(icon);
+							i.getImage().getScaledInstance(Picture.getWidth(), Picture.getHeight(), Image.SCALE_DEFAULT));
+					Picture.setIcon(icon);
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -448,14 +451,13 @@ public class JFrameTransactions extends JFrame {
 		});
 
 		getContentPane().setLayout(null);
-
 		getContentPane().add(scrollPane);
-		getContentPane().add(NombreTabla);
-		getContentPane().add(Filtro_Empleado);
-		getContentPane().add(Filtro_Proveedor);
-		getContentPane().add(Filtro_Marca);
-		getContentPane().add(Filtro_Producto);
-		getContentPane().add(Tipo_Transaccion);
+		getContentPane().add(NameTable);
+		getContentPane().add(Filter_Employee);
+		getContentPane().add(Filter_Supplier);
+		getContentPane().add(Filter_Brand);
+		getContentPane().add(Filter_Product);
+		getContentPane().add(Transaction_Type);
 		getContentPane().add(Register);
 		getContentPane().add(Update);
 		getContentPane().add(Delete);
@@ -463,7 +465,7 @@ public class JFrameTransactions extends JFrame {
 		getContentPane().add(Delete);
 		getContentPane().add(Register);
 		getContentPane().add(Return);
-		getContentPane().add(Foto);
+		getContentPane().add(Picture);
 		getContentPane().add(GenerateReport);
 
 	}
@@ -494,193 +496,55 @@ public class JFrameTransactions extends JFrame {
 		}
 	}
 
-	private void TransaccionesConFiltros(Connection conexion, String proveedornombre, String empleadonombre,
-			String marca, String productonombre, String TipoTransaccion) throws SQLException {
+	private void TransaccionesConFiltros(Connection conexion, String suppliername, String employeename,
+			String brand, String productname, String TransactionType) throws SQLException {
 		ListaTransacciones = new ArrayList<>();
-		System.out.println("Proveedor: " + proveedornombre);
-		System.out.println("Producto: " + productonombre);
-		System.out.println("Empleado: " + empleadonombre);
-		System.out.println("Marca: " + marca);
-		System.out.println("TipoT: " + TipoTransaccion);
-		if (!proveedornombre.equals("Proveedores") && !empleadonombre.equals("Empleados") && !marca.equals("Marcas")
-				&& !productonombre.equals("Productos") && !TipoTransaccion.equals("TiposTransacciones") ) {
-			System.out.println("1 IF");
-			ListaTransacciones.clear();
-			if(TipoTransaccion.equals("Exportacion")) {
-			try {
-				PreparedStatement consulta = conexion.prepareStatement(
-						"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)"
-								+ "AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-								+ "AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ?)"
-			                 	+ "AND cantidad < 0");
-				consulta.setString(1, proveedornombre);
-				consulta.setString(2, empleadonombre);
-				consulta.setString(3, marca);
-				consulta.setString(4, productonombre);
-				ResultSet resultado = consulta.executeQuery();
-				while (resultado.next()) {
-					ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
-							resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
-							resultado.getInt("cantidad"), resultado.getInt("idempleado")));
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		String sql = null;
+		if (suppliername.equals("Proveedores"))
+			suppliername = null;
+		if (employeename.equals("Empleados"))
+			employeename = null;
+		if (brand.equals("brands"))
+			brand = null;
+		if (productname.equals("Productos"))
+			productname = null;
+		if (TransactionType.equals("Exportacion")) {
+			sql = "SELECT t.* FROM transaccion t " + "JOIN producto p ON t.idproducto = p.idproducto "
+					+ "JOIN empleado e ON t.idempleado = e.idempleado "
+					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
+					+ "AND (p.marca = ? OR ? IS NULL) " + "AND (e.username = ? OR ? IS NULL) "
+					+ "AND (pr.nombre = ? OR ? IS NULL)" + "AND cantidad < 0";
+		} else if (TransactionType.equals("Importacion")) {
+			sql = "SELECT t.* FROM transaccion t " + "JOIN producto p ON t.idproducto = p.idproducto "
+					+ "JOIN empleado e ON t.idempleado = e.idempleado "
+					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
+					+ "AND (p.marca = ? OR ? IS NULL) " + "AND (e.username = ? OR ? IS NULL) "
+					+ "AND (pr.nombre = ? OR ? IS NULL)" + "AND cantidad > 0";
+		}else if (TransactionType.equals("TiposTransacciones")){
+			sql = "SELECT t.* FROM transaccion t " + "JOIN producto p ON t.idproducto = p.idproducto "
+					+ "JOIN empleado e ON t.idempleado = e.idempleado "
+					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
+					+ "AND (p.marca = ? OR ? IS NULL) " + "AND (e.username = ? OR ? IS NULL) "
+					+ "AND (pr.nombre = ? OR ? IS NULL)";
+		}
+		try {
+			PreparedStatement consulta = conexion.prepareStatement(sql);
+			consulta.setString(1, productname);
+			consulta.setString(2, productname);
+			consulta.setString(3, brand);
+			consulta.setString(4, brand);
+			consulta.setString(5, employeename);
+			consulta.setString(6, employeename);
+			consulta.setString(7, suppliername);
+			consulta.setString(8, suppliername);
+			ResultSet resultado = consulta.executeQuery();
+			while (resultado.next()) {
+				ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
+						resultado.getInt("idproducto"), resultado.getInt("idproveedor"), resultado.getInt("cantidad"),
+						resultado.getInt("idempleado")));
 			}
-			}else if (TipoTransaccion.equals("Importacion")) {
-				try {
-					PreparedStatement consulta = conexion.prepareStatement(
-							"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)"
-									+ "AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-									+ "AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ?)"
-				                 	+ "AND cantidad > 0");
-					consulta.setString(1, proveedornombre);
-					consulta.setString(2, empleadonombre);
-					consulta.setString(3, marca);
-					consulta.setString(4, productonombre);
-					ResultSet resultado = consulta.executeQuery();
-					while (resultado.next()) {
-						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
-								resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
-								resultado.getInt("cantidad"), resultado.getInt("idempleado")));
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}else {
-				try {
-					PreparedStatement consulta = conexion.prepareStatement(
-							"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ?)"
-									+ "AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-									+ "AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ?)");
-					consulta.setString(1, proveedornombre);
-					consulta.setString(2, empleadonombre);
-					consulta.setString(3, marca);
-					consulta.setString(4, productonombre);
-					ResultSet resultado = consulta.executeQuery();
-					while (resultado.next()) {
-						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
-								resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
-								resultado.getInt("cantidad"), resultado.getInt("idempleado")));
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		} else if (!proveedornombre.equals("Proveedores") || !empleadonombre.equals("Empleados")
-				|| !marca.equals("Marcas") || !productonombre.equals("Productos")
-				|| !TipoTransaccion.equals("TiposTransacciones")) {
-			System.out.println("2 IF");
-			ListaTransacciones.clear();
-			if(TipoTransaccion.equals("Exportacion")) {
-			try {
-				PreparedStatement consulta = conexion.prepareStatement(
-						"SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? )"
-								+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-								+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
-								+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? ) AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-								+ "AND idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
-								+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
-								+ "OR (cantidad < 0)");
-				consulta.setString(1, proveedornombre);
-				consulta.setString(2, empleadonombre);
-				consulta.setString(3, marca);
-				consulta.setString(4, productonombre);
-				consulta.setString(5, proveedornombre);
-				consulta.setString(6, empleadonombre);
-				consulta.setString(7, proveedornombre);
-				consulta.setString(8, marca);
-				consulta.setString(9, productonombre);
-				consulta.setString(10, empleadonombre);
-				consulta.setString(11, marca);
-				consulta.setString(12, productonombre);
-				ResultSet resultado = consulta.executeQuery();
-				while (resultado.next()) {
-					ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
-							resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
-							resultado.getInt("cantidad"), resultado.getInt("idempleado")));
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			}else if (TipoTransaccion.equals("Importacion")) {
-				try {
-					PreparedStatement consulta = conexion.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? )"
-									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-									+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
-									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? ) AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-									+ "AND idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
-									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? AND nombre = ? )"
-									+ "OR (cantidad > 0)");
-					System.out.println("Importacion");
-					consulta.setString(1, proveedornombre);
-					consulta.setString(2, empleadonombre);
-					consulta.setString(3, marca);
-					consulta.setString(4, productonombre);
-					consulta.setString(5, proveedornombre);
-					consulta.setString(6, empleadonombre);
-					consulta.setString(7, proveedornombre);
-					consulta.setString(8, marca);
-					consulta.setString(9, productonombre);
-					consulta.setString(10, empleadonombre);
-					consulta.setString(11, marca);
-					consulta.setString(12, productonombre);
-					ResultSet resultado = consulta.executeQuery();
-					while (resultado.next()) {
-						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
-								resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
-								resultado.getInt("cantidad"), resultado.getInt("idempleado")));
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}else {
-				try {
-					PreparedStatement consulta = conexion.prepareStatement("SELECT idinventario, fecha, idproducto, idproveedor, cantidad, idempleado FROM transaccion WHERE idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? )"
-									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-									+ "OR idproducto = (SELECT idproducto FROM producto WHERE marca = ? OR nombre = ? )"
-									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre = ? ) AND idempleado = (SELECT idempleado FROM empleado WHERE username = ? )"
-									+ "OR idproveedor = (SELECT idproveedor FROM proveedor WHERE nombre =  ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? OR nombre = ? )"
-									+ "OR idempleado = (SELECT idempleado FROM empleado WHERE username = ? ) AND idproducto = (SELECT idproducto FROM producto WHERE marca = ? OR nombre = ? )");
-					consulta.setString(1, proveedornombre);
-					consulta.setString(2, empleadonombre);
-					consulta.setString(3, marca);
-					consulta.setString(4, productonombre);
-					consulta.setString(5, proveedornombre);
-					consulta.setString(6, empleadonombre);
-					consulta.setString(7, proveedornombre);
-					consulta.setString(8, marca);
-					consulta.setString(9, productonombre);
-					consulta.setString(10, empleadonombre);
-					consulta.setString(11, marca);
-					consulta.setString(12, productonombre);
-					ResultSet resultado = consulta.executeQuery();
-					while (resultado.next()) {
-						ListaTransacciones.add(new Transaccion(resultado.getInt("idinventario"), resultado.getDate("fecha"),
-								resultado.getInt("idproducto"), resultado.getInt("idproveedor"),
-								resultado.getInt("cantidad"), resultado.getInt("idempleado")));
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		} else if (proveedornombre.equals("Proveedores") && empleadonombre.equals("Empleados") && marca.equals("Marcas")
-				&& productonombre.equals("Productos") && TipoTransaccion.equals("TiposTransacciones")) {
-			try {
-				ListaTransacciones = Test.os.getAllTransacciones(ConexionBDSql.obtener());
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			EscribirTabla();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 		EscribirTabla();
 	}
@@ -723,5 +587,5 @@ public class JFrameTransactions extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

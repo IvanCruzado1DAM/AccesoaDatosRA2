@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -24,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import models.Producto;
 import models.Proveedor;
 import models.Transaccion;
@@ -32,14 +34,14 @@ import services.Test;
 
 public class JFrameCreateTransaction extends JFrame {
 
-	private JLabel Idtransaction, empleado, proveedor, marca, producto, cantidad, fecha;
-	private JTextField cantidadtext, fechatext;
+	private JLabel Idtransaction, Employees, Supplier, Brand, Product, Amount, date;
+	private JTextField Amounttext, datetext;
 	private JButton Register, Return;
 	private final Icon IconRegister = new ImageIcon("icons/IconRegister.png"), IconReturn = new ImageIcon("icons/IconReturn.png");
-	private static JComboBox<String> Proveedortext, Productotext, Marcatext;
-	private List<String> Proveedor = new ArrayList<>();
-	private List<String> Producto = new ArrayList<>();
-	private List<String> Marca = new ArrayList<>();
+	private static JComboBox<String> Suppliertext, Producttext, Brandtext;
+	private List<String> ListSupplier = new ArrayList<>();
+	private List<String> ListProduct = new ArrayList<>();
+	private List<String> ListBrand = new ArrayList<>();
 	private Date d = new Date(new java.util.Date().getTime());
 
 	public JFrameCreateTransaction() {
@@ -50,18 +52,18 @@ public class JFrameCreateTransaction extends JFrame {
 		setLocationRelativeTo(null);
 		Idtransaction = new JLabel("Idtransacccion");
 		Idtransaction.setBounds(41, 105, 112, 25);
-		empleado = new JLabel("Empleado");
-		empleado.setBounds(277, 449, 58, 37);
-		proveedor = new JLabel("Proveedor");
-		proveedor.setBounds(50, 106, 112, 42);
-		marca = new JLabel("Marca");
-		marca.setBounds(50, 225, 112, 29);
-		producto = new JLabel("Nombre");
-		producto.setBounds(475, 113, 97, 29);
-		cantidad = new JLabel("Cantidad");
-		cantidad.setBounds(475, 218, 102, 42);
-		fecha = new JLabel("Fecha");
-		fecha.setBounds(746, 221, 41, 37);
+		Employees = new JLabel("Empleado");
+		Employees.setBounds(277, 449, 58, 37);
+		Supplier = new JLabel("Proveedor");
+		Supplier.setBounds(50, 106, 112, 42);
+		Brand = new JLabel("Marca");
+		Brand.setBounds(50, 225, 112, 29);
+		Product = new JLabel("Nombre");
+		Product.setBounds(475, 113, 97, 29);
+		Amount = new JLabel("Cantidad");
+		Amount.setBounds(475, 218, 102, 42);
+		date = new JLabel("Fecha");
+		date.setBounds(746, 221, 41, 37);
 		
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;
@@ -82,16 +84,16 @@ public class JFrameCreateTransaction extends JFrame {
 			}
 		});
 
-		Proveedortext = new JComboBox<String>();
-		Proveedortext.setFont(new Font("Arial", Proveedortext.getFont().getStyle(), Proveedortext.getFont().getSize()));
-		Proveedortext.setBounds(117, 102, 300, 50);
-		Proveedor = new ArrayList<>();
+		Suppliertext = new JComboBox<String>();
+		Suppliertext.setFont(new Font("Arial", Suppliertext.getFont().getStyle(), Suppliertext.getFont().getSize()));
+		Suppliertext.setBounds(117, 102, 300, 50);
+		ListSupplier = new ArrayList<>();
 		try {
 			for (Proveedor pro : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
 				String m = pro.getNombre();
-				if (!Proveedor.contains(m)) {
-					Proveedor.add(m);
-					Proveedortext.addItem(m);
+				if (!ListSupplier.contains(m)) {
+					ListSupplier.add(m);
+					Suppliertext.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -102,16 +104,16 @@ public class JFrameCreateTransaction extends JFrame {
 			e.printStackTrace();
 		}
 		
-		Productotext = new JComboBox<String>();
-		Productotext.setFont(new Font("Arial", Productotext.getFont().getStyle(), Productotext.getFont().getSize()));
-		Productotext.setBounds(535, 102, 300, 50);
-		Producto = new ArrayList<>();
+		Producttext = new JComboBox<String>();
+		Producttext.setFont(new Font("Arial", Producttext.getFont().getStyle(), Producttext.getFont().getSize()));
+		Producttext.setBounds(535, 102, 300, 50);
+		ListProduct = new ArrayList<>();
 		try {
 			for (Producto em : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = em.getNombre();
-				if (!Producto.contains(m)) {
-					Producto.add(m);
-					Productotext.addItem(m);
+				if (!ListProduct.contains(m)) {
+					ListProduct.add(m);
+					Producttext.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -122,16 +124,16 @@ public class JFrameCreateTransaction extends JFrame {
 			e.printStackTrace();
 		}
 		
-		Marcatext = new JComboBox<String>();
-		Marcatext.setFont(new Font("Arial", Marcatext.getFont().getStyle(), Marcatext.getFont().getSize()));
-		Marcatext.setBounds(117, 214, 300, 50);
-		Marca = new ArrayList<>();
+		Brandtext = new JComboBox<String>();
+		Brandtext.setFont(new Font("Arial", Brandtext.getFont().getStyle(), Brandtext.getFont().getSize()));
+		Brandtext.setBounds(117, 214, 300, 50);
+		ListBrand = new ArrayList<>();
 		try {
 			for (models.Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = p.getMarca();
-				if (!Marca.contains(m)) {
-					Marca.add(m);
-					Marcatext.addItem(m);
+				if (!ListBrand.contains(m)) {
+					ListBrand.add(m);
+					Brandtext.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -143,12 +145,13 @@ public class JFrameCreateTransaction extends JFrame {
 		}
 		
 
-		cantidadtext = new JTextField(10);
-		cantidadtext.setBounds(530, 225, 160, 29);
-		fechatext = new JTextField(10);
-		fechatext.setBounds(797, 224, 73, 30);
-		fechatext.setText(String.valueOf(d));
-		fechatext.setEditable(false);
+		Amounttext = new JTextField(10);
+		Amounttext.setBounds(530, 225, 160, 29);
+		
+		datetext = new JTextField(10);
+		datetext.setBounds(797, 224, 73, 30);
+		datetext.setText(String.valueOf(d));
+		datetext.setEditable(false);
 		
 		Register = new JButton("Registrar");
 		Register.setBounds(511, 423, 160, 60);
@@ -158,16 +161,17 @@ public class JFrameCreateTransaction extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				 try {
-					 Transaccion t = new Transaccion ( d, getProductoId(ConexionBDSql.obtener(), Productotext.getSelectedItem().toString()).getIdproducto(), 
-							 getProveedorId(ConexionBDSql.obtener(), Proveedortext.getSelectedItem().toString()).getIdproveedor(),Integer.valueOf(cantidadtext.getText()), JFrameLogin.EmActivo.getIduser());
+					 Transaccion t = new Transaccion ( d, getProductoId(ConexionBDSql.obtener(), Producttext.getSelectedItem().toString()).getIdproducto(), 
+							 getProveedorId(ConexionBDSql.obtener(), Suppliertext.getSelectedItem().toString()).getIdproveedor(),Integer.valueOf(Amounttext.getText()), JFrameLogin.EmActivo.getIduser());
 					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 1);
-					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Productotext.getSelectedItem().toString()).getIdproducto());
+					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Producttext.getSelectedItem().toString()).getIdproducto());
 					 p.setStock(p.getStock() + t.getCantidad());
 					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
 					 JOptionPane.showMessageDialog(JFrameCreateTransaction.this, "Transaccion agregada correctamente", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 				 } catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					 JOptionPane.showMessageDialog(JFrameCreateTransaction.this, "Cantidad solo debe contener numeros", "Aviso",  JOptionPane.ERROR_MESSAGE);
+					    Amounttext.setText("");
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -192,16 +196,16 @@ public class JFrameCreateTransaction extends JFrame {
 		});
 
 		getContentPane().setLayout(null);
-		getContentPane().add(proveedor);
-		getContentPane().add(marca);
-		getContentPane().add(producto);
-		getContentPane().add(cantidad);
-		getContentPane().add(fecha);
-		getContentPane().add(Proveedortext);
-		getContentPane().add(Marcatext);
-		getContentPane().add(Productotext);
-		getContentPane().add(cantidadtext);
-		getContentPane().add(fechatext);
+		getContentPane().add(Supplier);
+		getContentPane().add(Brand);
+		getContentPane().add(Product);
+		getContentPane().add(Amount);
+		getContentPane().add(date);
+		getContentPane().add(Suppliertext);
+		getContentPane().add(Brandtext);
+		getContentPane().add(Producttext);
+		getContentPane().add(Amounttext);
+		getContentPane().add(datetext);
 		getContentPane().add(Register);
 		getContentPane().add(Return);
 	}
@@ -225,19 +229,19 @@ public class JFrameCreateTransaction extends JFrame {
 	}
 	
 	public Proveedor getProveedorId(Connection conexion, String nombre) throws SQLException {
-		Proveedor proveedor = null;
+		Proveedor Supplier = null;
 		try {
 			PreparedStatement consulta = conexion.prepareStatement(
 					"SELECT idproveedor, nombre, direccion, numero FROM proveedor WHERE nombre = ?");
 			consulta.setString(1, nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				proveedor = new Proveedor(resultado.getInt("idproveedor"), nombre, resultado.getString("direccion"),
+				Supplier = new Proveedor(resultado.getInt("idproveedor"), nombre, resultado.getString("direccion"),
 						resultado.getInt("numero"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
-		return proveedor;
+		return Supplier;
 	}
 }

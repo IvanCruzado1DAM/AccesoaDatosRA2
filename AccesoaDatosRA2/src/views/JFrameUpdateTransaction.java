@@ -32,18 +32,18 @@ import services.Test;
 
 public class JFrameUpdateTransaction extends JFrame {
 
-	private JLabel Idtransaction, empleado, proveedor, marca, producto, cantidad, fecha;
-	private JTextField Idtransactiontext, empleadotext, cantidadtext, fechatext;
-	private static JComboBox<String> Proveedortext, Productotext, Marcatext;
-	private List<String> Proveedor = new ArrayList<>();
-	private List<String> Producto = new ArrayList<>();
-	private List<String> Marca = new ArrayList<>();
+	private JLabel Idtransaction, Employee, Supplier, Brand, Product, Amount, date;
+	private JTextField Idtransactiontext, Employeetext, Amounttext, datetext;
+	private static JComboBox<String> Suppliertext, Producttext, Brandtext;
+	private List<String> ListSupplier = new ArrayList<>();
+	private List<String> ListProduct = new ArrayList<>();
+	private List<String> ListBrand = new ArrayList<>();
 	private JButton Update, Return;
 	private final Icon IconUpdate = new ImageIcon("icons/IconUpdate.png"), IconReturn = new ImageIcon("icons/IconReturn.png");
-	private Date d = new Date(0);
+	private Date d = new Date(new java.util.Date().getTime());
 
 	public JFrameUpdateTransaction() {
-		super("Actualizar Transacciones | Empleado: " + JFrameLogin.EmActivo.getUsername());
+		super("Actualizar Transacciones | Empleado : " + JFrameLogin.EmActivo.getUsername());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(951, 695);
 		setResizable(false);
@@ -70,28 +70,28 @@ public class JFrameUpdateTransaction extends JFrame {
 
 		Idtransaction = new JLabel("Idtransacccion");
 		Idtransaction.setBounds(34, 98, 112, 25);
-		empleado = new JLabel("Empleado");
-		empleado.setBounds(277, 449, 58, 37);
-		proveedor = new JLabel("Proveedor");
-		proveedor.setBounds(464, 89, 112, 42);
-		marca = new JLabel("Marca");
-		marca.setBounds(34, 228, 112, 29);
-		producto = new JLabel("Nombre");
-		producto.setBounds(464, 228, 97, 29);
-		cantidad = new JLabel("Cantidad");
-		cantidad.setBounds(34, 337, 102, 42);
-		fecha = new JLabel("Fecha");
-		fecha.setBounds(464, 340, 97, 37);
+		Employee = new JLabel("Empleado");
+		Employee.setBounds(277, 449, 58, 37);
+		Supplier = new JLabel("Proveedor");
+		Supplier.setBounds(464, 89, 112, 42);
+		Brand = new JLabel("Marca");
+		Brand.setBounds(34, 228, 112, 29);
+		Product = new JLabel("Nombre");
+		Product.setBounds(464, 228, 97, 29);
+		Amount = new JLabel("Cantidad");
+		Amount.setBounds(34, 337, 102, 42);
+		date = new JLabel("Fecha");
+		date.setBounds(464, 340, 97, 37);
 
 		Idtransactiontext = new JTextField(10);
 		Idtransactiontext.setBounds(126, 95, 300, 30);
 		Idtransactiontext.setText(String.valueOf(JFrameTransactions.t.getIdinventario()));
 		Idtransactiontext.setEditable(false);
-		empleadotext = new JTextField(10);
-		empleadotext.setBounds(266, 489, 86, 33);
+		Employeetext = new JTextField(10);
+		Employeetext.setBounds(266, 489, 86, 33);
 		
 		try {
-			empleadotext.setText(
+			Employeetext.setText(
 					String.valueOf(Test.os.getEmpleado(ConexionBDSql.obtener(), JFrameTransactions.t.getIdempleado())));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -100,17 +100,17 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		empleadotext.setEditable(false);
-		Proveedortext = new JComboBox<String>();
-		Proveedortext.setFont(new Font("Arial", Proveedortext.getFont().getStyle(), Proveedortext.getFont().getSize()));
-		Proveedortext.setBounds(571, 85, 300, 50);
-		Proveedor = new ArrayList<>();
+		Employeetext.setEditable(false);
+		Suppliertext = new JComboBox<String>();
+		Suppliertext.setFont(new Font("Arial", Suppliertext.getFont().getStyle(), Suppliertext.getFont().getSize()));
+		Suppliertext.setBounds(571, 85, 300, 50);
+		ListSupplier = new ArrayList<>();
 		try {
 			for (Proveedor pro : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
 				String m = pro.getNombre();
-				if (!Proveedor.contains(m)) {
-					Proveedor.add(m);
-					Proveedortext.addItem(m);
+				if (!ListSupplier.contains(m)) {
+					ListSupplier.add(m);
+					Suppliertext.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -120,16 +120,16 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Productotext = new JComboBox<String>();
-		Productotext.setFont(new Font("Arial", Productotext.getFont().getStyle(), Productotext.getFont().getSize()));
-		Productotext.setBounds(571, 217, 300, 50);
-		Producto = new ArrayList<>();
+		Producttext = new JComboBox<String>();
+		Producttext.setFont(new Font("Arial", Producttext.getFont().getStyle(), Producttext.getFont().getSize()));
+		Producttext.setBounds(571, 217, 300, 50);
+		ListProduct = new ArrayList<>();
 		try {
 			for (Producto em : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = em.getNombre();
-				if (!Producto.contains(m)) {
-					Producto.add(m);
-					Productotext.addItem(m);
+				if (!ListProduct.contains(m)) {
+					ListProduct.add(m);
+					Producttext.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -139,16 +139,16 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Marcatext = new JComboBox<String>();
-		Marcatext.setFont(new Font("Arial", Marcatext.getFont().getStyle(), Marcatext.getFont().getSize()));
-		Marcatext.setBounds(126, 217, 300, 50);
-		Marca = new ArrayList<>();
+		Brandtext = new JComboBox<String>();
+		Brandtext.setFont(new Font("Arial", Brandtext.getFont().getStyle(), Brandtext.getFont().getSize()));
+		Brandtext.setBounds(126, 217, 300, 50);
+		ListBrand = new ArrayList<>();
 		try {
 			for (models.Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = p.getMarca();
-				if (!Marca.contains(m)) {
-					Marca.add(m);
-					Marcatext.addItem(m);
+				if (!ListBrand.contains(m)) {
+					ListBrand.add(m);
+					Brandtext.addItem(m);
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -158,12 +158,12 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		cantidadtext = new JTextField(10);
-		cantidadtext.setBounds(126, 344, 300, 29);
-		cantidadtext.setText(String.valueOf(JFrameTransactions.t.getCantidad()));
-		fechatext = new JTextField(10);
-		fechatext.setBounds(571, 343, 300, 30);
-		fechatext.setText(String.valueOf(d));
+		Amounttext = new JTextField(10);
+		Amounttext.setBounds(126, 344, 300, 29);
+		Amounttext.setText(String.valueOf(JFrameTransactions.t.getCantidad()));
+		datetext = new JTextField(10);
+		datetext.setBounds(571, 343, 300, 30);
+		datetext.setText(String.valueOf(d));
 		Update = new JButton("Actualizar");
 		Update.setBounds(554, 516, 160, 60);
 		Update.setIcon(IconUpdate);
@@ -175,12 +175,12 @@ public class JFrameUpdateTransaction extends JFrame {
 				try {
 					 Transaccion t = new Transaccion ();
 					 t = Test.os.getTransaccion(ConexionBDSql.obtener(), Integer.valueOf(Idtransactiontext.getText()));
-					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Productotext.getSelectedItem().toString()).getIdproducto());
+					 Producto p = Test.os.getProduct(ConexionBDSql.obtener(), getProductoId(ConexionBDSql.obtener(), Producttext.getSelectedItem().toString()).getIdproducto());
 					 p.setStock(p.getStock()-t.getCantidad());
 					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
-				     t.setIdproducto(getProductoId(ConexionBDSql.obtener(),Productotext.getSelectedItem().toString()).getIdproducto());
-					 t.setIdproveedor(getProveedorId(ConexionBDSql.obtener(),Proveedortext.getSelectedItem().toString()).getIdproveedor());
-					 t.setCantidad(Integer.valueOf(cantidadtext.getText()));				
+				     t.setIdproducto(getProductoId(ConexionBDSql.obtener(),Producttext.getSelectedItem().toString()).getIdproducto());
+					 t.setIdproveedor(getProveedorId(ConexionBDSql.obtener(),Suppliertext.getSelectedItem().toString()).getIdproveedor());
+					 t.setCantidad(Integer.valueOf(Amounttext.getText()));				
 					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 2);
 					 p.setStock(p.getStock()+t.getCantidad());
 					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
@@ -191,6 +191,9 @@ public class JFrameUpdateTransaction extends JFrame {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (NumberFormatException ex) {
+					 JOptionPane.showMessageDialog(JFrameUpdateTransaction.this, "Cantidad solo debe contener numeros", "Aviso",  JOptionPane.ERROR_MESSAGE);
+					    Amounttext.setText("");
 				}
 			}
 		});
@@ -210,17 +213,17 @@ public class JFrameUpdateTransaction extends JFrame {
 
 		getContentPane().setLayout(null);
 		getContentPane().add(Idtransaction);
-		getContentPane().add(proveedor);
-		getContentPane().add(marca);
-		getContentPane().add(producto);
-		getContentPane().add(cantidad);
-		getContentPane().add(fecha);
+		getContentPane().add(Supplier);
+		getContentPane().add(Brand);
+		getContentPane().add(Product);
+		getContentPane().add(Amount);
+		getContentPane().add(date);
 		getContentPane().add(Idtransactiontext);
-		getContentPane().add(Proveedortext);
-		getContentPane().add(Marcatext);
-		getContentPane().add(Productotext);
-		getContentPane().add(cantidadtext);
-		getContentPane().add(fechatext);
+		getContentPane().add(Suppliertext);
+		getContentPane().add(Brandtext);
+		getContentPane().add(Producttext);
+		getContentPane().add(Amounttext);
+		getContentPane().add(datetext);
 		getContentPane().add(Update);
 		getContentPane().add(Return);
 	}
@@ -244,19 +247,20 @@ public class JFrameUpdateTransaction extends JFrame {
 	}
 	
 	public Proveedor getProveedorId(Connection conexion, String nombre) throws SQLException {
-		Proveedor proveedor = null;
+		Proveedor Supplier = null;
 		try {
 			PreparedStatement consulta = conexion.prepareStatement(
 					"SELECT idproveedor, nombre, direccion, numero FROM proveedor WHERE nombre = ?");
 			consulta.setString(1, nombre);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				proveedor = new Proveedor(resultado.getInt("idproveedor"), nombre, resultado.getString("direccion"),
+				Supplier = new Proveedor(resultado.getInt("idproveedor"), nombre, resultado.getString("direccion"),
 						resultado.getInt("numero"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
-		return proveedor;
+		return Supplier;
 	}
 }
+
