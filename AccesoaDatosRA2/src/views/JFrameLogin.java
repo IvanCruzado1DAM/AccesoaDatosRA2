@@ -31,8 +31,8 @@ public class JFrameLogin extends JFrame {
 	private JButton Enter, Close, Register;
 	private final Icon IconRegister = new ImageIcon("icons/IconRegister.png"),
 			IconEnter = new ImageIcon("icons/IconGetIn.png"), IconClose = new ImageIcon("icons/IconSignOff.png");
-	private JLabel Usuario, Clave;
-	private JTextField Usuariotext;
+	private JLabel User, Password;
+	private JTextField Usertext;
 	private JPasswordField Passwordtext;
 	protected static Empleado EmActivo; // Almacenamos aqui el Empleado que ha entrado para
 	// poder acceder a el en todas las vistas
@@ -63,16 +63,16 @@ public class JFrameLogin extends JFrame {
 			}
 		});
 
-		Usuario = new JLabel("Usuario: ");
-		Usuario.setBounds(84, 84, 79, 44);
-		Usuario.setFont(new Font("Arial", Font.PLAIN, 16));
+		User = new JLabel("Usuario: ");
+		User.setBounds(84, 84, 79, 44);
+		User.setFont(new Font("Arial", Font.PLAIN, 16));
 
-		Clave = new JLabel("Clave: ");
-		Clave.setBounds(84, 162, 54, 37);
-		Clave.setFont(new Font("Arial", Font.PLAIN, 16));
+		Password = new JLabel("Clave: ");
+		Password.setBounds(84, 162, 54, 37);
+		Password.setFont(new Font("Arial", Font.PLAIN, 16));
 
-		Usuariotext = new JTextField(20);
-		Usuariotext.setBounds(215, 93, 300, 30);
+		Usertext = new JTextField(20);
+		Usertext.setBounds(215, 93, 300, 30);
 
 		Passwordtext = new JPasswordField(20);
 		Passwordtext.setBounds(215, 169, 300, 30);
@@ -86,10 +86,10 @@ public class JFrameLogin extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					if (Usuariotext.getText().isEmpty() || Passwordtext.getPassword().length == 0) {
+					if (Usertext.getText().isEmpty() || Passwordtext.getPassword().length == 0) {
 						JOptionPane.showMessageDialog(JFrameLogin.this, "*Rellene todos los campos", "Aviso",
 								JOptionPane.ERROR_MESSAGE);
-					} else if (!Usuariotext.getText()
+					} else if (!Usertext.getText()
 							.matches("^[A-Z](?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,16}$")) {
 						JOptionPane.showMessageDialog(JFrameLogin.this,
 								"Campo Usuario \n" + "*Debe tener primer caracter en Mayuscula \n "
@@ -102,12 +102,12 @@ public class JFrameLogin extends JFrame {
 								JFrameLogin.this, "CAMPO CLAVE \n" + "*Debe contener 1 Digito\n"
 										+ "*Debe tener Mayuscula y minuscula\n " + "*Debe tener longitud entre 6 a 10",
 								"Aviso", JOptionPane.ERROR_MESSAGE);
-					} else if (!Usuariotext.getText().isEmpty() && !(Passwordtext.getPassword().length == 0)) {
-						if (Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usuariotext.getText(),
+					} else if (!Usertext.getText().isEmpty() && !(Passwordtext.getPassword().length == 0)) {
+						if (Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usertext.getText(),
 								String.valueOf(Passwordtext.getPassword())).toString() == null) {
 						} else {
-							JOptionPane.showMessageDialog(JFrameLogin.this, "Bienvenido " + Usuariotext.getText());
-							EmActivo = Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usuariotext.getText(),
+							JOptionPane.showMessageDialog(JFrameLogin.this, "Bienvenido " + Usertext.getText());
+							EmActivo = Test.os.getExisteEmpleado(ConexionBDSql.obtener(), Usertext.getText(),
 									String.valueOf(Passwordtext.getPassword()));
 							dispose();
 							JFrameAdmin jf = new JFrameAdmin();
@@ -139,7 +139,7 @@ public class JFrameLogin extends JFrame {
 				dispose();
 				JFrameRegister jf = new JFrameRegister();
 				jf.setVisible(true);
-				Usuariotext.setText("");
+				Usertext.setText("");
 				Passwordtext.setText("");
 			}
 		});
@@ -158,9 +158,9 @@ public class JFrameLogin extends JFrame {
 			}
 		});
 		getContentPane().setLayout(null);
-		getContentPane().add(Usuario);
-		getContentPane().add(Clave);
-		getContentPane().add(Usuariotext);
+		getContentPane().add(User);
+		getContentPane().add(Password);
+		getContentPane().add(Usertext);
 		getContentPane().add(Passwordtext);
 		getContentPane().add(Enter);
 		getContentPane().add(Close);
