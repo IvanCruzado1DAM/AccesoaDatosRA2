@@ -182,7 +182,7 @@ public class ObjectService {
 				JOptionPane.showMessageDialog(null, "Proveedor Guardado");
 			} else {
 				consulta = conexion.prepareStatement(
-						"UPDATE proveedor SET idproveedor= idproveedor, nombre = ?, direccion = ?, numero = ? WHERE id_proveedor = "
+						"UPDATE proveedor SET idproveedor= idproveedor, nombre = ?, direccion = ?, numero = ? WHERE idproveedor = "
 								+ proveedor.getIdproveedor());
 				consulta.setString(1, proveedor.getNombre());
 				consulta.setString(2, proveedor.getDireccion());

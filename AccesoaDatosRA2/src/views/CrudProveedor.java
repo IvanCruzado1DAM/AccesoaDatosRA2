@@ -2,12 +2,18 @@ package views;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,10 +37,9 @@ public class CrudProveedor extends JFrame {
 	private JLabel ProveedorLabel;
 	private JButton AddSupplier, DeleteSupplier, ModifySupplier, Exit;
 
-	private static JTable ProveedorTable;
-	private DefaultTableModel ProveedorCombo;
-	private JScrollPane ProveedorScroll;
-	private JPanel ProveedorPanel;
+	private static JTable SupplierTable;
+	private DefaultTableModel SupplierCombo;
+	private JScrollPane SupplierScroll;
 
 	ObjectService OS = new ObjectService();
 
@@ -50,12 +55,33 @@ public class CrudProveedor extends JFrame {
 		ProveedorWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ProveedorWindow.setBounds(100, 100, 739, 346);
 		ProveedorWindow.setLocationRelativeTo(null);
+		ProveedorWindow.setContentPane(new JPanel() {
+			BufferedImage backgroundImage;
+			{
+				try {
+//---------------------------Load your background image--------------------------//
+					backgroundImage = ImageIO.read(new File("background/backgroundTransactions.jpg"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+//-------------------------------Draw the background image------------------------//
+				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+			}
+		});
 		ProveedorWindow.getContentPane().setLayout(null);
+		ImageIcon IconTransaction = new ImageIcon("icons/IconSuppliers.png");
+		ProveedorWindow.setIconImage(IconTransaction.getImage());
 		// Texto menu admin
+		
 		ProveedorLabel = new JLabel("Menú proveedores");
 		ProveedorLabel.setToolTipText("texto eleccion");
 		ProveedorLabel.setFont(new Font("Tahoma", Font.PLAIN, 25));
-		ProveedorLabel.setBounds(160, -10, 223, 66);
+		ProveedorLabel.setBounds(160, 10, 223, 34);
 		ProveedorWindow.getContentPane().add(ProveedorLabel);
 		// Botones
 		createButtons();
@@ -65,20 +91,18 @@ public class CrudProveedor extends JFrame {
 	}
 
 	private void createTable() throws SQLException {
-		ProveedorPanel = new JPanel();
-		ProveedorPanel.setLayout(null);
-		ProveedorPanel.setBounds(200, 0, 433, 463);
+		
 		// Crear el JTable
 		// int id, String nombre, Float precio, String img, int stock,
 		// String categoria,String marca,int proveedorid,nombre proveedor para localizarlo mejor
 		String[] columnas = new String[] { "ID", "Nombre", "Dirección", "Número"};
-		ProveedorCombo = new DefaultTableModel(columnas, 0) {
+		SupplierCombo = new DefaultTableModel(columnas, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false; // Hace que todas las celdas no sean editables
 			}
 		};
-		setTablaProveedor(new JTable(ProveedorCombo));
+		setTablaProveedor(new JTable(SupplierCombo));
 		getTablaProveedor().setPreferredScrollableViewportSize(new Dimension(250, 100));
 		getTablaProveedor().getTableHeader().setReorderingAllowed(true);
 		getTablaProveedor().setEnabled(true);
@@ -86,26 +110,24 @@ public class CrudProveedor extends JFrame {
 		// getTablaProfesores().getSelectionModel().addListSelectionListener(mi);
 
 		// Crear el ordenador de filas
-		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(ProveedorCombo);
+		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(SupplierCombo);
 		getTablaProveedor().setRowSorter(sorter);
 		sorter.sort();
 		// rellenar Proveedor
-		List<Producto> listP;
 		List<Proveedor> listPro;
-		String nomPro =null;
 		try {
 			listPro=OS.getAllProveedor(ConexionBDSql.obtener());
 			for (Proveedor p : listPro) {
 				Object[] data = { p.getIdproveedor(), p.getNombre(), p.getDireccion(), p.getNumero()};
-				ProveedorCombo.addRow(data);
+				SupplierCombo.addRow(data);
 				
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		ProveedorScroll = new JScrollPane(getTablaProveedor());
-		ProveedorScroll.setBounds(10, 45, 500, 231);
-		ProveedorWindow.getContentPane().add(ProveedorScroll);
+		SupplierScroll = new JScrollPane(getTablaProveedor());
+		SupplierScroll.setBounds(10, 54, 501, 232);
+		ProveedorWindow.getContentPane().add(SupplierScroll);
 
 	}
 
@@ -166,7 +188,7 @@ public class CrudProveedor extends JFrame {
 				}
 				ProveedorWindow.setVisible(false);
 			} else if (obj == DeleteSupplier) {
-				int id = (int) ProveedorCombo.getValueAt(getTablaProveedor().getSelectedRow(), 0);
+				int id = (int) SupplierCombo.getValueAt(getTablaProveedor().getSelectedRow(), 0);
 				Proveedor p;
 				try {
 					p = Test.os.getProveedor(ConexionBDSql.obtener(),id);
@@ -189,12 +211,12 @@ public class CrudProveedor extends JFrame {
 				// modificar profesor
 				int selectedRow = getTablaProveedor().getSelectedRow();
 				if (selectedRow != -1) {
-					int id = (int) ProveedorCombo.getValueAt(selectedRow, 0);
-					AddModifyProveedor.productId= id;
+					int id = (int) SupplierCombo.getValueAt(selectedRow, 0);
+					AddModifyProveedor.supplierId= id;
 
 					ProveedorWindow.setVisible(false);
 					try {
-						new AddModifyProduct();
+						new AddModifyProveedor();
 					} catch (ClassNotFoundException e1) {
 						JOptionPane.showMessageDialog(CrudProveedor.this, "ERROR CLASS NOT FOUND ","Error", JOptionPane.ERROR_MESSAGE);
 					} catch (SQLException e1) {
@@ -216,11 +238,11 @@ public class CrudProveedor extends JFrame {
 	}
 
 	public static JTable getTablaProveedor() {
-		return ProveedorTable;
+		return SupplierTable;
 	}
 
-	public void setTablaProveedor(JTable ProveedorTable) {
-		CrudProveedor.ProveedorTable = ProveedorTable;
+	public void setTablaProveedor(JTable SupplierTable) {
+		CrudProveedor.SupplierTable = SupplierTable;
 	}
 	
 

@@ -1,156 +1,175 @@
 package views;
 
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import models.Producto;
 import models.Proveedor;
 import services.ConexionBDSql;
 import services.ObjectService;
+import services.Test;
+
 import javax.swing.SwingConstants;
 
 public class AddModifyProveedor extends JFrame {
 
 	// Product window add-modify
-	private JFrame ProductWindowAM;
-	private JLabel lblInsert, lblName, lblBrand, lblPrice, lblSupplier, lblStock, lblCategory;
-	private JTextField txtName, txtBrand, txtPrice, txtStock, txtCategory;
-	private JButton btnBack, btnInsert;
+	private JFrame SupplierWindowAM;
+	private JLabel lblName, lblAddress, lblNumber;
+	private JTextField txtName, txtAddress, txtNumber;
+	private JButton btnBack, btnUpdate;
 	
-	Manejador mane=new Manejador();
-
 	ObjectService OS = new ObjectService();
-	public static int productId;
-	private Producto product;
+	public static int supplierId;
+	private Proveedor supplier;
 
 	public AddModifyProveedor() throws ClassNotFoundException, SQLException {
 	    createWindow();
 	}
 
 	private void createWindow() throws ClassNotFoundException, SQLException {
-	    ProductWindowAM = new JFrame("Menú");
-	    ProductWindowAM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    ProductWindowAM.setBounds(100, 100, 420, 419);
-	    ProductWindowAM.setLocationRelativeTo(null);
-	    ProductWindowAM.getContentPane().setLayout(null);
+		SupplierWindowAM = new JFrame("Menú editar proveedor");
+		SupplierWindowAM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		SupplierWindowAM.setBounds(100, 100, 439, 355);
+		SupplierWindowAM.setLocationRelativeTo(null);
+		SupplierWindowAM.setContentPane(new JPanel() {
+			BufferedImage backgroundImage;
+			{
+				try {
+//---------------------------Load your background image--------------------------//
+					backgroundImage = ImageIO.read(new File("background/backgroundTransactions.jpg"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+//-------------------------------Draw the background image------------------------//
+				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+			}
+		});
+		SupplierWindowAM.getContentPane().setLayout(null);
+		
 	    lblName = new JLabel("Nombre:");
-	    lblName.setBounds(62, 110, 102, 18);
-	    ProductWindowAM.getContentPane().add(lblName);
+	    lblName.setBounds(98, 123, 68, 18);
+	    SupplierWindowAM.getContentPane().add(lblName);
 
-	    lblBrand = new JLabel("Dirección:");
-	    lblBrand.setBounds(62, 146, 102, 18);
-	    ProductWindowAM.getContentPane().add(lblBrand);
+	    lblAddress = new JLabel("Dirección:");
+	    lblAddress.setBounds(98, 159, 68, 18);
+	    SupplierWindowAM.getContentPane().add(lblAddress);
 
-	    lblPrice = new JLabel("Número:");
-	    lblPrice.setBounds(62, 184, 102, 18);
-	    ProductWindowAM.getContentPane().add(lblPrice);
+	    lblNumber = new JLabel("Número:");
+	    lblNumber.setBounds(98, 197, 68, 18);
+	    SupplierWindowAM.getContentPane().add(lblNumber);
 
 	    txtName = new JTextField();
-	    txtName.setBounds(185, 110, 96, 19);
-	    ProductWindowAM.getContentPane().add(txtName);
-	    txtName.setColumns(10);
-
-	    txtBrand = new JTextField();
-	    txtBrand.setColumns(10);
-	    txtBrand.setBounds(185, 146, 96, 19);
-	    ProductWindowAM.getContentPane().add(txtBrand);
-
-	    txtPrice = new JTextField();
-	    txtPrice.setColumns(10);
-	    txtPrice.setBounds(185, 184, 96, 19);
-	    ProductWindowAM.getContentPane().add(txtPrice);
-
-	    JComboBox<Proveedor> comboBox = new JComboBox<>();
-	    List<Proveedor> listProveedor= OS.getAllProveedor(ConexionBDSql.obtener());
-	    for(Proveedor p:listProveedor) {
-	    	comboBox.addItem(p);
-	    }
+	    txtName.setBounds(205, 122, 96, 19);
+	    SupplierWindowAM.getContentPane().add(txtName);
 	    
-	    comboBox.setBounds(185, 225, 96, 19);
-	    ProductWindowAM.getContentPane().add(comboBox);
 
-	    btnInsert = new JButton("Insert");
-	    btnInsert.setBounds(67, 314, 85, 21);
-	    ProductWindowAM.getContentPane().add(btnInsert);
+	    txtAddress = new JTextField();
+	    txtAddress.setBounds(205, 158, 96, 19);
+	    txtAddress.setColumns(10);
+	    SupplierWindowAM.getContentPane().add(txtAddress);
 
-	    btnBack = new JButton("Back");
-	    btnBack.setBounds(216, 314, 85, 21);
-	    btnBack.addActionListener(mane);
-	    ProductWindowAM.getContentPane().add(btnBack);
-	    
+	    txtNumber = new JTextField();
+	    txtNumber.setBounds(205, 196, 96, 19);
+	    txtNumber.setColumns(10);
+	    SupplierWindowAM.getContentPane().add(txtNumber);
+
 	    JLabel lblNewLabel = new JLabel("Editar Proveedor");
+	    lblNewLabel.setBounds(80, 54, 242, 40);
 	    lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 	    lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 27));
-	    lblNewLabel.setBounds(51, 21, 300, 52);
-	    ProductWindowAM.getContentPane().add(lblNewLabel);
-
-	    if (productId == 0) {
-
-	        // Label choose an option
-	        lblInsert = new JLabel("Insert Menu");
-	        lblInsert.setToolTipText("text choice");
-	        lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
-	        lblInsert.setBounds(100, 10, 223, 66);
-	        ProductWindowAM.getContentPane().add(lblInsert);
-
-	    } else {
-	        // Label choose an option
-	        lblInsert = new JLabel("Modify Menu");
-	        lblInsert.setToolTipText("text choice");
-	        lblInsert.setFont(new Font("Tahoma", Font.PLAIN, 25));
-	        lblInsert.setBounds(100, 10, 223, 66);
-	        ProductWindowAM.getContentPane().add(lblInsert);
-
-	        try {
-	            product = OS.getProduct(ConexionBDSql.obtener(), productId);
+	    SupplierWindowAM.getContentPane().add(lblNewLabel);
+	    try {
+	        supplier = OS.getProveedor(ConexionBDSql.obtener(), supplierId);
 
 	        } catch (ClassNotFoundException | SQLException e) {
 
 	            e.printStackTrace();
 	        }
 	        // Fill with all the data
-	        txtName.setText(product.getNombre());
-	        txtCategory.setText(product.getCategoria());
-	        txtBrand.setText(product.getMarca());
-	        txtStock.setText(String.valueOf(product.getStock()));
-	        txtPrice.setText(String.valueOf(product.getPrecio()));
-	    }
-
-	    ProductWindowAM.setVisible(true);
+	        txtName.setText(supplier.getNombre());
+	        txtAddress.setText(supplier.getDireccion());
+	        txtNumber.setText(String.valueOf(supplier.getNumero()));
+	        
+	        SupplierWindowAM.setVisible(true);
+	        
+	     btnBack = new JButton("Volver");
+	     ImageIcon iconoExitOriginal = new ImageIcon("./icons/IconReturn.png");
+		 Image imagenExitOriginal = iconoExitOriginal.getImage();
+		 Image nuevaImagenExit =imagenExitOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		 ImageIcon iconoExitRedimensionado = new ImageIcon(nuevaImagenExit);
+		 btnBack.setIcon(iconoExitRedimensionado);
+	     btnBack.addActionListener(new ActionListener() {
+	     	public void actionPerformed(ActionEvent e) {
+	     		SupplierWindowAM.dispose();
+		    		try {
+						CrudProveedor cp=new CrudProveedor();
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+	     	}
+	     });
+	     btnBack.setBounds(324, 23, 91, 27);
+	     btnUpdate = new JButton("Actualizar");
+	     ImageIcon iconoUpdateOriginal = new ImageIcon("./icons/IconUpdate.png");
+		 Image imagenUpdateOriginal = iconoUpdateOriginal.getImage();
+		 Image nuevaImagenUpdate =imagenUpdateOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		 ImageIcon iconoUpdateRedimensionado = new ImageIcon(nuevaImagenUpdate);
+		 btnUpdate.setIcon(iconoUpdateRedimensionado);
+	     btnUpdate.addActionListener(new ActionListener() {
+	    	 public void actionPerformed(ActionEvent e) {
+	    		if (txtName.getText().equals("") || txtAddress.getText().equals("") || txtNumber.getText().equals("") ) {
+						JOptionPane.showMessageDialog(AddModifyProveedor.this, "Error: Los campos no pueden estar vacíos.",
+								"Error de Registro", JOptionPane.ERROR_MESSAGE);
+				}else if(txtNumber.getText().matches("[0-9]{9}")) {
+		    			Proveedor p=new Proveedor(supplier.getIdproveedor(),txtName.getText(),txtAddress.getText(),Integer.parseInt(txtNumber.getText()));
+		    			try {
+							Test.os.saveProveedor(ConexionBDSql.obtener(), p,2);
+						} catch (ClassNotFoundException | SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+		    			SupplierWindowAM.dispose();
+			    		try {
+							CrudProveedor cp=new CrudProveedor();
+						} catch (ClassNotFoundException | SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+		    		}else {
+		    			JOptionPane.showMessageDialog(AddModifyProveedor.this,"El campo 'Número' solo admite 9 números","Error",JOptionPane.ERROR_MESSAGE);
+		    		}
+		    		
+		    	}
+	     });
+	     btnUpdate.setBounds(121, 243, 133, 34);
+	     
+	     SupplierWindowAM.getContentPane().add(btnBack);
+	     SupplierWindowAM.getContentPane().add(btnUpdate);
 	}
-
-	private class Manejador implements ActionListener {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-	        Object obj = e.getSource();
-	        if (obj == btnInsert) {
-
-	            productId = 0;
-	        } else if (obj == btnBack) {
-	            productId = 0;
-	            try {
-					new CrudProducto();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-	            ProductWindowAM.setVisible(false);
-
-	        }
-	    }
-	}
+	
 }
