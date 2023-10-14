@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -24,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import models.Producto;
 import models.Proveedor;
 import models.Transaccion;
@@ -38,7 +40,7 @@ public class JFrameUpdateTransaction extends JFrame {
 	private List<String> ListSupplier = new ArrayList<>();
 	private List<String> ListProduct = new ArrayList<>();
 	private List<String> ListBrand = new ArrayList<>();
-	private JButton Update, Return;
+	private JButton Update, Return, UpdateDate;
 	private final Icon IconUpdate = new ImageIcon("icons/IconUpdate.png"), IconReturn = new ImageIcon("icons/IconReturn.png");
 	private Date d = new Date(new java.util.Date().getTime());
 
@@ -89,7 +91,7 @@ public class JFrameUpdateTransaction extends JFrame {
 		Idtransactiontext.setEditable(false);
 		Employeetext = new JTextField(10);
 		Employeetext.setBounds(266, 489, 86, 33);
-		
+	
 		try {
 			Employeetext.setText(
 					String.valueOf(Test.os.getEmpleado(ConexionBDSql.obtener(), JFrameTransactions.t.getIdempleado())));
@@ -113,6 +115,7 @@ public class JFrameUpdateTransaction extends JFrame {
 					Suppliertext.addItem(m);
 				}
 			}
+			Suppliertext.setSelectedItem(Test.os.getProveedor(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproveedor()).getNombre());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,6 +123,7 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		Producttext = new JComboBox<String>();
 		Producttext.setFont(new Font("Arial", Producttext.getFont().getStyle(), Producttext.getFont().getSize()));
 		Producttext.setBounds(571, 217, 300, 50);
@@ -132,6 +136,7 @@ public class JFrameUpdateTransaction extends JFrame {
 					Producttext.addItem(m);
 				}
 			}
+			Producttext.setSelectedItem(Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getNombre());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,6 +156,7 @@ public class JFrameUpdateTransaction extends JFrame {
 					Brandtext.addItem(m);
 				}
 			}
+			Brandtext.setSelectedItem(Test.os.getProduct(ConexionBDSql.obtener(), JFrameTransactions.t.getIdproducto()).getMarca());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,12 +164,14 @@ public class JFrameUpdateTransaction extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
 		Amounttext = new JTextField(10);
 		Amounttext.setBounds(126, 344, 300, 29);
 		Amounttext.setText(String.valueOf(JFrameTransactions.t.getCantidad()));
 		datetext = new JTextField(10);
 		datetext.setBounds(571, 343, 300, 30);
-		datetext.setText(String.valueOf(d));
+		datetext.setText(String.valueOf(JFrameTransactions.dateFormat.format(JFrameTransactions.date)));
+		datetext.setEditable(false);
 		Update = new JButton("Actualizar");
 		Update.setBounds(554, 516, 160, 60);
 		Update.setIcon(IconUpdate);
@@ -180,7 +188,8 @@ public class JFrameUpdateTransaction extends JFrame {
 					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
 				     t.setIdproducto(getProductoId(ConexionBDSql.obtener(),Producttext.getSelectedItem().toString()).getIdproducto());
 					 t.setIdproveedor(getProveedorId(ConexionBDSql.obtener(),Suppliertext.getSelectedItem().toString()).getIdproveedor());
-					 t.setCantidad(Integer.valueOf(Amounttext.getText()));				
+					 t.setCantidad(Integer.valueOf(Amounttext.getText()));	
+					 t.setFecha(d);
 					 Test.os.saveTransaccion(ConexionBDSql.obtener(), t, 2);
 					 p.setStock(p.getStock()+t.getCantidad());
 					 Test.os.saveProducto(ConexionBDSql.obtener(), p, 2);
@@ -210,6 +219,17 @@ public class JFrameUpdateTransaction extends JFrame {
 				jf.setVisible(true);
 			}
 		});
+		
+		UpdateDate = new JButton ("Actualizar Fecha");
+		UpdateDate.setBounds(640, 373, 146, 50);
+		UpdateDate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				d = new Date(new java.util.Date().getTime());
+				datetext.setText(JFrameTransactions.dateFormat.format(d));
+			}
+		});
 
 		getContentPane().setLayout(null);
 		getContentPane().add(Idtransaction);
@@ -224,6 +244,7 @@ public class JFrameUpdateTransaction extends JFrame {
 		getContentPane().add(Producttext);
 		getContentPane().add(Amounttext);
 		getContentPane().add(datetext);
+		getContentPane().add(UpdateDate);
 		getContentPane().add(Update);
 		getContentPane().add(Return);
 	}

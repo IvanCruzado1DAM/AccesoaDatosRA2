@@ -12,6 +12,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,8 @@ public class JFrameCreateTransaction extends JFrame {
 	private List<String> ListProduct = new ArrayList<>();
 	private List<String> ListBrand = new ArrayList<>();
 	private Date d = new Date(new java.util.Date().getTime());
-
+	private DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z");
+	
 	public JFrameCreateTransaction() {
 		super("Crear Transacciones| Empleado: " + JFrameLogin.EmActivo.getUsername());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,7 +66,7 @@ public class JFrameCreateTransaction extends JFrame {
 		Amount = new JLabel("Cantidad");
 		Amount.setBounds(475, 218, 102, 42);
 		date = new JLabel("Fecha");
-		date.setBounds(746, 221, 41, 37);
+		date.setBounds(641, 8, 41, 37);
 		
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;
@@ -146,11 +149,11 @@ public class JFrameCreateTransaction extends JFrame {
 		
 
 		Amounttext = new JTextField(10);
-		Amounttext.setBounds(530, 225, 160, 29);
+		Amounttext.setBounds(535, 225, 300, 29);
 		
 		datetext = new JTextField(10);
-		datetext.setBounds(797, 224, 73, 30);
-		datetext.setText(String.valueOf(d));
+		datetext.setBounds(692, 11, 236, 30);
+		datetext.setText(String.valueOf(dateFormat.format(d)));
 		datetext.setEditable(false);
 		
 		Register = new JButton("Registrar");

@@ -16,9 +16,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -32,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+
 import models.Empleado;
 import models.Producto;
 import models.Proveedor;
@@ -58,6 +63,8 @@ public class JFrameTransactions extends JFrame {
 	private static String fEmployee = "Empleados", fSupplier = "Proveedores", fBrand = "brands",
 			fProduct = "Productos", tTransaction = "TiposTransacciones";
 	private static List<Transaccion> ListaTransacciones = new ArrayList<>();
+	protected static Date date;
+	protected static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z");
 
 	public JFrameTransactions() {
 		super("Transacciones | Empleado : " + JFrameLogin.EmActivo.getUsername());
@@ -104,11 +111,12 @@ public class JFrameTransactions extends JFrame {
 		model.addColumn("ID");
 		model.addColumn("EMPLEADO");
 		model.addColumn("PROVEEDOR");
-		model.addColumn("brand");
+		model.addColumn("MARCA");
 		model.addColumn("PRODUCTO");
 		model.addColumn("CANTIDAD");
 		model.addColumn("FECHA");
 		table.setRowHeight(30);
+	    table.getColumnModel().getColumn(6).setPreferredWidth(180);
 		try {
 			ListaTransacciones = Test.os.getAllTransacciones(ConexionBDSql.obtener());
 		} catch (ClassNotFoundException e) {
@@ -182,6 +190,8 @@ public class JFrameTransactions extends JFrame {
 				try {
 					t = Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString()));
+					date = Test.os.getTransaccion(ConexionBDSql.obtener(),
+							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())).getFecha();
 					dispose();
 					JFrameUpdateTransaction jf = new JFrameUpdateTransaction();
 					jf.setVisible(true);
@@ -487,7 +497,7 @@ public class JFrameTransactions extends JFrame {
 				Fila[3] = p.getMarca();
 				Fila[4] = p.getNombre();
 				Fila[5] = t.getCantidad();
-				Fila[6] = t.getFecha();
+				Fila[6] = String.valueOf(dateFormat.format(t.getFecha()));
 				model.addRow(Fila);
 			}
 		} catch (Exception e) {
