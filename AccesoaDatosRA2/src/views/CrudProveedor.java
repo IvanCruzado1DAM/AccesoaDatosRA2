@@ -188,27 +188,33 @@ public class CrudProveedor extends JFrame {
 				}
 				ProveedorWindow.setVisible(false);
 			} else if (obj == DeleteSupplier) {
-				int id = (int) SupplierCombo.getValueAt(getTablaProveedor().getSelectedRow(), 0);
-				Proveedor p;
-				try {
-					p = Test.os.getProveedor(ConexionBDSql.obtener(),id);
-					Test.os.removeProveedor(ConexionBDSql.obtener(), p);
-				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				int selectedRow = getTablaProveedor().getSelectedRow();
+				if (selectedRow != -1) {
+					int id = (int) SupplierCombo.getValueAt(selectedRow, 0);
+					AddModifyProveedor.supplierId= id;
+					Proveedor p;
+					try {
+						p = Test.os.getProveedor(ConexionBDSql.obtener(),id);
+						Test.os.removeProveedor(ConexionBDSql.obtener(), p);
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					JOptionPane.showMessageDialog(CrudProveedor.this, "Registro eliminado correctamente.",
+							"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+					try {
+						new CrudProveedor();
+					} catch (ClassNotFoundException | SQLException e2) {
+						JOptionPane.showMessageDialog(CrudProveedor.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
+					}
+					ProveedorWindow.dispose();
+				}else{
+						JOptionPane.showMessageDialog(CrudProveedor.this, "Por favor, selecciona una fila para eliminar.",
+								"Error", JOptionPane.ERROR_MESSAGE);
 				}
-				JOptionPane.showMessageDialog(CrudProveedor.this, "Registro eliminado correctamente.",
-						"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
-				try {
-					new CrudProveedor();
-				} catch (ClassNotFoundException | SQLException e2) {
-					JOptionPane.showMessageDialog(CrudProveedor.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
-				}
-				ProveedorWindow.dispose();
 				
 			} else if (obj == ModifySupplier) {
-//				AddModifyProduct.productId=
-				// modificar profesor
+//				modificar proveedor
 				int selectedRow = getTablaProveedor().getSelectedRow();
 				if (selectedRow != -1) {
 					int id = (int) SupplierCombo.getValueAt(selectedRow, 0);
