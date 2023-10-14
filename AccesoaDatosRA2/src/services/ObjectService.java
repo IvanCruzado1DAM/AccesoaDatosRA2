@@ -47,7 +47,7 @@ public class ObjectService {
 				consulta.setString(7, product.getCategoria());
 				consulta.executeUpdate();
 			}
-			
+
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
@@ -62,9 +62,9 @@ public class ObjectService {
 			consulta.setInt(1, idproducto);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				product = new Producto(idproducto, resultado.getString("nombre"),resultado.getString("marca"),resultado.getFloat("precio"),
-						resultado.getString("img"), resultado.getInt("proveedorid"), resultado.getInt("stock"),
-						resultado.getString("categoria"));
+				product = new Producto(idproducto, resultado.getString("nombre"), resultado.getString("marca"),
+						resultado.getFloat("precio"), resultado.getString("img"), resultado.getInt("proveedorid"),
+						resultado.getInt("stock"), resultado.getString("categoria"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
@@ -82,24 +82,26 @@ public class ObjectService {
 			throw new SQLException(ex);
 		}
 	}
-	
+
 	public void removeProductoID(Connection conexion, int id) throws SQLException {
 		try {
-			
-			  // Eliminar registros relacionados en la tabla transaccion
-	        PreparedStatement eliminarTransacciones = conexion.prepareStatement("DELETE FROM transaccion WHERE idproducto = ?");
-	        eliminarTransacciones.setInt(1, id);
-	        eliminarTransacciones.executeUpdate();
-			
+
+			// Eliminar registros relacionados en la tabla transaccion
+			PreparedStatement eliminarTransacciones = conexion
+					.prepareStatement("DELETE FROM transaccion WHERE idproducto = ?");
+			eliminarTransacciones.setInt(1, id);
+			eliminarTransacciones.executeUpdate();
+
 			// Eliminar el producto
-	        PreparedStatement eliminarProducto = conexion.prepareStatement("DELETE FROM " + this.tablaProducto + " WHERE idproducto = ?");
-	        eliminarProducto.setInt(1, id);
-	        eliminarProducto.executeUpdate();
+			PreparedStatement eliminarProducto = conexion
+					.prepareStatement("DELETE FROM " + this.tablaProducto + " WHERE idproducto = ?");
+			eliminarProducto.setInt(1, id);
+			eliminarProducto.executeUpdate();
 
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
-		
+
 	}
 
 	public List<Producto> getAllProducts(Connection conexion) throws SQLException {
@@ -110,15 +112,60 @@ public class ObjectService {
 							+ " FROM " + this.tablaProducto);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				ListaProductos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"), resultado.getString("marca"),
-						resultado.getFloat("precio"), resultado.getString("img"), resultado.getInt("proveedorid"),
-						resultado.getInt("stock"), resultado.getString("categoria")));
+				ListaProductos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"),
+						resultado.getString("marca"), resultado.getFloat("precio"), resultado.getString("img"),
+						resultado.getInt("proveedorid"), resultado.getInt("stock"), resultado.getString("categoria")));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);
 		}
 		return ListaProductos;
 	}
+
+	public List<Producto> getProductosFiltrados(Connection conexion, String categoria, String nombre, String marca,
+	         float precio, String operadorPrecio, int stock, String operadorStock) throws SQLException {
+	     List<Producto> productos = new ArrayList<>();
+	     try {
+	         // Construir la consulta SQL dinámicamente con las condiciones proporcionadas
+	         StringBuilder consultaSQL = new StringBuilder("SELECT p.idproducto, p.nombre, p.marca, p.precio, p.img, pr.idproveedor AS proveedorid, p.stock, p.categoria "
+	                 + "FROM producto p "
+	                 + "JOIN proveedor pr ON p.proveedorid = pr.idproveedor "
+	                 + "WHERE (? IS NULL OR p.categoria = ?) "
+	                 + "AND (? IS NULL OR p.nombre = ?) "
+	                 + "AND (? IS NULL OR p.marca = ?) "
+	                 + "AND (? IS NULL OR (p.precio > ? OR p.precio < ? OR p.precio = ?)) "
+	                 + "AND (? IS NULL OR (p.stock > ? OR p.stock < ? OR p.stock = ?))");
+
+	         PreparedStatement consulta = conexion.prepareStatement(consultaSQL.toString());
+
+	         // Establecer valores para las condiciones
+	         consulta.setString(1, categoria);
+	         consulta.setString(2, categoria);
+	         consulta.setString(3, nombre);
+	         consulta.setString(4, nombre);
+	         consulta.setString(5, marca);
+	         consulta.setString(6, marca);
+	         consulta.setFloat(7, precio);
+	         consulta.setFloat(8, precio);
+	         consulta.setFloat(9, precio);
+	         consulta.setString(10, operadorPrecio);
+	         consulta.setFloat(11, precio); // Se repite el valor de precio para el parámetro 11
+	         consulta.setInt(12, stock);
+	         consulta.setString(13, operadorStock);
+	         consulta.setInt(14, stock); // Se repite el valor de stock para el parámetro 14
+
+	         ResultSet resultado = consulta.executeQuery();
+	         while (resultado.next()) {
+	             productos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"), resultado.getString("marca"),
+	                     resultado.getFloat("precio"), resultado.getString("img"), resultado.getInt("proveedorid"),
+	                     resultado.getInt("stock"), resultado.getString("categoria")));
+	         }
+	     } catch (SQLException ex) {
+	         throw new SQLException(ex);
+	     }
+	     return productos;
+	}
+
 
 	// Proveedor
 	public void saveProveedor(Connection conexion, Proveedor proveedor, int cual) throws SQLException {
@@ -218,13 +265,14 @@ public class ObjectService {
 	public Empleado getExisteEmpleado(Connection conexion, String username, String clave) throws SQLException {
 		Empleado e = null;
 		try {
-			PreparedStatement consulta = conexion.prepareStatement(
-					"SELECT idempleado, username,password" + " FROM " + this.tablaEmpleado + " WHERE username = ? AND password = ?");
+			PreparedStatement consulta = conexion.prepareStatement("SELECT idempleado, username,password" + " FROM "
+					+ this.tablaEmpleado + " WHERE username = ? AND password = ?");
 			consulta.setString(1, username);
 			consulta.setString(2, username);
 			ResultSet resultado = consulta.executeQuery();
 			while (resultado.next()) {
-				e = new Empleado(resultado.getInt("idempleado"), resultado.getString("username"), resultado.getString("password"));
+				e = new Empleado(resultado.getInt("idempleado"), resultado.getString("username"),
+						resultado.getString("password"));
 			}
 		} catch (SQLException ex) {
 			throw new SQLException(ex);

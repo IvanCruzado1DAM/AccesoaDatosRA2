@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,11 +41,11 @@ public class CrudProducto extends JFrame {
 			// filtro
 			LabelCategoria, LabelNombre, LabelMarca, LabelPrecio, LabelProveedor, LabelStock;
 	private JTextField FieldNombre, FieldStock, FieldPrecio;
-	private List <Producto> listaFiltrados ;
+	private List<Producto> listaFiltrados;
 	// desplegables
 	private JComboBox<String> ComboPrecio, ComboStock, ComboCategoria, ComboMarca, ComboProveedor;
 	// ventana
-	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit,Filter;
+	private JButton AddProduct, DeleteProduct, ModifyProduct, Exit, Filter;
 	private static JTable ProductTable;
 	private DefaultTableModel ProductCombo;
 	private JScrollPane ProductScroll;
@@ -55,7 +54,8 @@ public class CrudProducto extends JFrame {
 	ManejadorImagen mi = new ManejadorImagen();
 	ObjectService OS = new ObjectService();
 	Manejador mane = new Manejador();
-	ManejadorFiltro mf=new ManejadorFiltro();
+	ManejadorFiltro mf = new ManejadorFiltro();
+	public String nombPro;
 
 	public CrudProducto() throws ClassNotFoundException, SQLException {
 		createWindow();
@@ -69,12 +69,12 @@ public class CrudProducto extends JFrame {
 		ProductWindow.setBounds(100, 100, 749, 600);
 		ProductWindow.setLocationRelativeTo(null);
 		ProductWindow.getContentPane().setLayout(null);
-		//background
-        ProductWindow.setContentPane(new JLabel(new ImageIcon("./background/backgroundTransactions.jpg")));
-        //icono
-        ImageIcon icono = new ImageIcon("icons/IconProducts.png");
-        // Establecer el icono de la ventana
-        ProductWindow.setIconImage(icono.getImage());
+		// background
+		ProductWindow.setContentPane(new JLabel(new ImageIcon("./background/backgroundTransactions.jpg")));
+		// icono
+		ImageIcon icono = new ImageIcon("icons/IconProducts.png");
+		// Establecer el icono de la ventana
+		ProductWindow.setIconImage(icono.getImage());
 		// Texto menu admin
 		ProductLabel = new JLabel("Menu productos");
 		ProductLabel.setToolTipText("texto eleccion");
@@ -90,7 +90,7 @@ public class CrudProducto extends JFrame {
 		// tabla
 
 		createTable();
-		
+
 		// filtros
 		createFilters();
 
@@ -138,7 +138,7 @@ public class CrudProducto extends JFrame {
 		// desplegable marca
 		Set<String> marcasUnicas = new HashSet<>();
 		for (Producto producto : listProduct) {
-		    marcasUnicas.add(producto.getMarca());
+			marcasUnicas.add(producto.getMarca());
 		}
 
 		ComboMarca = new JComboBox<>(marcasUnicas.toArray(new String[0]));
@@ -200,12 +200,12 @@ public class CrudProducto extends JFrame {
 		}
 		ComboProveedor = new JComboBox<>(nombresProveedores.toArray(new String[0]));
 		ComboProveedor.setBounds(337, 78, 100, 21);
-		
-		//boton filtrar
+
+		// boton filtrar
 		Filter = new JButton("Filtrar");
 		Filter.setBounds(570, 107, 100, 34);
 		Filter.addActionListener(mf);
-		//icono
+		// icono
 		// redminesionar imagen
 		ImageIcon iconoOriginal = new ImageIcon("./icons/IconFilter.png");
 		Image imagenOriginal = iconoOriginal.getImage();
@@ -245,6 +245,14 @@ public class CrudProducto extends JFrame {
 		ProductTable.setRowSorter(sorter);
 		sorter.sort();
 		// rellenar Productos
+		fillTable();
+		ProductScroll = new JScrollPane(ProductTable);
+		ProductScroll.setBounds(10, 123, 500, 430);
+		ProductWindow.getContentPane().add(ProductScroll);
+
+	}
+
+	private void fillTable() {
 		List<Producto> listP;
 		List<Proveedor> listPro;
 		String nomPro = null;
@@ -266,10 +274,6 @@ public class CrudProducto extends JFrame {
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		ProductScroll = new JScrollPane(ProductTable);
-		ProductScroll.setBounds(10, 123, 500, 430);
-		ProductWindow.getContentPane().add(ProductScroll);
-
 	}
 
 	private void createButtons() {
@@ -322,33 +326,103 @@ public class CrudProducto extends JFrame {
 
 	}
 
-	private class ManejadorFiltro implements ActionListener{
+	private class ManejadorFiltro implements ActionListener {
 
+		@SuppressWarnings("unused")
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-			//variables
-			String nombre=null,operacionstock=null,operacionprecio=null,categoria=null,marca=null;
-			Proveedor proveedor=null;
-			int idproveedor=0,stock=0;
-			float precio=0;
-			//comprobar que no está vacío
-			if(!(FieldNombre.getText().equalsIgnoreCase(""))){
-				nombre = FieldNombre.getText();
-			}
-			//comprobacion que no esta elegida la opcion por defecto
-			if(ComboPrecio.getSelectedIndex()!=0) {
-				operacionprecio=ComboPrecio.getSelectedItem().toString();
-			}
-			if(ComboStock.getSelectedIndex()!=0) {
-				operacionstock=ComboStock.getSelectedItem().toString();
-			}
-			if(ComboProveedor.getSelectedIndex()!=0) {
-			try {
-				String[] subcadenas = ComboProveedor.toString().split(":");
-				idproveedor=Integer.parseInt(subcadenas[1]);
-				proveedor=OS.getProveedor(ConexionBDSql.obtener(), idproveedor);
-				System.out.println(proveedor);
+				// variables
+				String nombre = null, operacionstock = null, operacionprecio = null, categoria = null, marca = null;
+				Proveedor proveedor = null;
+				int idproveedor = 0, stock = 0;
+				float precio = 0;
+				// comprobar que no está vacío
+				if (!(FieldNombre.getText().equalsIgnoreCase(""))) {
+					nombre = FieldNombre.getText();
+				}
+				// comprobacion que no esta elegida la opcion por defecto
+				if (ComboPrecio.getSelectedIndex() != 0) {
+					operacionprecio = ComboPrecio.getSelectedItem().toString();
+				}
+				if (ComboStock.getSelectedIndex() != 0) {
+					operacionstock = ComboStock.getSelectedItem().toString();
+				}
+				
+				if ((ComboProveedor.getSelectedIndex()) != 0) {
+				    String selectedProveedorString = (String) ComboProveedor.getSelectedItem();
+				    // Obtener el id del proveedor desde la cadena seleccionada
+				    int idProveedor = Integer.parseInt(selectedProveedorString.split("ID:")[1].trim());
+				    // Obtener el proveedor correspondiente al id de la lista de proveedores
+				    Proveedor provee = OS.getProveedor(ConexionBDSql.obtener(), idproveedor);
+				    }
+				if (ComboCategoria.getSelectedIndex() != 0) {
+					categoria = ComboCategoria.getSelectedItem().toString();
+				}
+				if (ComboMarca.getSelectedIndex() != 0) {
+					marca = ComboMarca.getSelectedItem().toString();
+				}
+
+				if (!(FieldStock.getText().equalsIgnoreCase("")) && (Integer.parseInt(FieldStock.getText()) != 0)) {
+					stock = Integer.parseInt(FieldStock.getText());
+				}
+				if (!(FieldPrecio.getText().equalsIgnoreCase("")) && (Float.parseFloat(FieldPrecio.getText()) != 0)) {
+					precio = Float.parseFloat(FieldPrecio.getText());
+				}
+				System.out.println(nombre + " " + operacionprecio + " " + operacionstock + " " + idproveedor + " "
+						+ proveedor + " " + categoria + " " + marca + " " + stock + " " + precio + " ");
+
+				
+				String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria",
+						"Id Proveedor", "Nombre proovedor" };
+				
+				List<Proveedor> listPro;
+				try {
+					List<Producto> listP = OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca,
+							precio, operacionprecio, stock, operacionstock);
+					System.out.println(listP);
+					listPro = OS.getAllProveedor(ConexionBDSql.obtener());
+				    ProductCombo.setRowCount(0);
+
+					for (Producto p : listP) {
+						String nomPro=null;
+						for(Proveedor prov: listPro) {
+							if(prov.getIdproveedor()==p.getIdproducto()) {
+								nombPro=prov.getNombre();
+							}
+						}
+						Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
+								p.getCategoria(), p.getProveedorid(), nomPro };
+						ProductCombo.addRow(data);
+					}
+					
+				
+					// Refrescar la ventana para que se actualicen los datos
+//					    ProductWindow.pack(); // Ajusta automáticamente el tamaño de la ventana
+//						ProductWindow.revalidate(); // Vuelve a validar el diseño de la ventana
+//						ProductWindow.repaint(); // Vuelve a pintar la ventana para mostrar los cambios
+
+					setTablaProducto(new JTable(ProductCombo));
+					ProductTable.setPreferredScrollableViewportSize(new Dimension(250, 100));
+					ProductTable.getTableHeader().setReorderingAllowed(true);
+					ProductTable.setEnabled(true);
+					ProductCombo.fireTableDataChanged();
+					
+					ProductScroll = new JScrollPane(ProductTable);
+					ProductScroll.setBounds(10, 123, 500, 430);
+					ProductWindow.getContentPane().add(ProductScroll);
+
+				} catch (ClassNotFoundException | SQLException eeee) {
+					eeee.printStackTrace();
+				}
+				// String categoria, String nombre, String marca, float precio, String
+				// operadorPrecio, int stock, String operadorStock
+//					List<Producto> listaFiltrados=
+
+			} catch (NumberFormatException eee) {
+				JOptionPane.showMessageDialog(CrudProducto.this,
+						"Error de formato, revisa el tipo " + "de dato ingresado en los filtros", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			} catch (ClassNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -356,45 +430,11 @@ public class CrudProducto extends JFrame {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			} 
-			if(ComboCategoria.getSelectedIndex()!=0) {
-				categoria=ComboCategoria.getSelectedItem().toString();
-			}
-			if(ComboMarca.getSelectedIndex()!=0) {
-				marca=ComboMarca.getSelectedItem().toString();
-			}
-			
-			if(!(FieldStock.getText().equalsIgnoreCase(""))&&(Integer.parseInt(FieldStock.getText())!=0)){
-				stock=Integer.parseInt(FieldStock.getText());
-			}
-			if(!(FieldPrecio.getText().equalsIgnoreCase(""))&&(Float.parseFloat(FieldPrecio.getText())!=0)) {
-				precio=Float.parseFloat(FieldPrecio.getText());
-			}
-					System.out.println(
-							nombre+" "+operacionprecio+" "+operacionstock+" "+idproveedor+" "+proveedor+" "
-							+categoria+" "+marca+" "+stock+" "+precio+" ");
-					
-				try {
-					List<Producto> listaFiltrados=OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca, precio, categoria, stock, marca, idproveedor);
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-				for(Producto p:listaFiltrados) {
-					System.out.println(p);
-				}
-		
-			
-			}catch(NumberFormatException eee) {
-				JOptionPane.showMessageDialog(CrudProducto.this, "Error de formato, revisa el tipo "
-						+ "de dato ingresado en los filtros","Error", JOptionPane.ERROR_MESSAGE);
-			}
-			
+
 		}
-		
+
 	}
-	
+
 	private class Manejador implements ActionListener {
 
 		@Override
@@ -405,7 +445,8 @@ public class CrudProducto extends JFrame {
 				try {
 					new AddModifyProduct();
 				} catch (ClassNotFoundException | SQLException e1) {
-					JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 				ProductWindow.setVisible(false);
 			} else if (obj == DeleteProduct) {
@@ -423,16 +464,18 @@ public class CrudProducto extends JFrame {
 							File imagenes = new File(ruta);
 							Files.deleteIfExists(imagenes.toPath());
 							OS.removeProductoID(ConexionBDSql.obtener(), id);
-						} catch (ClassNotFoundException  | SQLException  | IOException ee ) {
-							JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
-						} 
+						} catch (ClassNotFoundException | SQLException | IOException ee) {
+							JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo", "Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
 						JOptionPane.showMessageDialog(CrudProducto.this, "Registro eliminado correctamente.",
 								"Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
 						// RELOAD
 						try {
 							new CrudProducto();
 						} catch (ClassNotFoundException | SQLException e2) {
-							JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(CrudProducto.this, "Error: vuelve a intentarlo", "Error",
+									JOptionPane.ERROR_MESSAGE);
 						}
 						ProductWindow.dispose();
 
@@ -477,16 +520,16 @@ public class CrudProducto extends JFrame {
 	public class ManejadorImagen implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e) {
 			try {
-			if (ProductTable.getValueAt(ProductTable.getSelectedRow(), 4) != null) {
-				Image img = new ImageIcon(ProductTable.getValueAt(ProductTable.getSelectedRow(), 4).toString())
-						.getImage();
+				if (ProductTable.getValueAt(ProductTable.getSelectedRow(), 4) != null) {
+					Image img = new ImageIcon(ProductTable.getValueAt(ProductTable.getSelectedRow(), 4).toString())
+							.getImage();
 
-				Image newimg = img.getScaledInstance(150, 180, java.awt.Image.SCALE_SMOOTH);
-				ImageIcon imageIcon = new ImageIcon(newimg);
-				ProductImg.setIcon(imageIcon);
-			}
-			
-		}catch(ArrayIndexOutOfBoundsException ee) {
+					Image newimg = img.getScaledInstance(150, 180, java.awt.Image.SCALE_SMOOTH);
+					ImageIcon imageIcon = new ImageIcon(newimg);
+					ProductImg.setIcon(imageIcon);
+				}
+
+			} catch (ArrayIndexOutOfBoundsException ee) {
 			}
 
 		}
@@ -494,15 +537,5 @@ public class CrudProducto extends JFrame {
 
 	public void setTablaProducto(JTable ProductTable) {
 		CrudProducto.ProductTable = ProductTable;
-	}
-	
-	public List<Producto> filtroNombre(List<Producto> lispro,String name) {
-		List<Producto> listName= new ArrayList<>();
-		for(Producto p:lispro) {
-			if(p.getNombre().equalsIgnoreCase(name)) {
-				listName.add(p);
-			}
-		}
-		return listName;
 	}
 }
