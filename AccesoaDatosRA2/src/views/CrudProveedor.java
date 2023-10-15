@@ -93,8 +93,6 @@ public class CrudProveedor extends JFrame {
 	private void createTable() throws SQLException {
 		
 		// Crear el JTable
-		// int id, String nombre, Float precio, String img, int stock,
-		// String categoria,String marca,int proveedorid,nombre proveedor para localizarlo mejor
 		String[] columnas = new String[] { "ID", "Nombre", "Dirección", "Número"};
 		SupplierCombo = new DefaultTableModel(columnas, 0) {
 			@Override
@@ -106,10 +104,8 @@ public class CrudProveedor extends JFrame {
 		getTablaProveedor().setPreferredScrollableViewportSize(new Dimension(250, 100));
 		getTablaProveedor().getTableHeader().setReorderingAllowed(true);
 		getTablaProveedor().setEnabled(true);
-		// imagenes
-		// getTablaProfesores().getSelectionModel().addListSelectionListener(mi);
-
-		// Crear el ordenador de filas
+		
+		// Crear las filas de la tabla
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(SupplierCombo);
 		getTablaProveedor().setRowSorter(sorter);
 		sorter.sort();
@@ -236,7 +232,7 @@ public class CrudProveedor extends JFrame {
 				// volver al menu principal
 				JFrameAdmin jf = new JFrameAdmin ();
 				jf.setVisible(true);
-				// Cerrar ventana crud producto
+				// Cerrar ventana crud proveedor
 				ProveedorWindow.dispose();
 			}
 		}
