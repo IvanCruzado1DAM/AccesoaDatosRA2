@@ -200,7 +200,6 @@ public class AddModifyProduct extends JFrame {
 			ObjectService os = new ObjectService();
 			Object obj = e.getSource();
 			if (obj == btnInsert) {
-				System.out.println("Hola estas insertando un producto");
 				// insertar producto
 				try {
 				String nombre = txtName.getText();
@@ -279,6 +278,18 @@ public class AddModifyProduct extends JFrame {
 							"Error de Registro", JOptionPane.ERROR_MESSAGE);
 				}
 				int stockint = Integer.parseInt(stock);
+				
+				String imgmod = ("images/" + nombre.replace(" ", "") + marca.replace(" ", "") +Idproveedor+ extension);
+				File imagenes = new File(imgmod);
+				Files.deleteIfExists(imagenes.toPath());
+				if (sourcer != null)
+					try {
+						Files.copy(sourcer, destination);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				
 				try {
 					os.saveProducto(ConexionBDSql.obtener(), (new Producto(product.getIdproducto(), nombre, marca,
 							precio, img, Idproveedor, stockint, categoria)), 2);
@@ -296,7 +307,7 @@ public class AddModifyProduct extends JFrame {
 					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: vuelve a intentarlo","Error", JOptionPane.ERROR_MESSAGE);
 				} 
 			}
-				catch(NumberFormatException ee) {
+				catch(NumberFormatException | IOException ee) {
 					JOptionPane.showMessageDialog(AddModifyProduct.this, "Error: Los campos numericos no pueden ser String.",
 							"Error de Modificacion", JOptionPane.ERROR_MESSAGE);
 				}
