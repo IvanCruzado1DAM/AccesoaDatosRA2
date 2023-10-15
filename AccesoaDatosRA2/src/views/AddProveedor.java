@@ -107,7 +107,10 @@ public class AddProveedor extends JFrame {
 		btnInsert.setIcon(iconoRegisterRedimensionado);
 	    btnInsert.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
-	    		if(txtNumber.getText().matches("[0-9]{9}")) {
+	    		if (txtName.getText().equals("") || txtAddress.getText().equals("") || txtNumber.getText().equals("") ) {
+					JOptionPane.showMessageDialog(AddProveedor.this, "Error: Los campos no pueden estar vacíos.",
+							"Error de Registro", JOptionPane.ERROR_MESSAGE);
+	    		}else if(txtNumber.getText().matches("[0-9]{9}")) {
 	    			Proveedor p=new Proveedor(txtName.getText(),txtAddress.getText(),Integer.parseInt(txtNumber.getText()));
 		    		try {
 						Test.os.saveProveedor(ConexionBDSql.obtener(), p,1);
