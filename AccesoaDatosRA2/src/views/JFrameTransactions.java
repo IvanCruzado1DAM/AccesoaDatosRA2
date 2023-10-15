@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -37,6 +38,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import com.mysql.cj.x.protobuf.MysqlxResultset.Row;
 
 import models.Empleado;
@@ -49,7 +55,7 @@ import services.Test;
 public class JFrameTransactions extends JFrame {
 
 	private JLabel NameTable, Picture;
-	//Clase modificada para bloquear celdas del jtable
+	// Clase modificada para bloquear celdas del jtable
 	private static JTableBloqueoCeldas model;
 	private static JTable table;
 	private static JComboBox<String> Filter_Employee, Filter_Supplier, Filter_Brand, Filter_Product, Transaction_Type;
@@ -62,14 +68,16 @@ public class JFrameTransactions extends JFrame {
 			IconDelete = new ImageIcon("icons/IconDelete.png"), IconUpdate = new ImageIcon("icons/IconUpdate.png"),
 			IconReturn = new ImageIcon("icons/IconReturn.png"),
 			IconGenerateReport = new ImageIcon("icons/IconDocument.png");
-	//Declaramos como static y protected para poder acceder a ella en las otras clases
+	// Declaramos como static y protected para poder acceder a ella en las otras
+	// clases
 	protected static Transaccion t;
 	private static String fEmployee = "Empleados", fSupplier = "Proveedores", fBrand = "brands", fProduct = "Productos",
 			tTransaction = "TiposTransacciones";
 	private static List<Transaccion> ListaTransacciones = new ArrayList<>();
 	protected static Date date;
-	
-	//Para dar un formato con horas, minutos y segundos a fecha (ademas de dia, año, mes)
+
+	// Para dar un formato con horas, minutos y segundos a fecha (ademas de dia,
+	// año, mes)
 	protected static DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss z");
 
 	public JFrameTransactions() {
@@ -79,7 +87,8 @@ public class JFrameTransactions extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 
-		//Con estas dos lineas conseguimos tener el icono en e logo de la app cuando se ejecuta
+		// Con estas dos lineas conseguimos tener el icono en e logo de la app cuando se
+		// ejecuta
 		ImageIcon IconTransaction = new ImageIcon("icons/IconTransactions.png");
 		this.setIconImage(IconTransaction.getImage());
 		setContentPane(new JPanel() {
@@ -108,7 +117,8 @@ public class JFrameTransactions extends JFrame {
 
 		table = new JTable();
 		model = new JTableBloqueoCeldas();
-		//Permite que ordenemos de arriba a abajo las columnas, dando en el nombre de esta
+		// Permite que ordenemos de arriba a abajo las columnas, dando en el nombre de
+		// esta
 		table.getTableHeader().setReorderingAllowed(true);
 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
 		table.setRowSorter(sorter);
@@ -123,7 +133,7 @@ public class JFrameTransactions extends JFrame {
 		model.addColumn("PRODUCTO");
 		model.addColumn("CANTIDAD");
 		model.addColumn("FECHA");
-		//Ajustamos el tamaño de jtable, en filas y en la columna de fecha
+		// Ajustamos el tamaño de jtable, en filas y en la columna de fecha
 		table.setRowHeight(30);
 		table.getColumnModel().getColumn(6).setPreferredWidth(180);
 		try {
@@ -160,13 +170,20 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Recogemos la transaccion a eliminar
-					t = Test.os.getTransaccion(ConexionBDSql.obtener(),Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
-					//Recuperamos el producto para reestablecer su valor al de antes de la transaccion
-					Producto p = Test.os.getProduct(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(),
-			         Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())).getIdproducto());
+					// Recogemos la transaccion a eliminar
+					t = Test.os.getTransaccion(ConexionBDSql.obtener(),
+							Integer.valueOf(table.getValueAt(table.getSelectedRow(), 0).toString()));
+					// Recuperamos el producto para reestablecer su valor al de antes de la
+					// transaccion
+					Producto p = Test.os
+							.getProduct(
+									ConexionBDSql.obtener(), Test.os
+											.getTransaccion(ConexionBDSql.obtener(),
+													Integer.valueOf(
+															model.getValueAt(table.getSelectedRow(), 0).toString()))
+											.getIdproducto());
 					p.setStock(p.getStock() - t.getCantidad());
-					//Eliminamos la transaccion
+					// Eliminamos la transaccion
 					Test.os.removeTransaccion(ConexionBDSql.obtener(), Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())));
 					JOptionPane.showMessageDialog(JFrameTransactions.this, "Transaccion Eliminada Correctamente",
@@ -194,10 +211,11 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Recuperamos la transaccion seleccionada en el jtable con el id
+					// Recuperamos la transaccion seleccionada en el jtable con el id
 					t = Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString()));
-					//Obtenemos la fecha de la transaccion para, poder recuperar en la siguiente clase
+					// Obtenemos la fecha de la transaccion para, poder recuperar en la siguiente
+					// clase
 					date = Test.os.getTransaccion(ConexionBDSql.obtener(),
 							Integer.valueOf(model.getValueAt(table.getSelectedRow(), 0).toString())).getFecha();
 					dispose();
@@ -243,7 +261,7 @@ public class JFrameTransactions extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				EscribirTexto(fEmployee, fSupplier, fBrand, fProduct, tTransaction);
+				ExcelCreator.main(fEmployee, fSupplier, fBrand, fProduct, tTransaction);
 			}
 		});
 
@@ -255,7 +273,8 @@ public class JFrameTransactions extends JFrame {
 		Filter_Employee.addItem("Empleados");
 		Filter_Employee.setSelectedIndex(0);
 		try {
-			//Rellenamos el filtro de empleado con el nombre para que sea mas facil , sin que se repita
+			// Rellenamos el filtro de empleado con el nombre para que sea mas facil , sin
+			// que se repita
 			for (Empleado em : Test.os.getAllEmpleados(ConexionBDSql.obtener())) {
 				String m = em.getUsername();
 				if (!Employee.contains(m)) {
@@ -277,7 +296,8 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
+					// Pasa los diferentes filtros, que son static y estan declarados arriba para
+					// poder acceder a ellos en toda la clase
 					fEmployee = (String) Filter_Employee.getSelectedItem();
 					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
@@ -296,7 +316,8 @@ public class JFrameTransactions extends JFrame {
 		Filter_Supplier.addItem("Proveedores");
 		Filter_Supplier.setSelectedIndex(0);
 		try {
-			//Rellenamos el combobox de proveedor con su nombre para filtrar con ellos, sin que se repitan
+			// Rellenamos el combobox de proveedor con su nombre para filtrar con ellos, sin
+			// que se repitan
 			for (Proveedor p : Test.os.getAllProveedor(ConexionBDSql.obtener())) {
 				String m = p.getNombre();
 				if (!Supplier.contains(m)) {
@@ -317,7 +338,8 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
+					// Pasa los diferentes filtros, que son static y estan declarados arriba para
+					// poder acceder a ellos en toda la clase
 					fSupplier = (String) Filter_Supplier.getSelectedItem();
 					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
@@ -336,7 +358,8 @@ public class JFrameTransactions extends JFrame {
 		Filter_Product.addItem("Productos");
 		Filter_Product.setSelectedIndex(0);
 		try {
-			//Rellenamos el combobox de productos con su nombre para filtrar con ellos, sin que repita
+			// Rellenamos el combobox de productos con su nombre para filtrar con ellos, sin
+			// que repita
 			for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String n = p.getNombre();
 				if (!Name.contains(n)) {
@@ -357,7 +380,8 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
+					// Pasa los diferentes filtros, que son static y estan declarados arriba para
+					// poder acceder a ellos en toda la clase
 					fProduct = (String) Filter_Product.getSelectedItem();
 					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
@@ -375,7 +399,7 @@ public class JFrameTransactions extends JFrame {
 		Filter_Brand.addItem("Marcas");
 		Filter_Brand.setSelectedIndex(0);
 		try {
-			//Rellenamos el combobox de marcas para filtrar con ellas, sin que se repita
+			// Rellenamos el combobox de marcas para filtrar con ellas, sin que se repita
 			for (Producto p : Test.os.getAllProducts(ConexionBDSql.obtener())) {
 				String m = p.getMarca();
 				if (!Brand.contains(m)) {
@@ -396,7 +420,8 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
+					// Pasa los diferentes filtros, que son static y estan declarados arriba para
+					// poder acceder a ellos en toda la clase
 					fBrand = (String) Filter_Brand.getSelectedItem();
 					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
@@ -420,7 +445,8 @@ public class JFrameTransactions extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				try {
-					//Pasa los diferentes filtros, que son static y estan declarados arriba para poder acceder a ellos en toda la clase
+					// Pasa los diferentes filtros, que son static y estan declarados arriba para
+					// poder acceder a ellos en toda la clase
 					tTransaction = (String) Transaction_Type.getSelectedItem();
 					TransaccionesConFiltros(ConexionBDSql.obtener(), fSupplier, fEmployee, fBrand, fProduct,
 							tTransaction);
@@ -503,8 +529,8 @@ public class JFrameTransactions extends JFrame {
 	private static void EscribirTabla() {
 		try {
 			while (model.getRowCount() > 0) {
-	            model.removeRow(0);
-	        }
+				model.removeRow(0);
+			}
 			for (Transaccion t : ListaTransacciones) {
 				Producto p = Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto());
 				Proveedor pro = Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor());
@@ -529,7 +555,7 @@ public class JFrameTransactions extends JFrame {
 			String productname, String TransactionType) throws SQLException {
 		ListaTransacciones = new ArrayList<>();
 		String sql = null;
-		//Cuando no elegimos nada los valores puesto son estos, lo cual serian nulos
+		// Cuando no elegimos nada los valores puesto son estos, lo cual serian nulos
 		if (suppliername.equals("Proveedores"))
 			suppliername = null;
 		if (employeename.equals("Empleados"))
@@ -539,9 +565,11 @@ public class JFrameTransactions extends JFrame {
 		if (productname.equals("Productos"))
 			productname = null;
 		if (TransactionType.equals("Exportacion")) {
-			//Filtramos primero con if para separar si es exportacion o importacion, mediante Join unimos las tablas y colocamos un identicador(apodo)
-			// a las tablas para acortar, como el valor puede ser nulo(no elegir nada en el filtro) colocamos esa condicion o si la elegido, puede ser
-			//filtro o varios
+			// Filtramos primero con if para separar si es exportacion o importacion,
+			// mediante Join unimos las tablas y colocamos un identicador(apodo)
+			// a las tablas para acortar, como el valor puede ser nulo(no elegir nada en el
+			// filtro) colocamos esa condicion o si la elegido, puede ser
+			// filtro o varios
 			sql = "SELECT t.* FROM transaccion t " + "JOIN producto p ON t.idproducto = p.idproducto "
 					+ "JOIN empleado e ON t.idempleado = e.idempleado "
 					+ "JOIN proveedor pr ON t.idproveedor = pr.idproveedor " + "WHERE (p.nombre = ? OR ? IS NULL ) "
@@ -577,12 +605,13 @@ public class JFrameTransactions extends JFrame {
 						resultado.getInt("idempleado")));
 			}
 		} catch (Exception e) {
-			
+
 		}
 		EscribirTabla();
 	}
 
-	//Obtenemos el producto por el nombre para poder poner el nombre simplemente en tabla
+	// Obtenemos el producto por el nombre para poder poner el nombre simplemente en
+	// tabla
 	public Producto getProductoId(Connection conexion, String nombre) throws SQLException {
 		Producto product = null;
 		try {
@@ -601,7 +630,6 @@ public class JFrameTransactions extends JFrame {
 		System.out.println("Producto: " + product);
 		return product;
 	}
-	
 
 	private static void EscribirTexto(String... Filtros) {
 		try {
@@ -612,15 +640,94 @@ public class JFrameTransactions extends JFrame {
 			} else {
 				bw = new BufferedWriter(new FileWriter("Reports/Transacciones.txt"));
 			}
-			
+
 			bw.close();
 			JOptionPane.showMessageDialog(null, "Informe Generado ", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-	
+
+	}
+
+	public class ExcelCreator {
+		public static void main(String... Filtros) {
+			Workbook workbook = new XSSFWorkbook(); // Crear nuevo libro de trabajo
+			Sheet sheet = (Sheet) workbook.createSheet("Informe"); // Crear nueva hoja
+
+			org.apache.poi.ss.usermodel.Row row = sheet.createRow(0); // Crear nueva fila
+			Cell cell = row.createCell(0); // Crear nueva celda en la fila
+			cell.setCellValue("Empleados"); // Establecer valor de la celda
+			Cell cell2 = row.createCell(1);
+			cell2.setCellValue("Proveedores");
+			Cell cell3 = row.createCell(2);
+			cell3.setCellValue("Marcas");
+			Cell cell4 = row.createCell(3);
+			cell4.setCellValue("Producto");
+			Cell cell5 = row.createCell(4);
+			cell5.setCellValue("Cantidad");
+			Cell cell6 = row.createCell(5);
+			cell6.setCellValue("TipoTransaccion");
+			int cont = 0;
+			for (Transaccion t : ListaTransacciones) {
+				row = sheet.createRow(++cont);
+				cell = row.createCell(0); // Crear nueva celda en la fila
+				try {
+					cell.setCellValue(Test.os.getEmpleado(ConexionBDSql.obtener(), t.getIdempleado()).getUsername());
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // Establecer valor de la celda
+				cell2 = row.createCell(1);
+				try {
+					cell2.setCellValue(Test.os.getProveedor(ConexionBDSql.obtener(), t.getIdproveedor()).getNombre());
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				cell3 = row.createCell(2);
+				try {
+					cell3.setCellValue(Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto()).getMarca());
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				cell4 = row.createCell(3);
+				try {
+					cell4.setCellValue(Test.os.getProduct(ConexionBDSql.obtener(), t.getIdproducto()).getNombre());
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				cell5 = row.createCell(4);
+				cell5.setCellValue(t.getCantidad());
+				cell6 = row.createCell(5);
+				if(t.getCantidad()>0)
+				cell6.setCellValue("Importacion");
+				else
+				cell6.setCellValue("Exportacion");
+			}
+
+			try (FileOutputStream outputStream = new FileOutputStream(
+					"Reports/TransaccionesConFiltros" + Arrays.toString(Filtros) + ".xlsx")) {
+				workbook.write(outputStream); // Escribir libro de trabajo en el archivo
+               JOptionPane.showMessageDialog(null, "Informe Creado");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

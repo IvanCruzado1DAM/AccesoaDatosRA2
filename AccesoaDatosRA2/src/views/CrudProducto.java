@@ -50,6 +50,7 @@ public class CrudProducto extends JFrame {
 	private DefaultTableModel ProductCombo;
 	private JScrollPane ProductScroll;
 	private JPanel ProductPanel;
+	private  Proveedor IdProveedor;
 	// manejador
 	ManejadorImagen mi = new ManejadorImagen();
 	ObjectService OS = new ObjectService();
@@ -352,7 +353,7 @@ public class CrudProducto extends JFrame {
 				if ((ComboProveedor.getSelectedIndex()) != 0) {
 				    String selectedProveedorString = (String) ComboProveedor.getSelectedItem();
 				    // Obtener el id del proveedor desde la cadena seleccionada
-				    int idProveedor = Integer.parseInt(selectedProveedorString.split("ID:")[1].trim());
+				    Proveedor IdProveedor = (Proveedor)(ComboProveedor.getSelectedItem());
 				    // Obtener el proveedor correspondiente al id de la lista de proveedores
 				    Proveedor provee = OS.getProveedor(ConexionBDSql.obtener(), idproveedor);
 				    }
@@ -379,7 +380,7 @@ public class CrudProducto extends JFrame {
 				List<Proveedor> listPro;
 				try {
 					List<Producto> listP = OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca,
-							precio, operacionprecio, stock, operacionstock, idproveedor);
+							precio, operacionprecio, stock, operacionstock,  IdProveedor.getIdproveedor());
 					System.out.println(listP);
 					listPro = OS.getAllProveedor(ConexionBDSql.obtener());
 				    ProductCombo.setRowCount(0);
