@@ -50,6 +50,7 @@ public class CrudProducto extends JFrame {
 	private DefaultTableModel ProductCombo;
 	private JScrollPane ProductScroll;
 	private JPanel ProductPanel;
+	private Proveedor provee;
 	// manejador
 	ManejadorImagen mi = new ManejadorImagen();
 	ObjectService OS = new ObjectService();
@@ -159,10 +160,10 @@ public class CrudProducto extends JFrame {
 		// desplegable simbolos
 		ComboPrecio = new JComboBox();
 		ComboPrecio.setBounds(447, 78, 38, 21);
-		ComboPrecio.addItem("Elige...");
+		ComboPrecio.addItem("=");
 		ComboPrecio.addItem(">");
 		ComboPrecio.addItem("<");
-		ComboPrecio.addItem("=");
+
 		ProductWindow.getContentPane().add(ComboPrecio);
 		// field precio
 		FieldPrecio = new JTextField();
@@ -177,10 +178,10 @@ public class CrudProducto extends JFrame {
 		// desplegable simbolos
 		ComboStock = new JComboBox();
 		ComboStock.setBounds(567, 78, 38, 21);
-		ComboStock.addItem("Elige...");
+		ComboStock.addItem("=");
 		ComboStock.addItem(">");
 		ComboStock.addItem("<");
-		ComboStock.addItem("=");
+
 		ProductWindow.getContentPane().add(ComboStock);
 		// field stock
 		FieldStock = new JTextField();
@@ -194,11 +195,12 @@ public class CrudProducto extends JFrame {
 		ProductWindow.getContentPane().add(LabelProveedor);
 		// desplegable proveedor
 		Set<String> nombresProveedores = new HashSet<>();
-		nombresProveedores.add("Elige...");
 		for (Proveedor proveedor : listSupplier) {
 			nombresProveedores.add(proveedor.getNombre() + " ID:" + proveedor.getIdproveedor());
 		}
 		ComboProveedor = new JComboBox<>(nombresProveedores.toArray(new String[0]));
+		ComboProveedor.insertItemAt("Elige...", 0);
+		ComboProveedor.setSelectedIndex(0);
 		ComboProveedor.setBounds(337, 78, 100, 21);
 
 		// boton filtrar
@@ -333,7 +335,8 @@ public class CrudProducto extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				// variables
-				String nombre = null, operacionstock = null, operacionprecio = null, categoria = null, marca = null;
+				String nombre = null, operacionstock = null, operacionprecio = null, categoria = null, marca = null,
+						nombreprov = null;
 				Proveedor proveedor = null;
 				int idproveedor = 0, stock = 0;
 				float precio = 0;
@@ -341,21 +344,17 @@ public class CrudProducto extends JFrame {
 				if (!(FieldNombre.getText().equalsIgnoreCase(""))) {
 					nombre = FieldNombre.getText();
 				}
-				// comprobacion que no esta elegida la opcion por defecto
-				if (ComboPrecio.getSelectedIndex() != 0) {
-					operacionprecio = ComboPrecio.getSelectedItem().toString();
-				}
-				if (ComboStock.getSelectedIndex() != 0) {
-					operacionstock = ComboStock.getSelectedItem().toString();
-				}
-				
+
+				operacionprecio = ComboPrecio.getSelectedItem().toString();
+				operacionstock = ComboStock.getSelectedItem().toString();
+
 				if ((ComboProveedor.getSelectedIndex()) != 0) {
-				    String selectedProveedorString = (String) ComboProveedor.getSelectedItem();
-				    // Obtener el id del proveedor desde la cadena seleccionada
-				    int idProveedor = Integer.parseInt(selectedProveedorString.split("ID:")[1].trim());
-				    // Obtener el proveedor correspondiente al id de la lista de proveedores
-				    Proveedor provee = OS.getProveedor(ConexionBDSql.obtener(), idproveedor);
-				    }
+					String selectedProveedorString = (String) ComboProveedor.getSelectedItem();
+					// Obtener el id del proveedor desde la cadena seleccionada
+					nombreprov = selectedProveedorString.split(" ")[0].trim();
+					// Obtener el proveedor correspondiente al id de la lista de proveedores
+					provee = OS.getProveedor(ConexionBDSql.obtener(), idproveedor);
+				}
 				if (ComboCategoria.getSelectedIndex() != 0) {
 					categoria = ComboCategoria.getSelectedItem().toString();
 				}
@@ -372,31 +371,33 @@ public class CrudProducto extends JFrame {
 				System.out.println(nombre + " " + operacionprecio + " " + operacionstock + " " + idproveedor + " "
 						+ proveedor + " " + categoria + " " + marca + " " + stock + " " + precio + " ");
 
-				
 				String[] columnas = new String[] { "ID", "Nombre", "Marca", "Precio", "Img", "Categoria",
 						"Id Proveedor", "Nombre proovedor" };
-				
+
 				List<Proveedor> listPro;
 				try {
+					System.out.println(nombreprov);
+					System.out.println("PRECIO");
+					System.out.println(operacionprecio);
+					System.out.println("STOCK");
 					List<Producto> listP = OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca,
-							precio, operacionprecio, stock, operacionstock, idproveedor);
+							precio, stock,nombreprov, operacionprecio);
 					System.out.println(listP);
 					listPro = OS.getAllProveedor(ConexionBDSql.obtener());
-				    ProductCombo.setRowCount(0);
+					ProductCombo.setRowCount(0);
 
 					for (Producto p : listP) {
-						String nomPro=null;
-						for(Proveedor prov: listPro) {
-							if(prov.getIdproveedor()==p.getIdproducto()) {
-								nombPro=prov.getNombre();
+						String nomPro = null;
+						for (Proveedor prov : listPro) {
+							if (prov.getIdproveedor() == p.getIdproducto()) {
+								nombPro = prov.getNombre();
 							}
 						}
 						Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
 								p.getCategoria(), p.getProveedorid(), nomPro };
 						ProductCombo.addRow(data);
 					}
-					
-				
+
 					// Refrescar la ventana para que se actualicen los datos
 //					    ProductWindow.pack(); // Ajusta automáticamente el tamaño de la ventana
 //						ProductWindow.revalidate(); // Vuelve a validar el diseño de la ventana
@@ -407,7 +408,7 @@ public class CrudProducto extends JFrame {
 					ProductTable.getTableHeader().setReorderingAllowed(true);
 					ProductTable.setEnabled(true);
 					ProductCombo.fireTableDataChanged();
-					
+
 					ProductScroll = new JScrollPane(ProductTable);
 					ProductScroll.setBounds(10, 123, 500, 430);
 					ProductWindow.getContentPane().add(ProductScroll);
