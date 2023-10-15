@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -36,6 +36,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+
+import com.mysql.cj.x.protobuf.MysqlxResultset.Row;
 
 import models.Empleado;
 import models.Producto;
@@ -599,6 +601,7 @@ public class JFrameTransactions extends JFrame {
 		System.out.println("Producto: " + product);
 		return product;
 	}
+	
 
 	private static void EscribirTexto(String... Filtros) {
 		try {
@@ -609,15 +612,15 @@ public class JFrameTransactions extends JFrame {
 			} else {
 				bw = new BufferedWriter(new FileWriter("Reports/Transacciones.txt"));
 			}
-			for (Transaccion t : ListaTransacciones) {
-				bw.write(t.toString() + "\n");
-			}
+			
 			bw.close();
 			JOptionPane.showMessageDialog(null, "Informe Generado ", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	
 	}
 
 }

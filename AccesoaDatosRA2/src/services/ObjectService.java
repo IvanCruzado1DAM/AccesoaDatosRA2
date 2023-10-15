@@ -123,36 +123,28 @@ public class ObjectService {
 	}
 
 	public List<Producto> getProductosFiltrados(Connection conexion, String categoria, String nombre, String marca,
-	         float precio, String operadorPrecio, int stock, String operadorStock) throws SQLException {
+	         float precio, String operadorPrecio, int stock, String operadorStock, int idproveedor) throws SQLException {
 	     List<Producto> productos = new ArrayList<>();
 	     try {
 	         // Construir la consulta SQL dinámicamente con las condiciones proporcionadas
-	         StringBuilder consultaSQL = new StringBuilder("SELECT p.idproducto, p.nombre, p.marca, p.precio, p.img, pr.idproveedor AS proveedorid, p.stock, p.categoria "
-	                 + "FROM producto p "
-	                 + "JOIN proveedor pr ON p.proveedorid = pr.idproveedor "
-	                 + "WHERE (? IS NULL OR p.categoria = ?) "
-	                 + "AND (? IS NULL OR p.nombre = ?) "
-	                 + "AND (? IS NULL OR p.marca = ?) "
-	                 + "AND (? IS NULL OR (p.precio > ? OR p.precio < ? OR p.precio = ?)) "
-	                 + "AND (? IS NULL OR (p.stock > ? OR p.stock < ? OR p.stock = ?))");
+	    	 StringBuilder consultaSQL = new StringBuilder( "SELECT p.*, pr.nombre " +
+                     "FROM producto p JOIN proveedor pr ON p.proveedorid = pr.idproveedor " +
+                     "WHERE (p.marca = ? OR ? IS NULL) " +
+                     "AND (p.nombre = ? OR ? IS NULL) " +
+                     "AND (pr.nombre = ? OR ? IS NULL) " +
+                     "AND (p.categoria = ? OR ? IS NULL)");
 
-	         PreparedStatement consulta = conexion.prepareStatement(consultaSQL.toString());
+             PreparedStatement consulta = conexion.prepareStatement(consultaSQL.toString());
 
-	         // Establecer valores para las condiciones
-	         consulta.setString(1, categoria);
-	         consulta.setString(2, categoria);
-	         consulta.setString(3, nombre);
-	         consulta.setString(4, nombre);
-	         consulta.setString(5, marca);
-	         consulta.setString(6, marca);
-	         consulta.setFloat(7, precio);
-	         consulta.setFloat(8, precio);
-	         consulta.setFloat(9, precio);
-	         consulta.setString(10, operadorPrecio);
-	         consulta.setFloat(11, precio); // Se repite el valor de precio para el parámetro 11
-	         consulta.setInt(12, stock);
-	         consulta.setString(13, operadorStock);
-	         consulta.setInt(14, stock); // Se repite el valor de stock para el parámetro 14
+             // Establecer valores para las condiciones
+             consulta.setString(1, marca);
+             consulta.setString(2, marca);
+             consulta.setString(3, nombre);
+             consulta.setString(4, nombre);
+             consulta.setInt(5, idproveedor);
+             consulta.setInt(6, idproveedor);
+             consulta.setString(7, categoria);
+             consulta.setString(8, categoria);
 
 	         ResultSet resultado = consulta.executeQuery();
 	         while (resultado.next()) {

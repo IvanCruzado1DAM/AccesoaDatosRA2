@@ -379,7 +379,7 @@ public class CrudProducto extends JFrame {
 				List<Proveedor> listPro;
 				try {
 					List<Producto> listP = OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca,
-							precio, operacionprecio, stock, operacionstock);
+							precio, operacionprecio, stock, operacionstock, idproveedor);
 					System.out.println(listP);
 					listPro = OS.getAllProveedor(ConexionBDSql.obtener());
 				    ProductCombo.setRowCount(0);
