@@ -126,9 +126,9 @@ public class ObjectService {
 			float precio, int stock, String nombreproveedor, String simboloprecio) throws SQLException {
 		List<Producto> productos = new ArrayList<>();
 		String sql = null;
+		PreparedStatement consulta = null;
 		try {
 			// Construir la consulta SQL dinámicamente con las condiciones proporcionadas
-			PreparedStatement consulta;
 			if (simboloprecio.equalsIgnoreCase(">")) {
 				sql = ("SELECT p.*, pr.nombre " + "FROM producto p JOIN proveedor pr ON p.proveedorid = pr.idproveedor "
 						+ "WHERE (p.marca = ? OR ? IS NULL) " + "AND (p.nombre = ? OR ? IS NULL) "
@@ -162,7 +162,8 @@ public class ObjectService {
 				consulta.setString(8, categoria);
 				consulta.setFloat(9, precio);
 				consulta.setFloat(10, precio);
-			} else {
+			} else if(simboloprecio.equalsIgnoreCase("=")){
+				if(precio!=0) {
 				sql = ("SELECT p.*, pr.nombre " + "FROM producto p JOIN proveedor pr ON p.proveedorid = pr.idproveedor "
 						+ "WHERE (p.marca = ? OR ? IS NULL) " + "AND (p.nombre = ? OR ? IS NULL) "
 						+ "AND (pr.nombre = ? OR ? IS NULL) " + "AND (p.categoria = ? OR ? IS NULL)" + "AND (p.precio = ? OR ? IS NULL)");
@@ -177,9 +178,23 @@ public class ObjectService {
 				consulta.setString(8, categoria);
 				consulta.setFloat(9, precio);
 				consulta.setFloat(10, precio);
+				}else {
+					sql = ("SELECT p.*, pr.nombre " + "FROM producto p JOIN proveedor pr ON p.proveedorid = pr.idproveedor "
+							+ "WHERE (p.marca = ? OR ? IS NULL) " + "AND (p.nombre = ? OR ? IS NULL) "
+							+ "AND (pr.nombre = ? OR ? IS NULL) " + "AND (p.categoria = ? OR ? IS NULL)");
+					consulta = conexion.prepareStatement(sql);
+					consulta.setString(1, marca);
+					consulta.setString(2, marca);
+					consulta.setString(3, nombre);
+					consulta.setString(4, nombre);
+					consulta.setString(5, nombreproveedor);
+					consulta.setString(6, nombreproveedor);
+					consulta.setString(7, categoria);
+					consulta.setString(8, categoria);
+				}
 			}
-
 			ResultSet resultado = consulta.executeQuery();
+
 			while (resultado.next()) {
 				productos.add(new Producto(resultado.getInt("idproducto"), resultado.getString("nombre"),
 						resultado.getString("marca"), resultado.getFloat("precio"), resultado.getString("img"),
