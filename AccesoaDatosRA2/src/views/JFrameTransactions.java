@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -711,16 +710,16 @@ public class JFrameTransactions extends JFrame {
 				cell5 = row.createCell(4);
 				cell5.setCellValue(t.getCantidad());
 				cell6 = row.createCell(5);
-				if(t.getCantidad()>0)
-				cell6.setCellValue("Importacion");
+				if (t.getCantidad() > 0)
+					cell6.setCellValue("Importacion");
 				else
-				cell6.setCellValue("Exportacion");
+					cell6.setCellValue("Exportacion");
 			}
 
 			try (FileOutputStream outputStream = new FileOutputStream(
 					"Reports/TransaccionesConFiltros" + Arrays.toString(Filtros) + ".xlsx")) {
 				workbook.write(outputStream); // Escribir libro de trabajo en el archivo
-               JOptionPane.showMessageDialog(null, "Informe Creado");
+				JOptionPane.showMessageDialog(null, "Informe Creado");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
