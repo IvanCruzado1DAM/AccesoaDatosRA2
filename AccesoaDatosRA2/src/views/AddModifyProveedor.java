@@ -31,7 +31,7 @@ import javax.swing.SwingConstants;
 
 public class AddModifyProveedor extends JFrame {
 
-	// Product window add-modify
+	// Supplier window add-modify
 	private JFrame SupplierWindowAM;
 	private JLabel lblName, lblAddress, lblNumber;
 	private JTextField txtName, txtAddress, txtNumber;
@@ -97,6 +97,7 @@ public class AddModifyProveedor extends JFrame {
 	    txtNumber.setColumns(10);
 	    SupplierWindowAM.getContentPane().add(txtNumber);
 
+	    //editar proveedor
 	    JLabel lblNewLabel = new JLabel("Editar Proveedor");
 	    lblNewLabel.setBounds(80, 54, 242, 40);
 	    lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -116,6 +117,7 @@ public class AddModifyProveedor extends JFrame {
 	        
 	        SupplierWindowAM.setVisible(true);
 	        
+	     //boton volver
 	     btnBack = new JButton("Volver");
 	     ImageIcon iconoExitOriginal = new ImageIcon("./icons/IconReturn.png");
 		 Image imagenExitOriginal = iconoExitOriginal.getImage();
@@ -134,6 +136,7 @@ public class AddModifyProveedor extends JFrame {
 	     	}
 	     });
 	     btnBack.setBounds(324, 23, 91, 27);
+	     //boton actualizar
 	     btnUpdate = new JButton("Actualizar");
 	     ImageIcon iconoUpdateOriginal = new ImageIcon("./icons/IconUpdate.png");
 		 Image imagenUpdateOriginal = iconoUpdateOriginal.getImage();

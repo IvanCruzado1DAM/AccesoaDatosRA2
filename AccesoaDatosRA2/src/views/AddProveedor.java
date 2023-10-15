@@ -32,7 +32,7 @@ import java.awt.Window.Type;
 
 public class AddProveedor extends JFrame {
 
-	// Product window add-modify
+	// Supplier window add-modify
 	private JFrame SupplierWindowAM;
 	private JLabel lblName, lblAddress, lblNumber;
 	private JTextField txtName, txtAddress, txtNumber;
@@ -98,7 +98,7 @@ public class AddProveedor extends JFrame {
 	    txtNumber.setBounds(185, 184, 96, 19);
 	    SupplierWindowAM.getContentPane().add(txtNumber);
 	    
-
+	    //boton insertar
 	    btnInsert = new JButton("Insertar");
 	    ImageIcon iconoRegisterOriginal = new ImageIcon("icons/IconInsert.png");
 		Image imagenRegisterOriginal = iconoRegisterOriginal.getImage();
@@ -131,6 +131,7 @@ public class AddProveedor extends JFrame {
 	    btnInsert.setBounds(141, 230, 107, 33);
 	    SupplierWindowAM.getContentPane().add(btnInsert);
 
+	    //boton volver
 	    btnBack = new JButton("Volver");
 	    btnBack.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -143,6 +144,8 @@ public class AddProveedor extends JFrame {
 				}
 	    	}
 	    });
+	    
+	    //imagen boton volver
 	    ImageIcon iconoExitOriginal = new ImageIcon("./icons/IconReturn.png");
 		Image imagenExitOriginal = iconoExitOriginal.getImage();
 		Image nuevaImagenExit =imagenExitOriginal.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
