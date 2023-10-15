@@ -43,8 +43,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.mysql.cj.x.protobuf.MysqlxResultset.Row;
-
 import models.Empleado;
 import models.Producto;
 import models.Proveedor;
@@ -289,7 +287,6 @@ public class JFrameTransactions extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		Filter_Employee.addActionListener(new ActionListener() {
 
 			@Override
