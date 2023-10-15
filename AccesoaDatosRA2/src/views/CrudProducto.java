@@ -226,58 +226,8 @@ public class CrudProducto extends JFrame {
 		ProductTable.setPreferredScrollableViewportSize(new Dimension(250, 100));
 		ProductTable.getTableHeader().setReorderingAllowed(true);
 		ProductTable.setEnabled(true);
-		System.out.println("AAAAA");
 		// imagenes
-//		ProductTable.getSelectionModel().addListSelectionListener(mi);
-		ProductTable.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				try {
-					ImageIcon i = new ImageIcon(
-							Test.os.getProduct(
-									ConexionBDSql.obtener(), Test.os
-											.getTransaccion(ConexionBDSql.obtener(),
-													Integer.valueOf(
-															ProductTable.getValueAt(ProductTable.getSelectedRow(), 0).toString()))
-											.getIdproducto())
-									.getImg());
-					ImageIcon icon = new ImageIcon(i.getImage().getScaledInstance(ProductImg.getWidth(),
-							ProductImg.getHeight(), Image.SCALE_DEFAULT));
-					ProductImg.setIcon(icon);
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+		ProductTable.getSelectionModel().addListSelectionListener(mi);
 		
 		// Crear el ordenador de filas
 		try {
@@ -288,21 +238,25 @@ public class CrudProducto extends JFrame {
 
 		}
 		// rellenar Productos
-		fillTable();
+		try {
+			fillTable(OS.getAllProducts(ConexionBDSql.obtener()));
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ProductScroll = new JScrollPane(ProductTable);
 		ProductScroll.setBounds(10, 123, 500, 430);
 		ProductWindow.getContentPane().add(ProductScroll);
 
 	}
 
-	private void fillTable() {
-		List<Producto> listP;
+	private void fillTable(List<Producto> listaProductos) {
 		List<Proveedor> listPro;
 		String nomPro = null;
 		try {
-			listP = OS.getAllProducts(ConexionBDSql.obtener());
+			;
 			listPro = OS.getAllProveedor(ConexionBDSql.obtener());
-			for (Producto p : listP) {
+			for (Producto p : listaProductos) {
 				for (Proveedor pro : listPro) {
 					if (p.getProveedorid() == pro.getIdproveedor()) {
 						nomPro = pro.getNombre();
@@ -411,45 +365,17 @@ public class CrudProducto extends JFrame {
 						"Id Proveedor", "Nombre proovedor" };
 
 				List<Proveedor> listPro;
+				ProductTable.getSelectionModel().addListSelectionListener(mi);
 				try {
 					System.out.println(nombreprov);
 					System.out.println("PRECIO");
 					System.out.println(operacionprecio);
 					List<Producto> listP = OS.getProductosFiltrados(ConexionBDSql.obtener(), categoria, nombre, marca,
 							precio, stock,nombreprov, operacionprecio);
-					System.out.println(listP);
-					listPro = OS.getAllProveedor(ConexionBDSql.obtener());
+
 					ProductCombo.setRowCount(0);
+					fillTable(listP);
 
-//					ProductTable.getSelectionModel().addListSelectionListener(mi);
-
-					for (Producto p : listP) {
-						String nombPro = null;
-						for (Proveedor prov : listPro) {
-							if (prov.getIdproveedor() == p.getProveedorid()) {
-								nombPro = prov.getNombre();
-							}
-						}
-						
-						Object[] data = { p.getIdproducto(), p.getNombre(), p.getMarca(), p.getPrecio(), p.getImg(),
-								p.getCategoria(), p.getProveedorid(), nombPro,p.getStock() };
-						ProductCombo.addRow(data);
-					}
-
-					setTablaProducto(new JTable(ProductCombo));
-					ProductTable.setPreferredScrollableViewportSize(new Dimension(250, 100));
-//					ProductTable.getTableHeader().setReorderingAllowed(true);
-					
-					ProductTable.setEnabled(true);
-					
-					ProductCombo.fireTableDataChanged();
-					
-					
-					ProductScroll = new JScrollPane(ProductTable);
-					ProductScroll.setBounds(10, 123, 500, 430);
-					ProductWindow.getContentPane().add(ProductScroll);
-
-					
 					
 				} catch (ClassNotFoundException | SQLException eeee) {
 					eeee.printStackTrace();
@@ -556,6 +482,7 @@ public class CrudProducto extends JFrame {
 	public class ManejadorImagen implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e) {
 			try {
+				System.out.println(ProductTable.getSelectedRow());
 				if (ProductTable.getValueAt(ProductTable.getSelectedRow(), 4) != null) {
 					Image img = new ImageIcon(ProductTable.getValueAt(ProductTable.getSelectedRow(), 4).toString())
 							.getImage();

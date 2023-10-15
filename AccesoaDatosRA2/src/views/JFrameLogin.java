@@ -43,6 +43,9 @@ public class JFrameLogin extends JFrame {
 		setSize(653, 408);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		// icono
+		ImageIcon icono = new ImageIcon("icons/IconRegister.png");
+		setIconImage(icono.getImage());
 
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;

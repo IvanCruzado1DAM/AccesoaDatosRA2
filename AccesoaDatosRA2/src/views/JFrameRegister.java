@@ -38,7 +38,8 @@ public class JFrameRegister extends JFrame {
 		setSize(654, 424);
 		setResizable(false);
 		setLocationRelativeTo(null);
-		
+		ImageIcon icono = new ImageIcon("icons/IconRegister.png");
+		setIconImage(icono.getImage());
 		setContentPane(new JPanel() {
 			BufferedImage backgroundImage;
 			{
